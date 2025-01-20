@@ -23,15 +23,15 @@ const Topcake = () => {
       <div className="products">
         {products.map((product) => (
           <div className="product-card" key={product.id}>
-            {/* Use next/image for optimized image rendering */}
             <Image
               src={product.img}
               alt={product.name}
-              width={360}
-              height={360}
+              width={200}
+              height={200}
+              className="product-image"
             />
-            <p>{product.name}</p>
-            <h4>{product.price}</h4>
+            <p className="product-name">{product.name}</p>
+            <h4 className="product-price">{product.price}</h4>
           </div>
         ))}
       </div>
@@ -40,23 +40,51 @@ const Topcake = () => {
       <style jsx>{`
         .product-list {
           text-align: center;
-          margin: 20px auto;
+          margin: 40px auto;
+          padding: 20px;
+          max-width: 1200px;
         }
+
+        .product-list h2 {
+          font-size: 32px;
+          color: #B864D4;
+          margin-bottom: 30px;
+        }
+
         .products {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
           gap: 20px;
         }
+
         .product-card {
+          background-color: #fff;
           border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 15px;
-          width: 250px;
-          text-align: center;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          overflow: hidden;
+          padding: 20px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s, box-shadow 0.3s;
         }
-        .product-card h4 {
+
+        .product-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-image {
+          border-radius: 8px;
+        }
+
+        .product-name {
+          font-size: 18px;
+          font-weight: bold;
+          color: #333;
+          margin: 10px 0;
+        }
+
+        .product-price {
+          font-size: 20px;
           color: #B864D4;
         }
       `}</style>

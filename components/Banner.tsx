@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 
 const Banner = () => {
-  // JavaScript logic for carousel
   const slides = [
     { src: "/images/curousel1.webp", alt: "Offer 1" },
     { src: "/images/valentines.jpg", alt: "Offer 2" },
@@ -31,46 +31,53 @@ const Banner = () => {
 
   React.useLayoutEffect(() => {
     showSlide(currentIndex); // Show the first slide
-    const interval = setInterval(nextSlide, 3000); // Auto-play every 3 seconds
+    const interval = setInterval(nextSlide, 5000); // Auto-play every 5 seconds
     return () => clearInterval(interval); // Cleanup
   }, []);
 
-  // Inline CSS styles
   const styles: Record<string, React.CSSProperties> = {
     banner: {
       position: "relative",
-      width: "100%",
-      maxWidth: "1200px",
-      margin: "0 auto",
+      width: "100vw",
+      height: "100vh",
       overflow: "hidden",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     carouselContainer: {
       position: "relative",
       width: "100%",
+      height: "70%",
     },
     carouselSlide: {
       display: "none",
       justifyContent: "center",
       alignItems: "center",
-      textAlign: "center" as "center",
       width: "100%",
+      height: "100%",
+      position: "absolute",
     },
     carouselImage: {
       width: "100%",
-      maxHeight: "500px",
-      borderRadius: "10px",
-      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+      height: "100%",
+      objectFit: "cover",
     },
     discoverButton: {
-      marginTop: "15px",
-      padding: "10px 20px",
+      position: "absolute",
+      bottom: "30px", // Positioned at the bottom
+      left: "50%", // Center horizontally
+      transform: "translateX(-50%)", // Align to the center
+      padding: "15px 30px",
       backgroundColor: "#b864d4",
-      color: "white",
+      color: "#fff",
       border: "none",
       borderRadius: "5px",
       cursor: "pointer",
-      fontSize: "18px",
-      transition: "transform 0.3s ease",
+      fontSize: "20px",
+      fontWeight: "bold",
+      transition: "transform 0.3s ease, background-color 0.3s ease",
+      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow for better visibility
     },
     navButton: {
       position: "absolute",
@@ -79,17 +86,17 @@ const Banner = () => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
       color: "white",
       border: "none",
-      padding: "10px",
+      padding: "15px",
       cursor: "pointer",
-      fontSize: "20px",
-      borderRadius: "5px",
+      fontSize: "24px",
+      borderRadius: "50%",
       transition: "background-color 0.3s ease",
     },
     prevButton: {
-      left: "10px",
+      left: "20px",
     },
     nextButton: {
-      right: "10px",
+      right: "20px",
     },
   };
 
@@ -107,17 +114,7 @@ const Banner = () => {
               alt={slide.alt}
               style={styles.carouselImage}
             />
-            <button
-              style={styles.discoverButton}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.transform = "scale(0.9)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
-            >
-              Buy Now
-            </button>
+           
           </div>
         ))}
 
@@ -134,6 +131,17 @@ const Banner = () => {
         >
           &#10095;
         </button>
+        <button
+              style={styles.discoverButton}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.transform = "scale(1.05)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "scale(1)")
+              }
+            >
+             <Link href="/cakedetails">Buy Now</Link>
+            </button>
       </div>
     </div>
   );

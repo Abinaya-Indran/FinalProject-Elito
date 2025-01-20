@@ -5,7 +5,8 @@ const Footer = () => {
   return (
     <footer
       style={{
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Times New Roman', Times, serif",
+        fontSize: "20px",
         color: "black",
         backgroundColor: "#f5f5f5",
       }}
@@ -81,18 +82,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom Section */}
-      <div
-        style={{
-          textAlign: "center",
-          padding: "17px",
-          backgroundColor: "#B864D4",
-          color: "white",
-          fontSize: "14px",
-        }}
-      >
-        <p>© 2024 Elito.com All Rights Reserved</p>
-      </div>
+     
     </footer>
   );
 };
