@@ -1,6 +1,6 @@
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Signup from '../../../components/signup'
+import Signup from '../../../components/register'
 
 function signupPage() {
     return (

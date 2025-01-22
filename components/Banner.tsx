@@ -6,8 +6,8 @@ import Link from "next/link";
 const Banner = () => {
   const slides = [
     { src: "/images/curousel1.webp", alt: "Offer 1" },
-    { src: "/images/valentines.jpg", alt: "Offer 2" },
-    { src: "/images/Adds.jpg", alt: "Offer 3" },
+    { src: "/images/cakebanner2.webp", alt: "Offer 2" },
+    { src: "/images/cakebanner1.jpg", alt: "Offer 3" },
   ];
 
   let currentIndex = 0;
@@ -48,7 +48,7 @@ const Banner = () => {
     carouselContainer: {
       position: "relative",
       width: "100%",
-      height: "70%",
+      height: "100%",
     },
     carouselSlide: {
       display: "none",

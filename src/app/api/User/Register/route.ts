@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../../../lib/db";
-import User from "../../../../models/User";
+import { connectToDatabase } from "../../../../../lib/db";
+import User from "../../../../../models/user";
 
 // GET: Fetch all users
 export async function GET() {
   try {
     await connectToDatabase();
-    const users = await User.find();
+    const users = await User.find(); // Fetch all users
     return NextResponse.json(users, { status: 200 });
   } catch (error: any) {
     return new Response(
@@ -23,15 +23,18 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     // Validation
-    if (!body.username || !body.email || !body.password) {
+    const { name, email, password, role, address, phoneNumber } = body;
+    if (!name || !email || !password || !role) {
       return new Response(
-        JSON.stringify({ error: "Username, email, and password are required" }),
+        JSON.stringify({
+          error: "Name, email, password, and role are required",
+        }),
         { status: 400 }
       );
     }
 
     // Check for existing user
-    const existingUser = await User.findOne({ email: body.email });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return new Response(
         JSON.stringify({ error: "User already exists" }),
@@ -39,7 +42,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const newUser = new User(body);
+    // Create a new user
+    const newUser = new User({
+      name,
+      email,
+      password,
+      role,
+      address: role === "Seller" ? address : undefined, // Only save address for Sellers
+      phoneNumber: role === "Seller" ? phoneNumber : undefined, // Only save phoneNumber for Sellers
+    });
+
     await newUser.save();
 
     return NextResponse.json(newUser, { status: 201 });
@@ -56,21 +68,25 @@ export async function PATCH(req: Request) {
   try {
     await connectToDatabase();
     const body = await req.json();
-    const { userId, username, email, password } = body;
+    const { userId, name, email, password, role, address, phoneNumber } = body;
 
     // Validate input
-    if (!userId || (!username && !email && !password)) {
+    if (!userId) {
       return new Response(
-        JSON.stringify({ error: "Invalid input" }),
+        JSON.stringify({ error: "User ID is required" }),
         { status: 400 }
       );
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { username, email, password },
-      { new: true }
-    );
+    const updatedData: any = { name, email, password, role };
+    if (role === "Seller") {
+      updatedData.address = address;
+      updatedData.phoneNumber = phoneNumber;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+      new: true,
+    });
 
     if (!updatedUser) {
       return new Response(

@@ -1,10 +1,10 @@
-import Admin from '../../../components/Admin'
+import Admin from '../../../components/admin'
 
 
 function Adminpage() {
     return (
         <div>
-            <Adminpage/>
+            <Admin/>
         </div>
     )
 }
