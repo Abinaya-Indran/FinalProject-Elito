@@ -1,33 +1,28 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const Register: React.FC = () => {
-  const [role, setRole] = useState("buyer");
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [role, setRole] = useState("Buyer"); // Default role is Buyer
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [address, setAddress] = useState(""); // For Seller role
+  const [phoneNumber, setPhoneNumber] = useState(""); // For Seller role
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { fullName, email, password, confirmPassword } = formData;
-
     // Validation
-    if (!fullName || !email || !password || !confirmPassword) {
-      setError("All fields are required.");
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Name, email, password, and confirm password are required.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -42,30 +37,38 @@ const Register: React.FC = () => {
       setError("Passwords do not match.");
       return;
     }
+    if (role === "Seller" && (!address || !phoneNumber)) {
+      setError("Address and phone number are required for Seller registration.");
+      return;
+    }
 
     setError(null); // Clear previous errors
+    setLoading(true);
 
     try {
-      const response = await fetch("/api/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, role }),
-      });
+      const payload = {
+        name,
+        email,
+        password,
+        role,
+        ...(role === "Seller" && { address, phoneNumber }), // Include Seller-specific fields
+      };
 
-      const data = await response.json();
+      const response = await axios.post("/api/User/register", payload);
 
-      if (!response.ok) {
-        setError(data.error || "Sign-up failed. Please try again.");
-        return;
+      if (response.status === 201) {
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/login"); // Redirect to login after 2 seconds
+        }, 2000);
+      } else {
+        setError("Registration failed. Please try again.");
       }
-
-      setSuccess(true);
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000); // Redirect after 2 seconds
-    } catch (err) {
+    } catch (err: any) {
+      setError(err.response?.data?.error || "An error occurred. Please try again.");
       console.error("Error during registration:", err);
-      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,15 +162,15 @@ const Register: React.FC = () => {
         <div style={styles.roleContainer}>
           <button
             type="button"
-            style={styles.roleButton(role === "buyer")}
-            onClick={() => setRole("buyer")}
+            style={styles.roleButton(role === "Buyer")}
+            onClick={() => setRole("Buyer")}
           >
             Buyer
           </button>
           <button
             type="button"
-            style={styles.roleButton(role === "seller")}
-            onClick={() => setRole("seller")}
+            style={styles.roleButton(role === "Seller")}
+            onClick={() => setRole("Seller")}
           >
             Seller
           </button>
@@ -183,8 +186,8 @@ const Register: React.FC = () => {
           name="fullName"
           placeholder="Enter your full name"
           style={styles.input}
-          value={formData.fullName}
-          onChange={handleInputChange}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <label style={styles.label}>Email</label>
@@ -193,8 +196,8 @@ const Register: React.FC = () => {
           name="email"
           placeholder="Enter your email"
           style={styles.input}
-          value={formData.email}
-          onChange={handleInputChange}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <label style={styles.label}>Password</label>
@@ -203,8 +206,8 @@ const Register: React.FC = () => {
           name="password"
           placeholder="Enter your password"
           style={styles.input}
-          value={formData.password}
-          onChange={handleInputChange}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <label style={styles.label}>Confirm Password</label>
@@ -213,12 +216,36 @@ const Register: React.FC = () => {
           name="confirmPassword"
           placeholder="Confirm your password"
           style={styles.input}
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
-        <button type="submit" style={styles.button}>
-          Sign Up as {role.charAt(0).toUpperCase() + role.slice(1)}
+        {role === "Seller" && (
+          <>
+            <label style={styles.label}>Address</label>
+            <input
+              type="text"
+              name="address"
+              placeholder="Enter your address"
+              style={styles.input}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+
+            <label style={styles.label}>Phone Number</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Enter your phone number"
+              style={styles.input}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          </>
+        )}
+
+        <button type="submit" style={styles.button} disabled={loading}>
+          {loading ? "Registering..." : `Sign Up as ${role}`}
         </button>
         <a href="/login" style={styles.link}>
           Already have an account? Log In

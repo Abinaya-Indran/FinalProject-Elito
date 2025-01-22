@@ -20,7 +20,7 @@ const Login = () => {
     setError(""); // Clear previous errors
 
     try {
-      const response = await fetch("/api/User/Login", {
+      const response = await fetch("/api/User/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -31,8 +31,8 @@ const Login = () => {
       if (response.ok) {
         setSuccess("Login successful!");
         setError("");
-        localStorage.setItem("token", data.token); // Store JWT token
-        router.push("/dashboard"); // Redirect user
+        localStorage.setItem("user", JSON.stringify(data.user)); // Store user data
+        router.push("/birthdaycakes"); // Redirect user to dashboard
       } else {
         setError(data.error || "Invalid email or password.");
         setSuccess("");
@@ -76,7 +76,7 @@ const Login = () => {
         Create account
       </Link>
 
-      {/* CSS styles */}
+      {/* Your existing styles */}
       <style jsx>{`
         .login-container {
           display: flex;
@@ -85,7 +85,7 @@ const Login = () => {
           justify-content: center;
           padding: 30px;
           max-width: 400px;
-          height: "100vh";
+          height: 100vh;
           margin: 230px auto;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
           border-radius: 10px;

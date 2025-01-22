@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { StaticImageData } from "next/image";
 
 import profilePic from "../public/images/sellerprofile.jpg";
 import heartCake from "../public/images/celebrate.png";
@@ -30,7 +31,7 @@ const SellerPage = () => {
   ];
 
   // Component for rendering individual cakes
-  const CakeCard = ({ name, price, img }: { name: string; price: string; img: string }) => (
+  const CakeCard = ({ name, price, img }: { name: string; price: string; img: StaticImageData }) => (
     <div style={{ textAlign: "center" }}>
       <Image src={img} alt={name} width={150} height={150} style={{ borderRadius: "8px" }} />
       <p>{price}</p>
@@ -75,6 +76,9 @@ const SellerPage = () => {
       display: "inline-block",
       margin: "5px 10px",
       fontWeight: "bold",
+    },
+    profilebutton: {
+      marginTop: "20px",
     },
     button: {
       margin: "5px",
