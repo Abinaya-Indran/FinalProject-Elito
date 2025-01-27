@@ -59,7 +59,7 @@ const Register: React.FC = () => {
       if (response.status === 201) {
         setSuccess(true);
         setTimeout(() => {
-          router.push("/login"); // Redirect to login after 2 seconds
+          router.push("/"); 
         }, 2000);
       } else {
         setError("Registration failed. Please try again.");

@@ -1,18 +1,17 @@
 import Bottom from '../../../components/bottomFooter'
-import Contact from '../../../components/contact'
 import Navbar from '../../../components/Navbar'
+import EditProfile from '../../../components/editProfile'
 
 
-function contactPage() {
+
+function editProfilepage() {
     return (
         <div>
-
             <Navbar/>
-            <Contact/>
+            <EditProfile/>
             <Bottom/>
-
         </div>
     )
 }
 
-export default contactPage
+export default editProfilepage

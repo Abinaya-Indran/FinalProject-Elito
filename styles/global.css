@@ -1,25 +1,35 @@
 /* Global Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Global Font and Styles */
-  body {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    background-color: #f9f9f9;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-    padding: 0;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'poppins,sans-serif';
+}
+
+/* Global Font and Styles */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+ 
+}
+
+body {
+  /* font-family: 'poppins,sans-serif'; */
+  background-color:white;
+  color: black;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}
+
+p {
+  margin: 0;
+}

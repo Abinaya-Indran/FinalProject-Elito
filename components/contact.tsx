@@ -1,8 +1,51 @@
+// components/ContactPage.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 const ContactPage = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [status, setStatus] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('Sending...');
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatus('Message sent successfully!');
+        setFormData({ name: '', email: '', message: '' }); // Clear the form
+      } else {
+        setStatus(result.error || 'Something went wrong.');
+      }
+    } catch (error) {
+      setStatus('Failed to send message.');
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div style={styles.container}>
       {/* Page Header */}
@@ -18,20 +61,29 @@ const ContactPage = () => {
         {/* Contact Form */}
         <div style={styles.formContainer}>
           <h2 style={styles.sectionTitle}>Get in Touch</h2>
-          <form style={styles.form}>
+          <form style={styles.form} onSubmit={handleSubmit}>
             <input
               type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
               placeholder="Your Name"
               style={styles.input}
               required
             />
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Your Email"
               style={styles.input}
               required
             />
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
               placeholder="Your Message"
               style={styles.textarea}
               required
@@ -40,6 +92,7 @@ const ContactPage = () => {
               Send Message
             </button>
           </form>
+          {status && <p>{status}</p>} {/* Display status */}
         </div>
 
         {/* Contact Info */}

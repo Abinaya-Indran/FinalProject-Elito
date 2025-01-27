@@ -27,13 +27,13 @@ const Cakedetails = () => {
           </div>
         </div>
 
-        {/* Surprise Option */}
+        {/* Surprise Option
         <div style={styles.surpriseOption}>
           <input type="checkbox" id="surprise" name="surprise" />
           <label htmlFor="surprise" style={styles.checkboxLabel}>
             Surprise Delivery (+1000 Rs)
           </label>
-        </div>
+        </div> */}
 
         {/* Personalized Icing Message */}
         <div>
@@ -44,6 +44,9 @@ const Cakedetails = () => {
         <div style={styles.addToCart}>
           <Link href="/order" passHref>
             <button style={styles.cartButton}>Buy Now</button>
+          </Link>
+          <Link href="/yourcart" passHref>
+            <button style={styles.cartButton}>Add To Cart</button>
           </Link>
         </div>
 

@@ -3,12 +3,13 @@
 import { Component } from "react"
 import Navbar from "../../components/Navbar"
 import Banner from '../../components/Banner'
-import ProductList from '../../components/Topcake'
+import ProductPage from "../../components/Productpage"
 import Bottom from "../../components/bottomFooter"
 import Footer from "../../components/Footer"
 import Bakerbanner from '../../components/bakerbanner'
 import RatingPage from "../../components/rating"
 import Contact from "../../components/contact"
+import Product from "../../models/product"
 
 
 
@@ -17,7 +18,7 @@ function Home() {
         <div>
             <Navbar /><br/><br/>
             <Banner/><br/><br/>
-            <ProductList/><br/><br/>
+            <ProductPage/><br/><br/>
             <Bakerbanner/><br/><br/><br/><br/>
             <RatingPage/>
             <Contact/><br/>

@@ -1,6 +1,8 @@
+import BirthdayCakesPage from '../../../components/birthdaycakes'
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Birthdaycakes from '../../../components/birthdaycakes'
+
+
 
 
 
@@ -8,7 +10,7 @@ function birthdaycakes() {
     return (
         <div>
             <Navbar/>
-            <Birthdaycakes/> 
+            <BirthdayCakesPage/>
             <Bottom/>
            
         </div>

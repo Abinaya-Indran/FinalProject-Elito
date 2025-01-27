@@ -1,7 +1,7 @@
 // src/app/api/Baker/route.ts
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "../../../../lib/db";
-import Baker from "../../../../models/Baker"; 
+import Baker from "../../../../models/baker"; 
 import { ObjectId } from "mongodb";
 
 // GET: Fetch all bakers

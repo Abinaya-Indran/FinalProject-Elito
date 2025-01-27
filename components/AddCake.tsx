@@ -1,154 +1,164 @@
-"use client";
-
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { Link } from "lucide-react";
 
 const AddCake = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [cakeName, setCakeName] = useState("");
+  const [price, setPrice] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formData = {
-      cakeName: (e.target as any).cakeName.value,
-      quantity: (e.target as any).quantity.value,
-      price: (e.target as any).price.value,
-      discount: (e.target as any).discount.value,
-      description: (e.target as any).description.value,
-      image:
-        (e.target as any).image.files[0] ? (e.target as any).image.files[0].name : null,
+    const newProduct = {
+      name: cakeName,
+      price,
+      imageUrl,
+      description,
+      category,
     };
 
-    console.log("Form Data Submitted:", formData);
-    alert("Cake added successfully!");
+    try {
+      const response = await axios.post("/api/Product", newProduct);
+      setMessage("Product added successfully!");
+      // Reset form fields
+      setCakeName("");
+      setPrice("");
+      setImageUrl("");
+      setDescription("");
+      setCategory("");
+    } catch (error) {
+      setMessage("Failed to add product.");
+      console.error("Error adding product:", error);
+    }
   };
 
   return (
-    <div className="add-cake-container">
-      <h1 className="add-cake-title">Add Cake</h1>
-      <form className="add-cake-form" onSubmit={handleSubmit}>
-        {/* Image Upload */}
-        <div className="image-upload-section">
-          <label htmlFor="imageUpload" className="upload-label">
-            <div className="upload-placeholder">
-              <i className="fas fa-camera"></i>
-              <p>UPLOAD PHOTO</p>
-            </div>
-          </label>
+    <div className="form-container">
+      <h1 className="form-title">Add New Cake</h1>
+      <form onSubmit={handleSubmit} className="cake-form">
+        <div className="form-group">
+          <label>Cake Name:</label>
           <input
-            type="file"
-            id="imageUpload"
-            name="image"
-            accept="image/*"
-            style={{ display: "none" }}
-          />
-          <p className="upload-text">Add your cake photos</p>
-        </div>
-
-        {/* Form Fields */}
-        <div className="form-group">
-          <label>Cake Name</label>
-          <input type="text" name="cakeName" placeholder="Cake Name" required />
-        </div>
-
-        <div className="form-group">
-          <label>Quantity</label>
-          <input type="number" name="quantity" placeholder="Quantity" required />
-        </div>
-
-        <div className="form-group">
-          <label>Price</label>
-          <input type="number" name="price" placeholder="Price" required />
-        </div>
-
-        <div className="form-group">
-          <label>Discount</label>
-          <input type="number" name="discount" placeholder="Discount" required />
-        </div>
-
-        <div className="form-group">
-          <label>Description</label>
-          <textarea
-            name="description"
-            placeholder="Description"
-            rows={4}
+            type="text"
+            value={cakeName}
+            onChange={(e) => setCakeName(e.target.value)}
             required
+          />
+        </div>
+        <div className="form-group">
+          <label>Price:</label>
+          <input
+            type="text"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Image URL:</label>
+          <input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Description:</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-
-        {/* Submit Button */}
-        <button type="submit" className="add-button">
-          Add
-        </button>
+        <div className="form-group">
+          <label>Category:</label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+        </div>
+        <button type="submit" className="submit-btn">Add Cake</button>
       </form>
-
-      {/* Styled JSX */}
+      {message && <p className="form-message">{message}</p>}
+      
       <style jsx>{`
-        .add-cake-container {
-          max-width: 600px;
-          margin: 50px auto;
-          padding: 20px;
-          background-color: #fff;
-          border-radius: 10px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .add-cake-title {
-          text-align: center;
-          font-size: 30px;
-          color: #b864d4;
-          font-weight: bold;
-          margin-bottom: 20px;
-        }
-
-        .add-cake-form {
+        .form-container {
           display: flex;
           flex-direction: column;
-          gap: 15px;
-        }
-
-        .image-upload-section {
-          text-align: center;
-        }
-
-        .upload-label {
-          display: block;
-          width: 150px;
-          height: 150px;
-          background-color: #b864d4;
-          color: #fff;
-          border-radius: 10px;
-          margin: 0 auto;
-          display: flex;
-          justify-content: center;
           align-items: center;
-          cursor: pointer;
+          padding: 2rem;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          max-width: 600px;
+          margin: 2rem auto;
+        }
+
+        .form-title {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #333;
+          margin-bottom: 1.5rem;
+        }
+
+        .cake-form {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
         }
 
         .form-group label {
-          font-size: 20px;
-          color: #b864d4;
+          font-size: 1rem;
+          color: #333;
+          margin-bottom: 0.5rem;
         }
 
         .form-group input,
         .form-group textarea {
-          width: 100%;
-          padding: 8px;
-          font-size: 16px;
+          padding: 0.75rem;
+          font-size: 1rem;
           border: 1px solid #ddd;
           border-radius: 5px;
+          width: 100%;
+          box-sizing: border-box;
         }
 
-        .add-button {
-          padding: 10px;
-          font-size: 20px;
-          background-color: #b864d4;
+        .form-group textarea {
+          resize: vertical;
+          min-height: 100px;
+        }
+
+        .submit-btn {
+          background-color: #007bff;
           color: white;
+          font-size: 1rem;
+          font-weight: 500;
+          padding: 0.75rem;
           border: none;
           border-radius: 5px;
           cursor: pointer;
+          transition: background-color 0.3s ease;
         }
 
-        .add-button:hover {
-          transform: scale(0.95);
-          background-color: #a052c6;
+        .submit-btn:hover {
+          background-color: #0056b3;
+        }
+
+        .form-message {
+          margin-top: 1rem;
+          color: green;
+          font-weight: bold;
         }
       `}</style>
     </div>

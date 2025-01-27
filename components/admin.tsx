@@ -1,8 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const AdminDashboard = () => {
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Fetch users from the API
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/admin/user?role=buyer"); // Adjust the role as needed
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+        const data = await response.json();
+        setUsers(data.data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <div style={styles.container}>
       {/* Sidebar */}
@@ -41,40 +65,34 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        {/* Table Section */}
+        {/* Users Table Section */}
         <section style={styles.tableSection}>
-          <h3 style={styles.sectionTitle}>Recent Orders</h3>
+          <h3 style={styles.sectionTitle}>Users</h3>
+          {loading && <p>Loading...</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <table style={styles.table}>
             <thead>
               <tr>
-                <th style={styles.th}>Order ID</th>
-                <th style={styles.th}>Customer Name</th>
-                <th style={styles.th}>Cake Type</th>
-                <th style={styles.th}>Status</th>
+                <th style={styles.th}>User ID</th>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Role</th>
+                <th style={styles.th}>Email</th>
                 <th style={styles.th}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style={styles.td}>#001</td>
-                <td style={styles.td}>John Doe</td>
-                <td style={styles.td}>Birthday Cake</td>
-                <td style={styles.td}>Delivered</td>
-                <td style={styles.td}>
-                  <button style={styles.actionButton}>View</button>
-                  <button style={styles.actionButton}>Edit</button>
-                </td>
-              </tr>
-              <tr>
-                <td style={styles.td}>#002</td>
-                <td style={styles.td}>Jane Smith</td>
-                <td style={styles.td}>Wedding Cake</td>
-                <td style={styles.td}>Pending</td>
-                <td style={styles.td}>
-                  <button style={styles.actionButton}>View</button>
-                  <button style={styles.actionButton}>Edit</button>
-                </td>
-              </tr>
+              {users.map((user) => (
+                <tr key={user._id}>
+                  <td style={styles.td}>{user._id}</td>
+                  <td style={styles.td}>{user.name}</td>
+                  <td style={styles.td}>{user.role}</td>
+                  <td style={styles.td}>{user.email}</td>
+                  <td style={styles.td}>
+                    <button style={styles.actionButton}>View</button>
+                    <button style={styles.actionButton}>Edit</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
@@ -83,7 +101,7 @@ const AdminDashboard = () => {
   );
 };
 
-// Inline CSS styles
+// Inline CSS styles (your existing styles)
 import { CSSProperties } from "react";
 
 const styles: { [key: string]: CSSProperties } = {
@@ -92,15 +110,17 @@ const styles: { [key: string]: CSSProperties } = {
     height: "100vh",
     fontFamily: "'Arial', sans-serif",
     backgroundColor: "#F8F9FA",
+    fontSize: "20px",
   },
   sidebar: {
     width: "250px",
-    backgroundColor: "#6C63FF",
-    color: "#FFFFFF",
+    backgroundColor: "#E0B0FF",
+    color: "black",
     padding: "20px",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    alignItems: "left",
+    fontWeight: "bold",
   },
   logo: {
     fontSize: "24px",
@@ -117,12 +137,9 @@ const styles: { [key: string]: CSSProperties } = {
     fontSize: "18px",
     cursor: "pointer",
     borderRadius: "8px",
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: "10px",
     transition: "background-color 0.3s",
-  },
-  navItemHover: {
-    backgroundColor: "#5048E5",
   },
   main: {
     flex: 1,
@@ -176,8 +193,8 @@ const styles: { [key: string]: CSSProperties } = {
   },
   th: {
     textAlign: "left",
-    backgroundColor: "#6C63FF",
-    color: "#FFFFFF",
+    backgroundColor: "#E0B0FF",
+    color: "black",
     padding: "10px",
     borderBottom: "1px solid #CCCCCC",
   },

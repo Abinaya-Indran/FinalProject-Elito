@@ -1,112 +1,37 @@
-import { NextResponse } from "next/server";
-import { connectToDatabase } from "../../../../lib/db";
-import Order from "../../../../models/Order";
+// /app/api/Order/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { connectToDatabase } from '../../../../lib/db'; // Ensure the correct path to your DB connection
 
-// GET: Fetch all orders
-export async function GET() {
+export async function POST(req: NextRequest) {
   try {
-    await connectToDatabase();
-    const orders = await Order.find();
-    return NextResponse.json(orders, { status: 200 });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: "Failed to fetch orders" }), {
-      status: 500,
-    });
-  }
-}
+    // Parse the incoming request body
+    const data = await req.json();
 
-// POST: Create a new order
-export async function POST(req: Request) {
-  try {
-    await connectToDatabase();
-    const body = await req.json();
-
-    // Validation
-    if (!body.productName || !body.quantity || !body.totalPrice) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required" }),
-        { status: 400 }
-      );
+    // Establish a database connection
+    const mongoose = await connectToDatabase();
+    
+    // Check if the database connection is established
+    if (!mongoose.connection.readyState) {
+      return NextResponse.json({ error: 'Failed to connect to the database' }, { status: 500 });
     }
 
-    const newOrder = new Order(body);
-    await newOrder.save();
+    // Insert order data into MongoDB (adjust collection name if needed)
+    const result = await mongoose.connection.collection('orders').insertOne(data);
 
-    return NextResponse.json(newOrder, { status: 201 });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: "Failed to create order" }), {
-      status: 500,
-    });
-  }
-}
-
-// PATCH: Update an order by ID
-export async function PATCH(req: Request) {
-  try {
-    await connectToDatabase();
-    const body = await req.json();
-    const { orderId, productName, quantity, totalPrice } = body;
-
-    // Validate input
-    if (!orderId || (!productName && !quantity && !totalPrice)) {
-      return new Response(
-        JSON.stringify({ error: "Invalid input" }),
-        { status: 400 }
+    // Check if the insertion was successful
+    if (result.insertedId) {
+      return NextResponse.json(
+        { message: 'Order placed successfully!', orderId: result.insertedId },
+        { status: 201 }
+      );
+    } else {
+      return NextResponse.json(
+        { error: 'Failed to insert the order into the database' },
+        { status: 500 }
       );
     }
-
-    const updatedOrder = await Order.findByIdAndUpdate(
-      orderId,
-      { productName, quantity, totalPrice },
-      { new: true }
-    );
-
-    if (!updatedOrder) {
-      return new Response(
-        JSON.stringify({ error: "Order not found" }),
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(updatedOrder, { status: 200 });
-  } catch (error: any) {
-    return new Response(JSON.stringify({ error: "Failed to update order" }), {
-      status: 500,
-    });
-  }
-}
-
-// DELETE: Delete an order by ID
-export async function DELETE(req: Request) {
-  try {
-    await connectToDatabase();
-    const body = await req.json();
-    const { orderId } = body;
-
-    if (!orderId) {
-      return new Response(
-        JSON.stringify({ error: "Order ID is required" }),
-        { status: 400 }
-      );
-    }
-
-    const deletedOrder = await Order.findByIdAndDelete(orderId);
-
-    if (!deletedOrder) {
-      return new Response(
-        JSON.stringify({ error: "Order not found" }),
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: "Order deleted successfully" },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    return new Response(
-      JSON.stringify({ error: "Failed to delete order", details: error.message }),
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('Error placing order:', error);
+    return NextResponse.json({ error: 'Failed to place order' }, { status: 500 });
   }
 }

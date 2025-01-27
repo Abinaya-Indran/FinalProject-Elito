@@ -98,8 +98,8 @@ const YourCart = () => {
           Tax included and shipping calculated at checkout
         </p>
         <div style={styles.actionButtons}>
-          <Link href="/order"><button style={styles.buyButton}> Buy</button></Link>
-          <button style={styles.addToCartButton}>Add to cart</button>
+          <Link href="/order"><button style={styles.buyButton}> Buy Now</button></Link>
+          {/* <button style={styles.addToCartButton}>Add to cart</button> */}
         </div>
       </div>
     </div>

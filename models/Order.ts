@@ -1,22 +1,28 @@
-import mongoose, { Schema, Document, model } from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
 
-// Define the TypeScript interface for the Order model
-export interface IOrder extends Document {
-  productName: string;
-  quantity: number;
-  totalPrice: number;
-  orderDate?: Date; // Optional because it defaults to Date.now
-}
+const orderSchema = new Schema(
+  {
+    cakeId: { type: String, required: true },
+    sellerId: { type: String, required: true },
+    buyerDetails: {
+      firstName: { type: String, required: true },
+      lastName: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
+      whatsappNumber: { type: String, required: true },
+      address: { type: String, required: true },
+      email: { type: String, required: true },
+    },
+    deliveryDetails: {
+      deliveryCity: { type: String, required: true },
+      deliveryArea: { type: String, required: true },
+      deliveryDate: { type: String, required: true },
+      deliveryTime: { type: String, required: true },
+    },
+    status: { type: String, enum: ["pending", "accepted", "denied"], default: "pending" },
+  },
+  { timestamps: true }
+);
 
-// Define the Mongoose schema
-const orderSchema: Schema<IOrder> = new Schema({
-  productName: { type: String, required: true }, // Name of the product
-  quantity: { type: Number, required: true },   // Quantity of the product ordered
-  totalPrice: { type: Number, required: true }, // Total price of the order
-  orderDate: { type: Date, default: Date.now }, // Default to the current date
-});
-
-// Create and export the Mongoose model
-const Order = model<IOrder>("Order", orderSchema);
+const Order = models.Order || model("Order", orderSchema);
 
 export default Order;

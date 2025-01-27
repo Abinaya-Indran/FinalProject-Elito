@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -70,13 +69,6 @@ const Navbar = () => {
             </Link>
           </li>
 
-          {/* Rating */}
-          <li>
-            <Link href="/Rating" style={styles.navLink}>
-              Rating
-            </Link>
-          </li>
-
           {/* Contact */}
           <li>
             <Link href="/contact" style={styles.navLink}>
@@ -96,7 +88,7 @@ const Navbar = () => {
       {/* Icons */}
       <div style={styles.icon}>
         {/* User Icon */}
-        <Link href="/signup">
+        <Link href="/editProfile">
           <img
             src="/images/user.png"
             alt="User"
@@ -138,11 +130,14 @@ const styles: { [key: string]: CSSProperties } = {
     backgroundColor: "#B864D4",
     color: "white",
     padding: "10px 20px",
+    marginTop: "15px",
     width: "100%",
-    height: "80px",
+    height: "90px",
   },
   logo: {
     display: "flex",
+    marginTop: "5px",
+    padding: "10px 0px",
     alignItems: "center",
     justifyContent: "center",
   },

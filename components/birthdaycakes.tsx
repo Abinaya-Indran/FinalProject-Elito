@@ -19,7 +19,7 @@ const products = [
 const Topcake = () => {
   return (
     <section className="product-list">
-      <h2>Birthday Cakes</h2>
+      <h2>Wedding Cakes</h2>
       <div className="products">
         {products.map((product) => (
           <div className="product-card" key={product.id}>
