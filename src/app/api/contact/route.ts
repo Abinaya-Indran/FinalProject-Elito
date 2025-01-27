@@ -1,39 +1,33 @@
-// pages/api/contact.ts
 import nodemailer from "nodemailer";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
-// POST method to handle the form submission
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { name, email, message } = req.body;
+export async function POST(request: Request) {
+  try {
+    const { name, email, message } = await request.json();
 
-    // Set up the transporter (Gmail as an example)
+    // Create a transporter for sending emails
     const transporter = nodemailer.createTransport({
-      service: "gmail",  // Can be any email provider like 'smtp', 'sendgrid', etc.
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,  // Use environment variable for email user
-        pass: process.env.EMAIL_PASS,  // Use environment variable for email password or app-specific password
+        user: process.env.EMAIL_USER, // Replace with your Gmail username
+        pass: process.env.EMAIL_PASS, // Replace with your Gmail app-specific password
       },
     });
 
+    // Define the email options
     const mailOptions = {
       from: email,
-      to: "elitocakes01@gmail.com",  // Your email address where you want to receive the message
+      to: "elitocakes01@gmail.com",
       subject: `New message from ${name}`,
-      text: `You have received a new message from ${name} (${email}):\n\n${message}`,
+      text: `You have received a new message:\n\nName: ${name}\nEmail: ${email}\nMessage: ${message}`,
     };
 
-    try {
-      // Send the email
-      await transporter.sendMail(mailOptions);
-      return res.status(200).json({ message: "Message sent successfully!" });
-    } catch (error) {
-      console.error("Error sending email:", error);
-      return res.status(500).json({ error: (error as any).message || "Failed to send message." });
-    }
-  } else {
-    // If the method is not POST, return a method not allowed error
-    res.setHeader("Allow", ["POST"]);
-    res.status(405).json({ error: "Method Not Allowed" });
+    // Send the email
+    await transporter.sendMail(mailOptions);
+
+    return NextResponse.json({ message: "Message sent successfully!" }, { status: 200 });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return NextResponse.json({ error: "Failed to send message." }, { status: 500 });
   }
 }

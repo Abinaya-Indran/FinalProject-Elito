@@ -1,95 +1,199 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Link from "next/link";
 
-// Product data
-const products = [
-  { id: 1, name: "Chocolate Cake", price: "Rs.1800", img: "/images/Chocolate_Gateau_360x.avif" },
-  { id: 2, name: "Vanilla Cake", price: "Rs.1500", img: "/images/Ribbon_Cake_360x.avif" },
-  { id: 3, name: "Mocha Cake", price: "Rs.3000", img: "/images/Mocha_Gateau_360x.avif" },
-  { id: 4, name: "Fruit Cake", price: "Rs.2000", img: "/images/Fruit-Chocolate-Cake.jpg" },
-  { id: 5, name: "Xmas Cake", price: "Rs.2100", img: "/images/14._X_mas_snow_man_ribbon_cake_Rs_1600_360x.avif" },
-  { id: 6, name: "Unicorn Cake", price: "Rs.3500", img: "/images/blue.jpeg" },
-  { id: 7, name: "Black Cake", price: "Rs.3100", img: "/images/Mocha_Gateau_360x.avif" },
-  { id: 8, name: "Pink Cake", price: "Rs.1600", img: "/images/pink cake.jpeg" },
-  { id: 9, name: "Cherry Cake", price: "Rs.3000", img: "/images/Chocolate_Cherry_Brandy_Cake_360x.avif" },
-];
+const TopCakes = () => {
+  interface Product {
+    _id: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+  }
 
-const Topcake = () => {
+  const [cakes, setCakes] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCakes = async () => {
+      try {
+        // Fetch only the top 20 cakes
+        const response = await axios.get("/api/Product?limit=20");
+        setCakes(response.data);
+      } catch (error) {
+        console.error("Error fetching cakes:", error);
+        setError("Failed to load cakes");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCakes();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (cakes.length === 0) {
+    return <div>No cakes available</div>;
+  }
+
   return (
-    <section className="product-list">
-      <h2>Top Cakes</h2>
-      <div className="products">
-        {products.map((product) => (
-          <div className="product-card" key={product.id}>
-            <Image
-              src={product.img}
-              alt={product.name}
-              width={200}
-              height={200}
-              className="product-image"
-            />
-            <p className="product-name">{product.name}</p>
-            <h4 className="product-price">{product.price}</h4>
-          </div>
-        ))}
-      </div>
-
-      {/* Add CSS styles */}
+    <div>
       <style jsx>{`
-        .product-list {
-          text-align: center;
-          margin: 40px auto;
-          padding: 20px;
-          max-width: 1200px;
+        .landing-container {
+          min-height: 100vh;
+          background-color: #f7f7f7;
+          padding: 2rem;
         }
 
-        .product-list h2 {
-          font-size: 32px;
-          color: #B864D4;
-          margin-bottom: 30px;
-        }
-
-        .products {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 20px;
-        }
-
-        .product-card {
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 12px;
-          overflow: hidden;
-          padding: 20px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .product-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-image {
-          border-radius: 8px;
-        }
-
-        .product-name {
-          font-size: 18px;
+        .section-title {
+          font-size: 2.5rem;
           font-weight: bold;
-          color: #333;
-          margin: 10px 0;
+          text-align: center;
+          color: #b864d4;
+          margin-bottom: 2rem;
         }
 
-        .product-price {
-          font-size: 20px;
-          color: #B864D4;
+        .cake-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 2rem;
+        }
+
+        .cake-card {
+          background-color: #fff;
+          border: 1px solid #e2e2e2;
+          border-radius: 1rem;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+          transition: box-shadow 0.3s ease;
+        }
+
+        .cake-card:hover {
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .cake-image {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+        }
+
+        .card-content {
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .cake-name {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .cake-price {
+          font-size: 1.125rem;
+          color: #777;
+        }
+
+        .button-container {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+
+        .action-button {
+          flex: 1;
+          background-color: #b864d4;
+          color: white;
+          font-size: 1rem;
+          font-weight: bold;
+          padding: 0.5rem;
+          border: none;
+          border-radius: 0.5rem;
+          text-align: center;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .action-button:hover {
+          background-color: #944bb8;
+          transform: translateY(-3px);
+        }
+
+        .show-more-button {
+          display: block;
+          margin: 2rem auto 0;
+          background-color: #b864d4;
+          color: white;
+          font-size: 1rem;
+          font-weight: bold;
+          padding: 0.75rem 2rem;
+          border: none;
+          border-radius: 1rem;
+          text-decoration: none;
+          cursor: pointer;
+          text-align: center;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .show-more-button:hover {
+          background-color: #944bb8;
+          transform: translateY(-3px);
         }
       `}</style>
-    </section>
+
+      <div className="landing-container">
+        <h2 className="section-title">Top Cakes</h2>
+
+        <div className="cake-grid">
+          {cakes.map((cake) => (
+            <div key={cake._id} className="cake-card">
+              <img
+                src={cake.imageUrl || "/default-image.jpg"}
+                alt={cake.name}
+                className="cake-image"
+              />
+              <div className="card-content">
+                <h3 className="cake-name">{cake.name || "Unnamed Cake"}</h3>
+                <p className="cake-price">₹{cake.price || "N/A"}</p>
+
+                {/* Buttons */}
+                <div className="button-container">
+                  {/* Add to Cart */}
+                  <button
+                    className="action-button"
+                    onClick={() => console.log(`Added ${cake.name} to cart`)}
+                  >
+                    Add to Cart
+                  </button>
+
+                  {/* Buy */}
+                  <Link href={`/checkout/${cake._id}`}>
+                    <button className="action-button">Buy</button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* "Show More" button */}
+        <Link href="/product" className="show-more-button">
+          Show More
+       </Link>
+      </div>
+    </div>
   );
 };
 
-export default Topcake;
+export default TopCakes;

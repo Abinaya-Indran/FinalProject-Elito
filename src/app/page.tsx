@@ -1,5 +1,5 @@
 
-
+import "../../styles/global.css";
 import { Component } from "react"
 import Navbar from "../../components/Navbar"
 import Banner from '../../components/Banner'
@@ -10,6 +10,7 @@ import Bakerbanner from '../../components/bakerbanner'
 import RatingPage from "../../components/rating"
 import Contact from "../../components/contact"
 import Product from "../../models/product"
+import Topcake from "../../components/Topcake"
 
 
 
@@ -18,7 +19,8 @@ function Home() {
         <div>
             <Navbar /><br/><br/>
             <Banner/><br/><br/>
-            <ProductPage/><br/><br/>
+            <Topcake/><br/><br/>
+            {/* <ProductPage/><br/><br/> */}
             <Bakerbanner/><br/><br/><br/><br/>
             <RatingPage/>
             <Contact/><br/>

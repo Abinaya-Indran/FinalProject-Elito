@@ -32,7 +32,7 @@ const Login = () => {
         setSuccess("Login successful!");
         setError("");
         localStorage.setItem("user", JSON.stringify(data.user)); // Store user data
-        router.push("/birthdaycakes"); // Redirect user to dashboard
+        router.push("/product"); // Redirect user to dashboard
       } else {
         setError(data.error || "Invalid email or password.");
         setSuccess("");

@@ -1,7 +1,7 @@
-import BirthdayCakesPage from '../../../components/birthdaycakes'
+
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Topcake from '../../../components/Topcake'
+import Topcakes from '../../../components/Topcake'
 
 
 
@@ -11,8 +11,7 @@ function birthdaycakes() {
     return (
         <div>
             <Navbar/>
-            <BirthdayCakesPage/>
-            {/* <Topcake/> */}
+            <Topcakes/>
             <Bottom/>
            
         </div>

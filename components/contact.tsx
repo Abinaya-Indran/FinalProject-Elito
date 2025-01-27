@@ -121,7 +121,7 @@ import { CSSProperties } from "react";
 
 const styles: { [key: string]: CSSProperties } = {
   container: {
-    fontFamily: "'Arial', sans-serif",
+    fontFamily: "'poppins', sans-serif",
     backgroundColor: "#F8F9FA",
     padding: "20px",
   },

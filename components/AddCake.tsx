@@ -37,7 +37,7 @@ const AddCake = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="form-container"> 
       <h1 className="form-title">Add New Cake</h1>
       <form onSubmit={handleSubmit} className="cake-form">
         <div className="form-group">
@@ -102,7 +102,7 @@ const AddCake = () => {
         .form-title {
           font-size: 2rem;
           font-weight: bold;
-          color: #333;
+          color:;
           margin-bottom: 1.5rem;
         }
 
@@ -140,7 +140,7 @@ const AddCake = () => {
         }
 
         .submit-btn {
-          background-color: #007bff;
+          background-color:  #b864d4;
           color: white;
           font-size: 1rem;
           font-weight: 500;
@@ -152,7 +152,7 @@ const AddCake = () => {
         }
 
         .submit-btn:hover {
-          background-color: #0056b3;
+          background-color:  #b864d4;
         }
 
         .form-message {
