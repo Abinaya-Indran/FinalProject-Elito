@@ -6,10 +6,10 @@ import Link from "next/link";
 
 const ProductPage = () => {
   interface Product {
-    _id: string; 
+    _id: string;
     name: string;
     price: number;
-    imageUrl: string;
+    image: string;
   }
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -79,7 +79,7 @@ const ProductPage = () => {
           font-size: 2.5rem;
           font-weight: bold;
           text-align: center;
-          color:  #b864d4;
+          color: #b864d4;
           margin-bottom: 2rem;
         }
 
@@ -102,41 +102,59 @@ const ProductPage = () => {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
           gap: 2rem;
+          justify-items: center;
         }
 
         .product-card {
-          background-color: #fff;
-          border: 1px solid #e2e2e2;
+          background-color: #ffffff;
           border-radius: 1rem;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           overflow: hidden;
-          transition: box-shadow 0.3s ease;
+          box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          width: 100%;
+          max-width: 500px;
+          text-align: center;
+          margin: 0 auto;
+          position: relative;
+          cursor: pointer;
         }
 
         .product-card:hover {
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+          transform: translateY(-10px);
+          box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
         }
 
         .product-image {
           width: 100%;
           height: 200px;
           object-fit: cover;
+          border-bottom: 1px solid #e2e2e2;
+          transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+          opacity: 0.9;
         }
 
         .card-content {
           padding: 1rem;
+          background: linear-gradient(145deg, #f7f7f7, #ffffff);
+          position: relative;
         }
 
         .product-name {
-          font-size: 1.25rem;
+          font-size: 1.4rem;
           font-weight: 600;
           color: #333;
+          margin-bottom: 0.5rem;
+          text-transform: capitalize;
         }
 
         .product-price {
           font-size: 1.125rem;
-          color: #777;
-          margin-top: 0.5rem;
+          color: #b864d4;
+          font-weight: 500;
+          margin-bottom: 1rem;
         }
 
         .add-to-cart-button {
@@ -148,13 +166,16 @@ const ProductPage = () => {
           border: none;
           border-radius: 0.5rem;
           width: 100%;
-          margin-top: 1rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
+          transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .add-to-cart-button:hover {
           background-color: #944bb8;
+          transform: scale(1.05);
+        }
+
+        .add-to-cart-button:focus {
+          outline: none;
         }
       `}</style>
 
@@ -183,11 +204,13 @@ const ProductPage = () => {
         <div className="product-grid">
           {filteredProducts.map((product) => (
             <div key={product._id} className="product-card">
-              <img
-                src={product.imageUrl || "/default-image.jpg"}
-                alt={product.name}
-                className="product-image"
-              />
+               <img
+                  src={product.image} // Direct Cloudinary URL
+                  alt={product.name || "Unnamed Cake"}
+                  className="product-image"
+                  width={200}
+                  height={200}
+                />
               <div className="card-content">
                 <h2 className="product-name">{product.name || "Unnamed Cake"}</h2>
                 <p className="product-price">₹{product.price || "N/A"}</p>
