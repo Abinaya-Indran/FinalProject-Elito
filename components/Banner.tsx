@@ -1,150 +1,83 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
+import { motion } from "framer-motion";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
-const Banner = () => {
-  const slides = [
-    { src: "/images/curousel1.webp", alt: "Offer 1" },
-    { src: "/images/cakebanner2.webp", alt: "Offer 2" },
-    { src: "/images/cakebanner1.jpg", alt: "Offer 3" },
-  ];
+const images = [
+  "/images/1.png",
+  "/images/pexels-anete-lusina-18613267.jpg",
+  "/images/pexels-photo-8554892.webp",
+];
 
-  let currentIndex = 0;
-
-  const showSlide = (index: number) => {
-    const slides = document.querySelectorAll<HTMLElement>(".carousel-slide");
-    slides.forEach((slide, i) => {
-      slide.style.display = i === index ? "flex" : "none";
-    });
-  };
-
-  const nextSlide = () => {
-    currentIndex = (currentIndex + 1) % slides.length;
-    showSlide(currentIndex);
-  };
-
-  const prevSlide = () => {
-    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-    showSlide(currentIndex);
-  };
-
-  React.useLayoutEffect(() => {
-    showSlide(currentIndex); // Show the first slide
-    const interval = setInterval(nextSlide, 5000); // Auto-play every 5 seconds
-    return () => clearInterval(interval); // Cleanup
-  }, []);
-
-  const styles: Record<string, React.CSSProperties> = {
-    banner: {
-      position: "relative",
-      width: "100vw",
-      height: "100vh",
-      overflow: "hidden",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    carouselContainer: {
-      position: "relative",
-      width: "100%",
-      height: "100%",
-    },
-    carouselSlide: {
-      display: "none",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      height: "100%",
-      position: "absolute",
-    },
-    carouselImage: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
-    discoverButton: {
-      position: "absolute",
-      bottom: "30px", // Positioned at the bottom
-      left: "50%", // Center horizontally
-      transform: "translateX(-50%)", // Align to the center
-      padding: "15px 30px",
-      backgroundColor: "#b864d4",
-      color: "#fff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "20px",
-      fontWeight: "bold",
-      transition: "transform 0.3s ease, background-color 0.3s ease",
-      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow for better visibility
-    },
-    navButton: {
-      position: "absolute",
-      top: "50%",
-      transform: "translateY(-50%)",
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      color: "white",
-      border: "none",
-      padding: "15px",
-      cursor: "pointer",
-      fontSize: "24px",
-      borderRadius: "50%",
-      transition: "background-color 0.3s ease",
-    },
-    prevButton: {
-      left: "20px",
-    },
-    nextButton: {
-      right: "20px",
-    },
-  };
-
+export default function Banner() {
   return (
-    <div style={styles.banner}>
-      <div style={styles.carouselContainer}>
-        {slides.map((slide, index) => (
-          <div
-            className="carousel-slide"
-            key={index}
-            style={styles.carouselSlide}
-          >
-            <img
-              src={slide.src}
-              alt={slide.alt}
-              style={styles.carouselImage}
-            />
-           
-          </div>
-        ))}
-
-        {/* Navigation Buttons */}
-        <button
-          style={{ ...styles.navButton, ...styles.prevButton }}
-          onClick={prevSlide}
-        >
-          &#10094;
-        </button>
-        <button
-          style={{ ...styles.navButton, ...styles.nextButton }}
-          onClick={nextSlide}
-        >
-          &#10095;
-        </button>
-        <button
-              style={styles.discoverButton}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.transform = "scale(1.05)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
+    <div style={styles.container}>
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay]}
+        spaceBetween={50}
+        slidesPerView={1}
+        navigation
+        pagination={{ clickable: true }}
+        autoplay={{ delay: 3000, disableOnInteraction: false }}
+        loop={true}
+      >
+        {images.map((src, index) => (
+          <SwiperSlide key={index}>
+            <motion.div
+              style={styles.imageWrapper}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
-             <Link href="/cakedetails">Buy Now</Link>
-            </button>
-      </div>
+              <img src={src} alt={`Cake ${index + 1}`} style={styles.image} />
+              <div style={styles.caption}>
+                <h2>{`Cake ${index + 1}`}</h2>
+                <p>Delicious cakes for your sweet moments!</p>
+              </div>
+            </motion.div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
-};
+}
 
-export default Banner;
+const styles = {
+  container: {
+    position: "relative" as const,
+    width: "100%",
+    maxWidth: "1800px",
+    margin: "0 auto",
+    overflow: "hidden",
+    borderRadius: "16px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)",
+  },
+  imageWrapper: {
+    position: "relative" as const,
+    width: "100%",
+    height: "900px",
+    overflow: "hidden",
+    borderRadius: "16px",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover" as const,
+    borderRadius: "16px",
+  },
+  caption: {
+    position: "absolute" as const,
+    bottom: "20px",
+    left: "20px",
+    color: "#fff",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    textAlign: "left" as const,
+  },
+};

@@ -1,22 +1,24 @@
+// src/app/components/ProductDetails.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+// Type definition for product
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+  stock: number;
+  imageUrl: string;
+}
+
 const ProductDetails = () => {
   const router = useRouter();
-  const { productId } = router.query;
-
-  interface Product {
-    _id: string;
-    name: string;
-    price: number;
-    description: string;
-    category: string;
-    stock: number;
-    imageUrl: string;
-  }
+  const { productId } = router.query; // Get the productId from URL
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -27,7 +29,8 @@ const ProductDetails = () => {
 
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/api/Product/${productId}`);
+        // Ensure the correct API path (lowercase 'product')
+        const response = await axios.get(`/api/product/${productId}`);
         setProduct(response.data);
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -40,9 +43,9 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [productId]);
 
+  // Handle loading, error, and no product found
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-
   if (!product) return <div>Product not found</div>;
 
   return (
@@ -101,7 +104,7 @@ const ProductDetails = () => {
 
       <div className="details-container">
         <img
-          src={product.imageUrl || "/default-image.jpg"}
+          src={product.imageUrl || "/default-image.jpg"} // Default image if none provided
           alt={product.name}
           className="details-image"
         />

@@ -100,8 +100,8 @@ const ProductPage = () => {
 
         .product-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fill, minmax(350px, 3fr));
+          gap: 3rem;
           justify-items: center;
         }
 
@@ -112,7 +112,7 @@ const ProductPage = () => {
           box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           width: 100%;
-          max-width: 500px;
+          max-width: 900px;
           text-align: center;
           margin: 0 auto;
           position: relative;
@@ -126,7 +126,7 @@ const ProductPage = () => {
 
         .product-image {
           width: 100%;
-          height: 200px;
+          height: 350px;
           object-fit: cover;
           border-bottom: 1px solid #e2e2e2;
           transition: opacity 0.3s ease;
@@ -214,8 +214,8 @@ const ProductPage = () => {
               <div className="card-content">
                 <h2 className="product-name">{product.name || "Unnamed Cake"}</h2>
                 <p className="product-price">₹{product.price || "N/A"}</p>
-                <Link href="/yourcart">
-                  <button className="add-to-cart-button">Add to Cart</button>
+                <Link href={`/product/${product._id}`}>
+                  <button className="add-to-cart-button">View Details</button>
                 </Link>
               </div>
             </div>

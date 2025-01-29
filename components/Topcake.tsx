@@ -117,8 +117,8 @@ const TopCakes = () => {
 
         .cake-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+          gap: 3rem;
           justify-items: center;
         }
 
@@ -129,7 +129,7 @@ const TopCakes = () => {
           box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           width: 100%;
-          max-width: 500px;
+          max-width: 900px;
           text-align: center;
           position: relative;
           cursor: pointer;
@@ -142,7 +142,7 @@ const TopCakes = () => {
 
         .cake-image {
           width: 100%;
-          height: 200px;
+          height: 350px;
           object-fit: cover;
           border-bottom: 1px solid #e2e2e2;
           transition: opacity 0.3s ease;
@@ -159,22 +159,22 @@ const TopCakes = () => {
 
         .cake-name {
           font-size: 1.4rem;
-          font-weight: 600;
+          font-weight:bold;
           color: #333;
           margin-bottom: 0.5rem;
           text-transform: capitalize;
         }
 
         .cake-price {
-          font-size: 1.125rem;
+          font-size: 1.5rem;
           color: #b864d4;
-          font-weight: 500;
+          font-weight: 700;
           margin-bottom: 0.5rem;
         }
 
         .cake-rating {
           margin-bottom: 1rem;
-          font-size: 1.125rem;
+          font-size: 1.7rem;
           color: #f1c40f; /* Gold color for the stars */
         }
 

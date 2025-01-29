@@ -1,35 +1,21 @@
-import mongoose from 'mongoose';
+// lib/db.ts
+import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGODB_URI;
-
-if (!MONGO_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable in .env.local");
-}
-
-// Create a global variable to store the Mongoose connection for reusability
-declare global {
-  var mongooseConnection: Promise<typeof mongoose> | undefined;
-}
+const MONGO_URI = process.env.MONGODB_URI
 
 export async function connectToDatabase() {
-  if (mongoose.connection.readyState === 1) {
-    console.log("MongoDB is already connected!");
-    return mongoose;
-  }
+  const databaseStatus = mongoose.connection.readyState
 
-  if (!global.mongooseConnection) {
-    global.mongooseConnection = mongoose.connect(MONGO_URI as string, {
-      dbName: "NextJSAPI", // Replace with your database name
-      bufferCommands: true,
-    });
+  if (databaseStatus === 1) {
+    console.log('MongoDB connected!')
   }
 
   try {
-    await global.mongooseConnection;
-    console.log("MongoDB connected successfully!");
-    return mongoose;
+    await mongoose.connect(MONGO_URI!, {
+      dbName: 'NextJSAPI',
+      bufferCommands: true
+    })
   } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-    throw error; // Ensure errors propagate to the caller
+    console.log(error)
   }
 }
