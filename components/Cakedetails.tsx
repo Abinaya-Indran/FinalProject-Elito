@@ -1,46 +1,73 @@
 "use client";
 
-import React from "react";
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
+import Link from "next/link";
 
-const Cakedetails = () => {
+const ProductDetails = () => {
+  interface Product {
+    _id: string;
+    name: string;
+    price: number;
+    image: string;
+    description: string;
+    stock: number;
+    createdAt: string;
+    seller: {
+      name: string;
+      contact: string;
+    };
+  }
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) return;
+      try {
+        const response = await axios.get(`/api/Product/${id}`);
+        setProduct(response.data);
+      } catch (error) {
+        setError("Failed to load product details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!product) return <div>Product not found</div>;
+
   return (
     <section style={styles.container}>
-      {/* Product Image */}
       <div style={styles.productImage}>
-        <img src="/images/Black and gold cake .jpeg" alt="Black and Gold Cake" style={styles.image} />
+        <img src={product.image || "/default-image.jpg"} alt={product.name} style={styles.image} />
       </div>
 
-      {/* Product Details */}
       <div style={styles.details}>
-        <h1 style={styles.title}>Black and Gold Cake</h1>
-        <p style={styles.price}>Rs 3000 - Rs 4500</p>
+        <h1 style={styles.title}>{product.name}</h1>
+        <p style={styles.price}>LKR {product.price}</p>
+        <p style={styles.description}>{product.description}</p>
+        <p style={styles.stock}>
+          Stock: {product.stock > 0 ? product.stock : "Out of stock"}
+        </p>
+        <p style={styles.date}>Added on: {new Date(product.createdAt).toLocaleDateString()}</p>
 
-        {/* Size Options */}
-        <div style={styles.sizeOptions}>
-          <label style={styles.label}>Size:</label>
-          <div style={styles.sizeButtonGroup}>
-            <button style={styles.sizeButton}>500g</button>
-            <button style={styles.sizeButton}>1kg</button>
-            <button style={styles.sizeButton}>2kg</button>
-            <button style={styles.sizeButton}>3kg</button>
-          </div>
+        {/* Seller Details */}
+        <div style={styles.sellerInfo}>
+          <h3>Seller Information</h3>
+          <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
+          <p><strong>Contact:</strong> {product.seller?.contact || "Not Available"}</p>
         </div>
 
-        {/* Surprise Option
-        <div style={styles.surpriseOption}>
-          <input type="checkbox" id="surprise" name="surprise" />
-          <label htmlFor="surprise" style={styles.checkboxLabel}>
-            Surprise Delivery (+1000 Rs)
-          </label>
-        </div> */}
-
-        {/* Personalized Icing Message */}
-        <div>
-          <input type="text" placeholder="Personalized Icing Message" style={styles.input} />
-        </div>
-
-        {/* Add to Cart Section */}
         <div style={styles.addToCart}>
           <Link href="/order" passHref>
             <button style={styles.cartButton}>Buy Now</button>
@@ -49,7 +76,6 @@ const Cakedetails = () => {
             <button style={styles.cartButton}>Add To Cart</button>
           </Link>
         </div>
-
       </div>
     </section>
   );
@@ -62,18 +88,14 @@ const styles = {
     width: "90%",
     maxWidth: "1200px",
     gap: "70px",
-    fontSize: "20px",
-    margin: " 80px auto",
-    marginTop: "80px",
-    fontFamily: "'Times New Roman', Times, serif", // Use Times New Roman globally
+    margin: "80px auto",
     backgroundColor: "#fdfdfd",
     padding: "50px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
   },
   productImage: {
-    width: "300px",
-    // height: "auto",
+    width: "600px",
   },
   image: {
     width: "100%",
@@ -92,57 +114,28 @@ const styles = {
     fontSize: "32px",
     fontWeight: "bold",
     color: "#333",
-    marginBottom: "10px",
   },
   price: {
     fontSize: "22px",
     color: "#555",
   },
-  sizeOptions: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "10px",
+  description: {
+    fontSize: "18px",
+    color: "#666",
   },
-  label: {
+  stock: {
     fontSize: "18px",
     fontWeight: "bold",
-    marginBottom: "10px",
+    color: "#D9534F",
   },
-  sizeButtonGroup: {
-    display: "flex",
-    gap: "10px",
-  },
-  sizeButton: {
-    padding: "10px 20px",
-    background: "#f9f9f9",
-    border: "2px solid #ccc",
-    borderRadius: "5px",
-    cursor: "pointer",
+  date: {
     fontSize: "16px",
-    transition: "all 0.3s ease",
-    fontFamily: "'Times New Roman', Times, serif",
+    color: "#777",
   },
-  sizeButtonHover: {
-    backgroundColor: "#B864D4",
-    color: "white",
-  },
-  surpriseOption: {
-    fontSize: "18px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  },
-  checkboxLabel: {
-    fontSize: "16px",
-    fontFamily: "'Times New Roman', Times, serif",
-  },
-  input: {
-    padding: "12px",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-    fontSize: "16px",
-    width: "100%",
-    fontFamily: "'Times New Roman', Times, serif",
+  sellerInfo: {
+    padding: "15px",
+    backgroundColor: "#f3f3f3",
+    borderRadius: "8px",
   },
   addToCart: {
     display: "flex",
@@ -160,8 +153,7 @@ const styles = {
     cursor: "pointer",
     fontWeight: "bold",
     transition: "all 0.3s ease",
-    fontFamily: "'Times New Roman', Times, serif",
   },
 };
 
-export default Cakedetails;
+export default ProductDetails;

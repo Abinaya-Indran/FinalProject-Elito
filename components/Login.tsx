@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Cookies from "js-cookie"; // For handling cookies
 
 const Login = () => {
   const router = useRouter();
@@ -17,29 +18,43 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await fetch("/api/User/login", {
+      const response = await fetch("/api/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
+        credentials: "include", // Ensure cookies are included
       });
 
       const data = await response.json();
 
+      console.log("API Response:", data); // Debugging
+
       if (response.ok) {
         setSuccess("Login successful!");
-        setError("");
-        localStorage.setItem("user", JSON.stringify(data.user)); // Store user data
-        router.push("/product"); // Redirect user to dashboard
+
+        // Store user details locally
+        localStorage.setItem("user", JSON.stringify(data.user));
+        Cookies.set("token", data.token, { expires: 7 });
+
+        // Redirect based on user role
+        if (data.user?.role === "Buyer") {
+          await router.push("/product");
+        } else if (data.user?.role === "Seller") {
+          await router.push("/sellerpage");
+        } else if (data.user?.role === "Admin") {
+          await router.push("/admin/dashboard");
+        } else {
+          setError("Invalid role");
+        }
       } else {
         setError(data.error || "Invalid email or password.");
-        setSuccess("");
       }
     } catch (err) {
       setError("An error occurred. Please try again.");
-      setSuccess("");
     }
   };
 
@@ -72,11 +87,10 @@ const Login = () => {
       <a href="#" className="forgot-password">
         Forgot your password?
       </a>
-      <Link href="/signup" className="create-account">
+      <Link href="/register" className="create-account">
         Create account
       </Link>
 
-      {/* Your existing styles */}
       <style jsx>{`
         .login-container {
           display: flex;
@@ -85,12 +99,12 @@ const Login = () => {
           justify-content: center;
           padding: 30px;
           max-width: 400px;
-          height: 100vh;
-          margin: 230px auto;
+          height: 55vh;
+          margin: 50px auto;
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
           border-radius: 10px;
           background-color: #f9f9f9;
-          font-family: "Arial", sans-serif;
+          font-family: "Poppins", sans-serif;
         }
 
         .login-container h1 {
@@ -143,14 +157,14 @@ const Login = () => {
 
         .login-container .error-message {
           color: red;
-          font-size: 14px;
-          margin-top: 10px;
+          font-size: 15px;
+          margin-top: 20px;
         }
 
         .login-container .success-message {
           color: green;
-          font-size: 14px;
-          margin-top: 10px;
+          font-size: 15px;
+          margin-top: 20px;
         }
 
         .login-container a {

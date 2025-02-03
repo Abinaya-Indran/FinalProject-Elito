@@ -12,11 +12,13 @@ const Register: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [address, setAddress] = useState(""); // For Seller role
   const [phoneNumber, setPhoneNumber] = useState(""); // For Seller role
+  const [cakeShopName, setCakeShopName] = useState(""); // For Cake Shop
+  const [sellerType, setSellerType] = useState("Individual"); // Default seller type
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+ 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -37,8 +39,8 @@ const Register: React.FC = () => {
       setError("Passwords do not match.");
       return;
     }
-    if (role === "Seller" && (!address || !phoneNumber)) {
-      setError("Address and phone number are required for Seller registration.");
+    if (role === "Seller" && (!address || !phoneNumber || (sellerType === "Cake Shop" && !cakeShopName))) {
+      setError("Address, phone number, and Cake Shop name are required for Cake Shop registration.");
       return;
     }
 
@@ -46,20 +48,25 @@ const Register: React.FC = () => {
     setLoading(true);
 
     try {
-      const payload = {
+      const payload = { 
         name,
         email,
         password,
         role,
-        ...(role === "Seller" && { address, phoneNumber }), // Include Seller-specific fields
+        ...(role === "Seller" && { address, phoneNumber, sellerType, cakeShopName }), // Include Seller-specific fields
       };
 
-      const response = await axios.post("/api/User/register", payload);
+      const response = await axios.post("/api/user/register", payload);
 
       if (response.status === 201) {
         setSuccess(true);
         setTimeout(() => {
-          router.push("/"); 
+          // Redirect based on the role
+          if (role === "Seller") {
+            router.push("/sellerpage"); // Seller goes to seller page
+          } else {
+            router.push("/product"); // Buyer goes to product page
+          }
         }, 2000);
       } else {
         setError("Registration failed. Please try again.");
@@ -222,6 +229,38 @@ const Register: React.FC = () => {
 
         {role === "Seller" && (
           <>
+            <label style={styles.label}>Seller Type</label>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
+              <button
+                type="button"
+                style={styles.roleButton(sellerType === "Individual")}
+                onClick={() => setSellerType("Individual")}
+              >
+                Individual
+              </button>
+              <button
+                type="button"
+                style={styles.roleButton(sellerType === "Cake Shop")}
+                onClick={() => setSellerType("Cake Shop")}
+              >
+                Cake Shop
+              </button>
+            </div>
+
+            {sellerType === "Cake Shop" && (
+              <>
+                <label style={styles.label}>Cake Shop Name</label>
+                <input
+                  type="text"
+                  name="cakeShopName"
+                  placeholder="Enter your cake shop name"
+                  style={styles.input}
+                  value={cakeShopName}
+                  onChange={(e) => setCakeShopName(e.target.value)}
+                />
+              </>
+            )}
+
             <label style={styles.label}>Address</label>
             <input
               type="text"

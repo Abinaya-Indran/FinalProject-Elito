@@ -1,31 +1,33 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AddProduct from "./AddCake";
 
 const AdminDashboard = () => {
+  const [activeSection, setActiveSection] = useState("Dashboard"); // Track active section
   const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch users from the API
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch("/api/admin/user?role=buyer"); // Adjust the role as needed
-        if (!response.ok) {
-          throw new Error("Failed to fetch users");
-        }
-        const data = await response.json();
-        setUsers(data.data);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (activeSection === "Users") {
+      fetchUsers();
+    }
+  }, [activeSection]);
 
-    fetchUsers();
-  }, []);
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/admin/user");
+      if (!response.ok) throw new Error("Failed to fetch users");
+      const data = await response.json();
+      setUsers(data.data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -33,186 +35,215 @@ const AdminDashboard = () => {
       <aside style={styles.sidebar}>
         <h1 style={styles.logo}>Admin Panel</h1>
         <ul style={styles.navList}>
-          <li style={styles.navItem}>Dashboard</li>
-          <li style={styles.navItem}>Orders</li>
-          <li style={styles.navItem}>Cake Listings</li>
-          <li style={styles.navItem}>Add New Cake</li>
-          <li style={styles.navItem}>Users</li>
-          <li style={styles.navItem}>Settings</li>
-          <li style={styles.navItem}>Logout</li>
+          {["Dashboard", "Orders", "Cake Listings", "Add New Cake", "Users", "Settings", "Logout"].map((item) => (
+            <li
+              key={item}
+              style={activeSection === item ? styles.navItemActive : styles.navItem}
+              onClick={() => setActiveSection(item)}
+            >
+              {item}
+            </li>
+          ))}
         </ul>
       </aside>
 
       {/* Main Content */}
       <main style={styles.main}>
         <header style={styles.header}>
-          <h2 style={styles.headerTitle}>Welcome, Admin!</h2>
+          <h2 style={styles.headerTitle}>{activeSection}</h2>
         </header>
 
-        {/* Stats Section */}
-        <section style={styles.stats}>
-          <div style={styles.statCard}>
-            <h3 style={styles.statNumber}>150</h3>
-            <p style={styles.statLabel}>Total Orders</p>
-          </div>
-          <div style={styles.statCard}>
-            <h3 style={styles.statNumber}>50</h3>
-            <p style={styles.statLabel}>Active Listings</p>
-          </div>
-          <div style={styles.statCard}>
-            <h3 style={styles.statNumber}>20</h3>
-            <p style={styles.statLabel}>Pending Orders</p>
-          </div>
-        </section>
+        {/* Render Section Based on Selected Menu Item */}
+        {activeSection === "Dashboard" && (
+          <section style={styles.stats}>
+            <div style={styles.statCard}>
+              <h3 style={styles.statNumber}>150</h3>
+              <p style={styles.statLabel}>Total Orders</p>
+            </div>
+            <div style={styles.statCard}>
+              <h3 style={styles.statNumber}>50</h3>
+              <p style={styles.statLabel}>Delivered</p>
+            </div>
+            <div style={styles.statCard}>
+              <h3 style={styles.statNumber}>20</h3>
+              <p style={styles.statLabel}>Pending Orders</p>
+            </div>
+          </section>
+        )}
 
-        {/* Users Table Section */}
-        <section style={styles.tableSection}>
-          <h3 style={styles.sectionTitle}>Users</h3>
-          {loading && <p>Loading...</p>}
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>User ID</th>
-                <th style={styles.th}>Name</th>
-                <th style={styles.th}>Role</th>
-                <th style={styles.th}>Email</th>
-                <th style={styles.th}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user._id}>
-                  <td style={styles.td}>{user._id}</td>
-                  <td style={styles.td}>{user.name}</td>
-                  <td style={styles.td}>{user.role}</td>
-                  <td style={styles.td}>{user.email}</td>
-                  <td style={styles.td}>
-                    <button style={styles.actionButton}>View</button>
-                    <button style={styles.actionButton}>Edit</button>
-                  </td>
+        {/* Orders Section */}
+        {activeSection === "Orders" && (
+          <section>
+            <h3>Order Management Coming Soon...</h3>
+          </section>
+        )}
+
+        {/* Add New Cake Section */}
+        {activeSection === "Add New Cake" && (
+          <section>
+            <AddProduct />
+          </section>
+        )}
+        
+        {/* Cake Listings Section */}
+        {activeSection === "Cake Listings" && (
+          <section>
+            <h3>Cake Listings Coming Soon...</h3>
+          </section>
+        )}
+
+        {/* Settings Section */}
+        {activeSection === "Settings" && (
+          <section>
+            <h3>Settings Coming Soon...</h3>
+          </section>
+        )}
+        
+        {/* Logout Section */} 
+        {activeSection === "Logout" && (
+          <section>
+            <h3>Logout Coming Soon...</h3>
+          </section>
+        )}
+
+        {/* Users Section */}
+        {activeSection === "Users" && (
+          <section style={styles.tableSection}>
+            <h3 style={styles.sectionTitle}>Users</h3>
+            {loading && <p>Loading...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>User ID</th>
+                  <th style={styles.th}>Name</th>
+                  <th style={styles.th}>Role</th>
+                  <th style={styles.th}>Email</th>
+                  <th style={styles.th}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+              </thead>
+              <tbody>
+                {users.map((user, index) => (
+                  <tr key={user._id} style={index % 2 === 0 ? styles.rowEven : {}}>
+                    <td style={styles.td}>{user._id}</td>
+                    <td style={styles.td}>{user.name}</td>
+                    <td style={styles.td}>{user.role}</td>
+                    <td style={styles.td}>{user.email}</td>
+                    <td style={styles.td}>
+                      <button style={{ ...styles.actionButton, ...styles.viewButton }}>View</button>
+                      <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
       </main>
     </div>
   );
 };
 
-// Inline CSS styles (your existing styles)
-import { CSSProperties } from "react";
+// 🌟 Improved Styles
+const styles: { [key: string]: React.CSSProperties } = {
+  container: { display: "flex", height: "100vh", backgroundColor: "#F4F7FC" },
 
-const styles: { [key: string]: CSSProperties } = {
-  container: {
-    display: "flex",
-    height: "100vh",
-    fontFamily: "'Arial', sans-serif",
-    backgroundColor: "#F8F9FA",
-    fontSize: "20px",
-  },
   sidebar: {
     width: "250px",
-    backgroundColor: "#E0B0FF",
-    color: "black",
+    backgroundColor: "#4B0082",
     padding: "20px",
+    color: "white",
     display: "flex",
     flexDirection: "column",
-    alignItems: "left",
-    fontWeight: "bold",
+    alignItems: "center",
+    boxShadow: "4px 0px 10px rgba(0, 0, 0, 0.2)",
   },
-  logo: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    marginBottom: "30px",
-  },
-  navList: {
-    listStyleType: "none",
-    padding: 0,
-    width: "100%",
-  },
+
+  logo: { fontSize: "26px", fontWeight: "bold", marginBottom: "20px" },
+
+  navList: { listStyleType: "none", padding: 0, width: "100%" },
+
   navItem: {
-    padding: "15px 20px",
-    fontSize: "18px",
+    padding: "12px",
     cursor: "pointer",
-    borderRadius: "8px",
-    textAlign: "left",
-    marginBottom: "10px",
-    transition: "background-color 0.3s",
-  },
-  main: {
-    flex: 1,
-    padding: "20px",
-    overflowY: "auto",
-  },
-  header: {
-    marginBottom: "20px",
-  },
-  headerTitle: {
-    fontSize: "24px",
-    color: "#333333",
-  },
-  stats: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "30px",
-  },
-  statCard: {
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    padding: "20px",
-    borderRadius: "10px",
+    borderRadius: "5px",
     textAlign: "center",
+    fontSize: "16px",
+    transition: "0.3s",
+    marginBottom: "10px",
+    backgroundColor: "#663399",
+    color: "#fff",
+  },
+
+  navItemActive: {
+    padding: "12px",
+    cursor: "pointer",
+    borderRadius: "5px",
+    textAlign: "center",
+    fontSize: "16px",
+    transition: "0.3s",
+    marginBottom: "10px",
+    backgroundColor: "#FFD700",
+    color: "#4B0082",
+    fontWeight: "bold",
+  },
+
+  main: { flex: 1, padding: "20px", overflowY: "auto" },
+
+  header: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" },
+
+  headerTitle: { fontSize: "24px", color: "#333" },
+
+  stats: { display: "flex", justifyContent: "space-between", marginBottom: "20px" },
+
+  statCard: {
     flex: 1,
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "12px",
+    textAlign: "center",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     margin: "0 10px",
   },
-  statNumber: {
-    fontSize: "32px",
-    color: "#6C63FF",
-    marginBottom: "10px",
-  },
-  statLabel: {
-    fontSize: "16px",
-    color: "#666666",
-  },
+
+  statNumber: { fontSize: "28px", fontWeight: "bold", color: "#4B0082" },
+
   tableSection: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#fff",
     padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
   },
-  sectionTitle: {
-    fontSize: "20px",
-    marginBottom: "15px",
-    color: "#333333",
-  },
+
+  sectionTitle: { fontSize: "20px", fontWeight: "bold", marginBottom: "10px" },
+
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    borderRadius: "8px",
+    overflow: "hidden",
+    boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
   },
+
   th: {
+    padding: "12px",
+    backgroundColor: "#4B0082",
+    color: "#fff",
     textAlign: "left",
-    backgroundColor: "#E0B0FF",
-    color: "black",
-    padding: "10px",
-    borderBottom: "1px solid #CCCCCC",
   },
+
   td: {
-    padding: "10px",
-    borderBottom: "1px solid #CCCCCC",
-    textAlign: "left",
+    padding: "12px",
+    borderBottom: "1px solid #ddd",
   },
-  actionButton: {
-    marginRight: "10px",
-    padding: "5px 10px",
-    backgroundColor: "#6C63FF",
-    color: "#FFFFFF",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-  },
+
+  rowEven: { backgroundColor: "#f9f9f9" },
+
+  actionButton: { padding: "6px 12px", borderRadius: "5px", border: "none", cursor: "pointer" },
+
+  viewButton: { backgroundColor: "#4B0082", color: "#fff" },
+
+  editButton: { backgroundColor: "#ff9800", color: "#fff" },
 };
 
 export default AdminDashboard;

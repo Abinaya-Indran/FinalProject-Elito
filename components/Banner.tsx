@@ -10,7 +10,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 const images = [
   "/images/1.png",
   "/images/pexels-anete-lusina-18613267.jpg",
-  "/images/pexels-photo-8554892.webp",
+  "/images/photo-1578534083109-58c374019dd8.avif",
 ];
 
 export default function Banner() {
@@ -36,7 +36,7 @@ export default function Banner() {
             >
               <img src={src} alt={`Cake ${index + 1}`} style={styles.image} />
               <div style={styles.caption}>
-                <h2>{`Cake ${index + 1}`}</h2>
+                {/* <h2>{`Cake ${index + 1}`}</h2> */}
                 <p>Delicious cakes for your sweet moments!</p>
               </div>
             </motion.div>

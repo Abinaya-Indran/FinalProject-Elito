@@ -33,7 +33,7 @@ export default function Home() {
       <style jsx>{`
         /* General Styles */
         .container {
-          font-family: Arial, sans-serif;
+          fontFamily: "poppins, sans-serif",
           margin: 0;
           padding: 0;
           box-sizing: border-box;
@@ -52,12 +52,14 @@ export default function Home() {
         .text-section {
           flex: 1;
           padding: 20px;
+           fontFamily: 'Poppins',
         }
 
         .text-section h1 {
           font-size: 48px;
           color: #333;
           margin-bottom: 20px;
+          fontFamily: "poppins,sans-serif",
         }
 
         .cta-button {
@@ -68,6 +70,7 @@ export default function Home() {
           border-radius: 4px;
           font-size: 16px;
           cursor: pointer;
+          fontFamily: "poppins, sans-serif",
         }
 
         .cta-button:hover {

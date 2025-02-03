@@ -1,7 +1,7 @@
 import BirthdayCakesPage from '../../../components/birthdaycakes'
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Topcake from '../../../components/Topcake'
+
 
 
 
@@ -12,7 +12,6 @@ function birthdaycakes() {
         <div>
             <Navbar/>
             <BirthdayCakesPage/>
-            {/* <Topcake/> */}
             <Bottom/>
            
         </div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import { FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
 
 const ProductPage = () => {
   interface Product {
@@ -10,6 +11,7 @@ const ProductPage = () => {
     name: string;
     price: number;
     image: string;
+    rating?: number; // New rating field (optional)
   }
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -18,13 +20,14 @@ const ProductPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [cart, setCart] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("/api/Product");
         setProducts(response.data);
-        setFilteredProducts(response.data); // Initialize filtered products
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
         setError("Failed to load products");
@@ -39,14 +42,12 @@ const ProductPage = () => {
   useEffect(() => {
     let filtered = products;
 
-    // Filter by search query
     if (searchQuery) {
       filtered = filtered.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Filter by maximum price
     if (maxPrice !== null) {
       filtered = filtered.filter((product) => product.price <= maxPrice);
     }
@@ -54,17 +55,22 @@ const ProductPage = () => {
     setFilteredProducts(filtered);
   }, [searchQuery, maxPrice, products]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const addToCart = (product: Product) => {
+    const updatedCart = [...cart, product];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
 
-  if (products.length === 0) {
-    return <div>No products available</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (products.length === 0) return <div>No products available</div>;
 
   return (
     <div>
@@ -74,7 +80,6 @@ const ProductPage = () => {
           background-color: #f7f7f7;
           padding: 2rem;
         }
-
         .page-title {
           font-size: 2.5rem;
           font-weight: bold;
@@ -82,29 +87,24 @@ const ProductPage = () => {
           color: #b864d4;
           margin-bottom: 2rem;
         }
-
         .filter-container {
           display: flex;
           gap: 1rem;
           margin-bottom: 2rem;
           justify-content: center;
         }
-
-        .filter-input,
-        .filter-select {
+        .filter-input {
           padding: 0.5rem;
           font-size: 1rem;
           border: 1px solid #ccc;
           border-radius: 0.5rem;
         }
-
         .product-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(350px, 3fr));
           gap: 3rem;
           justify-items: center;
         }
-
         .product-card {
           background-color: #ffffff;
           border-radius: 1rem;
@@ -118,46 +118,52 @@ const ProductPage = () => {
           position: relative;
           cursor: pointer;
         }
-
         .product-card:hover {
           transform: translateY(-10px);
           box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
         }
-
         .product-image {
           width: 100%;
           height: 350px;
           object-fit: cover;
           border-bottom: 1px solid #e2e2e2;
-          transition: opacity 0.3s ease;
         }
-
-        .product-card:hover .product-image {
-          opacity: 0.9;
-        }
-
         .card-content {
           padding: 1rem;
           background: linear-gradient(145deg, #f7f7f7, #ffffff);
           position: relative;
         }
-
         .product-name {
           font-size: 1.4rem;
           font-weight: 600;
           color: #333;
           margin-bottom: 0.5rem;
-          text-transform: capitalize;
         }
-
         .product-price {
           font-size: 1.125rem;
           color: #b864d4;
-          font-weight: 500;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        .ratings {
+          display: flex;
+          justify-content: center;
+          align-items: center;
           margin-bottom: 1rem;
         }
-
-        .add-to-cart-button {
+        .star {
+          color: #ffd700;
+          font-size: 1.2rem;
+          margin-right: 0.2rem;
+        }
+        .buttons-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+        .view-details {
           background-color: #b864d4;
           color: white;
           font-size: 1rem;
@@ -165,17 +171,24 @@ const ProductPage = () => {
           padding: 0.75rem;
           border: none;
           border-radius: 0.5rem;
-          width: 100%;
+          flex-grow: 1;
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
-
-        .add-to-cart-button:hover {
+        .view-details:hover {
           background-color: #944bb8;
           transform: scale(1.05);
         }
-
-        .add-to-cart-button:focus {
-          outline: none;
+        .cart-button {
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 1.5rem;
+          color: #b864d4;
+          transition: transform 0.3s ease;
+        }
+        .cart-button:hover {
+          transform: scale(1.2);
+          color: #944bb8;
         }
       `}</style>
 
@@ -204,19 +217,35 @@ const ProductPage = () => {
         <div className="product-grid">
           {filteredProducts.map((product) => (
             <div key={product._id} className="product-card">
-               <img
-                  src={product.image} // Direct Cloudinary URL
-                  alt={product.name || "Unnamed Cake"}
-                  className="product-image"
-                  width={200}
-                  height={200}
-                />
+              <img src={product.image} alt={product.name} className="product-image" />
               <div className="card-content">
-                <h2 className="product-name">{product.name || "Unnamed Cake"}</h2>
-                <p className="product-price">₹{product.price || "N/A"}</p>
-                <Link href={`/product/${product._id}`}>
-                  <button className="add-to-cart-button">View Details</button>
-                </Link>
+                <h2 className="product-name">{product.name}</h2>
+                <p className="product-price">LKR {product.price}</p>
+
+                <div className="ratings">
+                  {[...Array(5)].map((_, index) => (
+                    index < (product.rating || 0) ? 
+                    <FaStar key={index} className="star" /> : 
+                    <FaRegStar key={index} className="star" />
+                  ))}
+                </div>
+
+                <div className="buttons-container">
+                  <Link href={`/product/${product._id}`}>
+                    <button className="view-details">View Details</button>
+                  </Link>
+                  <Link href="/yourcart">
+                    <button
+                      className="cart-button"
+                      onClick={() => addToCart(product)}
+                    >
+                      <FaShoppingCart />
+                    </button>
+                  </Link>
+                  {/* <button className="cart-button" onClick={() => addToCart(product)}>
+                    <FaShoppingCart /> */}
+                  {/* </button> */}
+                </div>
               </div>
             </div>
           ))}

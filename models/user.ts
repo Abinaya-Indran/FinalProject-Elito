@@ -1,42 +1,35 @@
-import mongoose, { Schema, Document } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, { Schema, Document } from 'mongoose';
 
-// Define the User interface
-export interface IUser extends Document {
+// Define the possible roles
+type Role = 'Buyer' | 'Seller' | 'Admin';
+type SellerType = 'Individual' | 'Cake Shop';
+
+// User schema interface
+interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  role: "Buyer" | "Seller";
+  role: Role;
   address?: string;
   phoneNumber?: string;
-  comparePassword: (password: string) => Promise<boolean>;
+  cakeShopName?: string;
+  sellerType: SellerType;
 }
 
-// Define the schema
 const UserSchema: Schema<IUser> = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, enum: ["Buyer", "Seller"], required: true },
-    address: { type: String },
-    phoneNumber: { type: String },
+    email: { type: String, required: true, unique: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+    password: { type: String, required: true, minlength: 6 },
+    role: { type: String, enum: ['Buyer', 'Seller', 'Admin'], required: true },
+    address: { type: String, required: function (this: IUser) { return this.role === 'Seller'; } },
+    phoneNumber: { type: String, required: function (this: IUser) { return this.role === 'Seller'; } },
+    cakeShopName: { type: String, required: function (this: IUser) { return this.role === 'Seller' && this.sellerType === 'Cake Shop'; } },
+    sellerType: { type: String, enum: ['Individual', 'Cake Shop'], required: function (this: IUser) { return this.role === 'Seller'; } },
   },
   { timestamps: true }
 );
 
-// Hash password before saving
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
-// Add method to compare password
-UserSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
-  return bcrypt.compare(password, this.password);
-};
-
-// Export the model
-export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+export default User;

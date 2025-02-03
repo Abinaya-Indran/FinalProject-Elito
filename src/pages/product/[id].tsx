@@ -3,16 +3,21 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Link from "next/link";
 
 const ProductDetails = () => {
   interface Product {
     _id: string;
     name: string;
     price: number;
-    imageUrl: string;
+    image: string;
     description: string;
-    category: string;
     stock: number;
+    createdAt: string;
+    seller: {
+      name: string;
+      contact: string;
+    };
   }
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -23,12 +28,11 @@ const ProductDetails = () => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!id) return; // Wait until the route is fully loaded
+      if (!id) return;
       try {
         const response = await axios.get(`/api/Product/${id}`);
         setProduct(response.data);
       } catch (error) {
-        console.error("Error fetching product:", error);
         setError("Failed to load product details.");
       } finally {
         setLoading(false);
@@ -43,124 +47,113 @@ const ProductDetails = () => {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <div>
-      <style jsx>{`
-        .product-details-container {
-          max-width: 900px;
-          margin: 2rem auto;
-          padding: 2rem;
-          background: #ffffff;
-          border-radius: 1rem;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
-          transition: transform 0.3s ease-in-out;
-        }
-
-        .product-details-container:hover {
-          transform: translateY(-10px);
-        }
-
-        .product-image {
-          width: 100%;
-          height: 400px;
-          object-fit: cover;
-          border-radius: 1rem;
-          margin-bottom: 2rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          color: #333;
-          margin-bottom: 1rem;
-          text-transform: capitalize;
-          letter-spacing: 0.5px;
-        }
-
-        .product-price {
-          font-size: 2rem;
-          font-weight: 600;
-          color: #9c27b0;
-          margin-bottom: 1.5rem;
-        }
-
-        .product-description {
-          font-size: 1.2rem;
-          line-height: 1.6;
-          color: #777;
-          margin-bottom: 1.5rem;
-        }
-
-        .product-category,
-        .product-stock {
-          font-size: 1.1rem;
-          color: #555;
-          margin-bottom: 0.8rem;
-        }
-
-        .product-category strong,
-        .product-stock strong {
-          font-weight: 700;
-          color: #333;
-        }
-
-        .product-stock {
-          color: ${props => (props.stock > 0 ? "#388e3c" : "#d32f2f")};
-        }
-
-        .product-description,
-        .product-category,
-        .product-stock {
-          padding: 0 1rem;
-        }
-
-        @media (max-width: 768px) {
-          .product-details-container {
-            padding: 1rem;
-          }
-
-          .product-title {
-            font-size: 2rem;
-          }
-
-          .product-price {
-            font-size: 1.6rem;
-          }
-
-          .product-image {
-            height: 300px;
-          }
-
-          .product-description {
-            font-size: 1rem;
-          }
-
-          .product-category,
-          .product-stock {
-            font-size: 1rem;
-          }
-        }
-      `}</style>
-
-      <div className="product-details-container">
-        <img
-          src={product.imageUrl}
-          alt={product.name}
-          className="product-image"
-        />
-        <h1 className="product-title">{product.name}</h1>
-        <p className="product-price">₹{product.price}</p>
-        <p className="product-description">{product.description || "No description available."}</p>
-        <p className="product-category">
-          <strong>Category:</strong> {product.category || "Uncategorized"}
-        </p>
-        <p className="product-stock">
-          <strong>Stock:</strong> {product.stock > 0 ? `${product.stock} available` : "Out of stock"}
-        </p>
+    <section style={styles.container}>
+      <div style={styles.productImage}>
+        <img src={product.image || "/default-image.jpg"} alt={product.name} style={styles.image} />
       </div>
-    </div>
+
+      <div style={styles.details}>
+        <h1 style={styles.title}>{product.name}</h1>
+        <p style={styles.price}>LKR {product.price}</p>
+        <p style={styles.description}>{product.description}</p>
+        <p style={styles.stock}>
+          Stock: {product.stock > 0 ? product.stock : "Out of stock"}
+        </p>
+        <p style={styles.date}>Added on: {new Date(product.createdAt).toLocaleDateString()}</p>
+
+        {/* Seller Details */}
+        <div style={styles.sellerInfo}>
+          <h3>Seller Information</h3>
+          <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
+          <p><strong>Contact:</strong> {product.seller?.contact || "Not Available"}</p>
+        </div>
+
+        <div style={styles.addToCart}>
+          <Link href="/order" passHref>
+            <button style={styles.cartButton}>Buy Now</button>
+          </Link>
+          <Link href="/yourcart" passHref>
+            <button style={styles.cartButton}>Add To Cart</button>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
+};
+
+const styles = {
+  container: {
+    display: "flex",
+    flexDirection: "row" as const,
+    width: "90%",
+    maxWidth: "1200px",
+    gap: "70px",
+    margin: "80px auto",
+    backgroundColor: "#fdfdfd",
+    padding: "50px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+  },
+  productImage: {
+    width: "600px",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover" as const,
+    borderRadius: "10px",
+    border: "2px solid #ccc",
+  },
+  details: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "20px",
+  },
+  title: {
+    fontSize: "32px",
+    fontWeight: "bold",
+    color: "#333",
+  },
+  price: {
+    fontSize: "22px",
+    color: "#555",
+  },
+  description: {
+    fontSize: "18px",
+    color: "#666",
+  },
+  stock: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    color: "#D9534F",
+  },
+  date: {
+    fontSize: "16px",
+    color: "#777",
+  },
+  sellerInfo: {
+    padding: "15px",
+    backgroundColor: "#f3f3f3",
+    borderRadius: "8px",
+  },
+  addToCart: {
+    display: "flex",
+    justifyContent: "flex-start",
+    gap: "10px",
+    marginTop: "20px",
+  },
+  cartButton: {
+    backgroundColor: "#B864D4",
+    color: "white",
+    padding: "12px 20px",
+    border: "none",
+    fontSize: "18px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "all 0.3s ease",
+  },
 };
 
 export default ProductDetails;

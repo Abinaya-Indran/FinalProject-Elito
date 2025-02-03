@@ -1,11 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const userInfo = localStorage.getItem("user");
+    if (userInfo) {
+      setUser(JSON.parse(userInfo));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    router.push("/login");
+  };
 
   return (
     <header style={styles.header}>
@@ -17,7 +33,6 @@ const Navbar = () => {
       {/* Navigation Section */}
       <nav style={styles.nav}>
         <ul style={styles.navList}>
-          {/* Home */}
           <li>
             <Link href="/" style={styles.navLink}>
               Home
@@ -62,48 +77,50 @@ const Navbar = () => {
             )}
           </li>
 
-          {/* Seller */}
-          <li>
-            <Link href="/sellersignup" style={styles.navLink}>
-              Seller
-            </Link>
-          </li>
-
-          {/* Contact */}
           <li>
             <Link href="/contact" style={styles.navLink}>
               Contact
             </Link>
           </li>
 
-          {/* Log In */}
           <li>
-            <Link href="/login" style={styles.navLink}>
-              Log In
+            <Link href="/delivery" style={styles.navLink}>
+              Delivery
             </Link>
           </li>
+      
+
+          {!user ? (
+            <li>
+              <Link href="/login" style={styles.navLink}>
+                Log In
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <span onClick={handleLogout} style={styles.navLink}>
+                Log Out
+              </span>
+            </li>
+          )}
         </ul>
       </nav>
 
-      {/* Icons */}
-      <div style={styles.icon}>
-        {/* User Icon */}
-        <Link href="/editProfile">
-          <img
-            src="/images/user.png"
-            alt="User"
-            style={{ width: "25px", height: "25px", cursor: "pointer" }}
-          />
-        </Link>
-
-        {/* Cart Icon */}
+      {/* Right Section: Cart & User Icon */}
+      <div style={styles.rightSection}>
         <Link href="/yourcart">
           <img
             src="/images/shopping-cart.png"
             alt="Cart"
-            style={{ width: "25px", height: "25px", cursor: "pointer" }}
+            style={styles.iconImg}
           />
         </Link>
+
+        {user && (
+          <Link href="/editProfile">
+            <img src="/images/user.png" alt="User" style={styles.iconImg} />
+          </Link>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -156,10 +173,11 @@ const styles: { [key: string]: CSSProperties } = {
   navLink: {
     color: "white",
     textDecoration: "none",
-    fontSize: "20px",
+    fontSize: "25px",
     fontWeight: "bold",
     transition: "color 0.3s",
     cursor: "pointer",
+    fontFamily: "poppins, sans-serif",
   },
   dropdown: {
     position: "relative",
@@ -217,11 +235,16 @@ const styles: { [key: string]: CSSProperties } = {
     cursor: "pointer",
     fontSize: "16px",
   },
-  icon: {
+  rightSection: {
     display: "flex",
     alignItems: "center",
-    gap: "25px",
+    gap: "20px",
     marginRight: "20px",
+  },
+  iconImg: {
+    width: "30px",
+    height: "30px",
+    cursor: "pointer",
   },
 };
 

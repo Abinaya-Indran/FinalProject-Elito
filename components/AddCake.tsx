@@ -7,7 +7,7 @@ interface Product {
   image: string;
   createdAt?: Date;
   description?: string;
-  quantity?: number;
+  stock?: number;
 }
 
 interface ApiResponse {
@@ -22,7 +22,7 @@ export default function AddProduct() {
     image: '',
     description: '',
     createdAt: new Date(),
-    quantity: 0,
+    stock: 0,
   });
   const [preview, setPreview] = useState<string>('');
   const [message, setMessage] = useState<string>('');
@@ -34,7 +34,7 @@ export default function AddProduct() {
       reader.onloadend = (event: ProgressEvent<FileReader>) => {
         const result = event.target?.result;
         if (typeof result === 'string') {
-          setPreview(result); // Base64 string
+          setPreview(result);
           setProduct((prevProduct) => ({
             ...prevProduct,
             image: result,
@@ -62,7 +62,6 @@ export default function AddProduct() {
         const result: ApiResponse = await response.json();
         console.log('Product added:', result.product);
         alert('Product added successfully');
-        // Optionally, reset the form or handle additional UI changes
       }
     } catch (err) {
       console.error('Error:', err);
@@ -129,13 +128,13 @@ export default function AddProduct() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="quantity">Quantity</label>
+            <label htmlFor="stock">Stock</label>
             <input
               type="number"
-              id="quantity"
-              placeholder="Quantity"
-              value={product.quantity || ''}
-              onChange={(e) => setProduct({ ...product, quantity: parseInt(e.target.value, 10) })}
+              id="stock"
+              placeholder="Stock"
+              value={product.stock || ''}
+              onChange={(e) => setProduct({ ...product, stock: parseInt(e.target.value, 10) })}
             />
           </div>
           <button type="submit" className="submit-btn">Add Product</button>
@@ -159,7 +158,7 @@ export default function AddProduct() {
           font-size: 2rem;
           font-weight: bold;
           margin-bottom: 1.5rem;
-          color: #B864D4 ;
+          color: #B864D4;
         }
         .cake-form {
           width: 100%;

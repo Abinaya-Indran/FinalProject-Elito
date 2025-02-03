@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
   image: { type: String, required: true },
   description: { type: String, required: true },  // Now required
   createdAt: { type: Date, required: true },     // Now required
-  quantity: { type: Number, required: false },    // Now required
+  stock: { type: Number, required: false },    // Now required
   
 });
 export default mongoose.models.Product || mongoose.model('Product', productSchema);

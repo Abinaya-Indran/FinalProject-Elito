@@ -1,12 +1,15 @@
 import Bottom from '../../../components/bottomFooter'
-import Login from '../../../components/Login'
+import DeliveryStatus from '../../../components/deliverystatus'
+
 import Navbar from '../../../components/Navbar'
+import Tracker from '../../../components/tracker'
 
 function LoginPage() {
     return (
         <div>
-            <Navbar/><br/>
-            <Login/><br/><br/><br/><br/>
+            <Navbar/>
+            <Tracker/>
+            <DeliveryStatus/>
             <Bottom/>
         </div>
     )

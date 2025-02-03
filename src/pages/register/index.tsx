@@ -1,12 +1,13 @@
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Signup from '../../../components/register'
+import Register from '../../../components/register'
+
 
 function signupPage() {
     return (
         <div>
             <Navbar/>
-            <Signup />
+            <Register />
             <Bottom/>
            
         </div>

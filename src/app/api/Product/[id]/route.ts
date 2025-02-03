@@ -1,4 +1,3 @@
-// src/app/api/product/[id]/route.ts
 import { connectToDatabase } from '../../../../../lib/db';
 import Product from '../../../../../models/product';
 import { NextResponse } from 'next/server';
@@ -11,8 +10,11 @@ interface Product {
   description: string;
 }
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const { id } = params || {}; // Adding fallback in case params is undefined
+export async function GET(
+  req: Request,
+  context: { params: { id: string } } // Use `context` instead of destructuring `params` directly
+) {
+  const {id} = context.params; // Correct way to access params in App Router
 
   if (!id) {
     return NextResponse.json({ error: 'Product ID is missing' }, { status: 400 });
@@ -23,14 +25,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     await connectToDatabase();
     console.log('Database connected successfully!');
     
-    const product = await Product.findById(id); // Fetch product by ID from DB
+    const product = await Product.findById(id);
 
     if (!product) {
       console.log('Product not found!');
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json(product, { status: 200 }); // Return product details
+    return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error('Error occurred:', error);
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 });
