@@ -2,17 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import AddProduct from "./AddCake";
+import AdminProductPage from "./adminProduct";
+
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("Dashboard"); // Track active section
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [orders, setOrders] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (activeSection === "Users") {
       fetchUsers();
     }
+    if (activeSection === "Orders") fetchOrders();
   }, [activeSection]);
 
   const fetchUsers = async () => {
@@ -22,6 +26,20 @@ const AdminDashboard = () => {
       if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
       setUsers(data.data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/order");
+      if (!response.ok) throw new Error("Failed to fetch orders");
+      const data = await response.json();
+      setOrders(data);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -71,10 +89,37 @@ const AdminDashboard = () => {
           </section>
         )}
 
-        {/* Orders Section */}
-        {activeSection === "Orders" && (
-          <section>
-            <h3>Order Management Coming Soon...</h3>
+         {/* Orders Section */}
+         {activeSection === "Orders" && (
+          <section style={styles.tableSection}>
+            <h3 style={styles.sectionTitle}>Orders</h3>
+            {loading && <p>Loading...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Order ID</th>
+                  <th style={styles.th}>Cake ID</th>
+                  <th style={styles.th}>Buyer ID</th>
+                  <th style={styles.th}>Status</th>
+                  <th style={styles.th}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, index) => (
+                  <tr key={order._id} style={index % 2 === 0 ? styles.rowEven : {}}>
+                    <td style={styles.td}>{order._id}</td>
+                    <td style={styles.td}>{order.cakeId}</td>
+                    <td style={styles.td}>{order.buyerId}</td>
+                    <td style={styles.td}>{order.status}</td>
+                    <td style={styles.td}>
+                      <button style={{ ...styles.actionButton, ...styles.viewButton }}>View</button>
+                      <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
         )}
 
@@ -88,7 +133,7 @@ const AdminDashboard = () => {
         {/* Cake Listings Section */}
         {activeSection === "Cake Listings" && (
           <section>
-            <h3>Cake Listings Coming Soon...</h3>
+            <AdminProductPage/>
           </section>
         )}
 

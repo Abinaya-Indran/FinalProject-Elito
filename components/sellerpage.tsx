@@ -1,192 +1,365 @@
-"use client";
+import { useState, useEffect } from "react";
+import Addcake from "./AddCake";
+import io from "socket.io-client";
 
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { StaticImageData } from "next/image";
+const SellerDashboard = () => {
+  const [activeTab, setActiveTab] = useState("Dashboard");
+  interface Order {
+    _id: string;
+    buyerDetails?: {
+      name: string;
+    };
+    cakeId: {
+      name: string;
+      image: string;
+      price: number;
+    };
+    status: string;
+    price: number;
+  }
+  
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [notifications, setNotifications] = useState<string[]>([]);
 
-import profilePic from "../public/images/sellerprofile.jpg";
-import heartCake from "../public/images/celebrate.png";
-import strawberryCake from "../public/images/images.webp";
-import vanillaCake from "../public/images/heart.jpeg";
-import unicornCake from "../public/images/unicorncake.jpeg";
-import cherryCake from "../public/images/download (2).jpeg";
-import pinkCake from "../public/images/pink cake.jpeg";
-
-const SellerPage = () => {
-  const cakes = [
-    { id: 1, name: "Heart Cake", price: "Rs. 3500", img: heartCake },
-    { id: 2, name: "Strawberry Cake", price: "Rs. 4000", img: strawberryCake },
-    { id: 3, name: "Vanilla Cake", price: "Rs. 1800", img: vanillaCake },
-    { id: 4, name: "Unicorn Cake", price: "Rs. 4000", img: unicornCake },
-    { id: 5, name: "Cherry Cake", price: "Rs. 3500", img: cherryCake },
-    { id: 6, name: "Pink Cake", price: "Rs. 3000", img: pinkCake },
-  ];
-
-  const orders = [
-    { id: 1, userId: 1002, cake: "Chocolate Cake", price: "Rs. 3500", status: "Delivered" },
-    { id: 2, userId: 1027, cake: "Vanilla Cake", price: "Rs. 2500", status: "Pending" },
-    { id: 3, userId: 1007, cake: "Chocolate Cake", price: "Rs. 2500", status: "Delivered" },
-    { id: 4, userId: 1052, cake: "Vanilla Cake", price: "Rs. 2500", status: "Pending" },
-  ];
-
-  // Component for rendering individual cakes
-  const CakeCard = ({ name, price, img }: { name: string; price: string; img: StaticImageData }) => (
-    <div style={{ textAlign: "center" }}>
-      <Image src={img} alt={name} width={150} height={150} style={{ borderRadius: "8px" }} />
-      <p>{price}</p>
-    </div>
-  );
-
-  // Component for rendering individual orders
-  const OrderRow = ({ id, userId, cake, price, status }: any) => (
-    <tr>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{id}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{userId}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{cake}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{price}</td>
-      <td style={{ padding: "10px", border: "1px solid #ddd", textAlign: "center" }}>{status}</td>
-    </tr>
-  );
-
-  const styles = {
-    page: {
-      padding: "20px",
-      fontFamily: "Times New Roman', Times, serif",
-      fontSize: "20px",
-    },
-    profile: {
-      textAlign: "center" as const,
-      marginBottom: "30px",
-     
-    },
-    profilePic: {
-      width: "150px",
-      height: "150px",
-      borderRadius: "50%",
-      // marginBottom: "10px",
-    },
-    stats: {
-      // margin: "0px 600px",
-      margintop: "80px",
-      gap: "30px",
-      fontSize: "20px",
-    },
-    statItem: {
-      display: "inline-block",
-      margin: "5px 10px",
-      fontWeight: "bold",
-    },
-    profilebutton: {
-      marginTop: "20px",
-    },
-    button: {
-      margin: "5px",
-      padding: "10px 15px",
-      backgroundColor: "#007bff",
-      color: "white",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      fontSize: "17px",
-    },
-
-    Addbutton:{
-       margin: " 20px",
-      padding: "80px 45px",
-      backgroundColor: "#B864D4",
-      color: "white",
-      border: "none",
-      borderRadius: "5px",
-      fontSize: "20px",
-      fontWeight: "bold",
-      
-    },
-
-    section: {
-      margin: "50px",
-    },
-    grid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-      gap: "20px",
-    },
-    table: {
-      width: "100%",
-      borderCollapse: "collapse" as const,
-    },
-    thTd: {
-      padding: "10px",
-      border: "1px solid #ddd",
-      textAlign: "center" as const,
-    },
-  };
-
+    // Fetch orders from API
+    useEffect(() => {
+      const fetchOrders = async () => {
+        try {
+          const response = await fetch("/api/order"); // Adjust endpoint if needed
+          if (!response.ok) throw new Error("Failed to fetch orders");
+          const data = await response.json();
+          setOrders(data);
+        } catch (error) {
+          console.error("Error fetching orders:", error);
+        }
+      };
+  
+      if (activeTab === "Orders") {
+        fetchOrders();
+      }
+    }, [activeTab]);
+  
+    const handleStatusChange = async (orderId: string, newStatus: string) => {
+      // Make API call to update the order status
+      const response = await fetch(`/api/order/${orderId}`, {
+        method: "PUT",
+        body: JSON.stringify({ status: newStatus }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const updatedOrder = await response.json();
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order._id === updatedOrder.order._id ? updatedOrder.order : order
+          )
+        );
+      } else {
+        console.error("Failed to update order status");
+      }
+    };
+  
+    const handleDeleteOrder = async (orderId: string) => {
+      // Make API call to delete the order
+      const response = await fetch(`/api/order/${orderId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setOrders(orders.filter((order) => order._id !== orderId));
+      } else {
+        console.error("Failed to delete order");
+      }
+    };
+  
+  
   return (
-    <div style={styles.page}>
-      {/* Seller Profile */}
-      <div style={styles.profile}>
-        <Image src={profilePic} alt="Seller Profile" width={150} height={150} style={styles.profilePic} />
-        <h2>Abinaya</h2>
-        <p>
-          Abi Cake Shop
-          <br />
-          Call: 0703807848
-        </p>
-        <div style={styles.stats}>
-          <span style={styles.statItem}>Posts  <br/> 50</span>
-          <span style={styles.statItem}>Likes <br/> 1000 </span>
-          <span style={styles.statItem}>Followers<br/>1.9k </span>
-          <span style={styles.statItem}>Reviews & Ratings<br/>40 </span>
-        </div>
-        <div style={styles.profilebutton}>
-          <button style={styles.button}>+ Follow</button>
-          <button style={styles.button}>Message</button>
-        </div>
-        <Link href="/addcake">
-      <button style={styles.Addbutton}>+ Add Cake</button>
-    </Link>
-      </div>
-
-      {/* My Cakes Section */}
-      <div style={styles.section}>
-        <h3>My Cakes</h3>
-        <div style={styles.grid}>
-          {cakes.map((cake) => (
-            <CakeCard key={cake.id} name={cake.name} price={cake.price} img={cake.img} />
-          ))}
-        </div>
-      </div>
-
-      {/* My Orders Section */}
-      <div style={styles.section}>
-        <h3>My Orders</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th style={styles.thTd}>Order ID</th>
-              <th style={styles.thTd}>User ID</th>
-              <th style={styles.thTd}>Cake Name</th>
-              <th style={styles.thTd}>Price</th>
-              <th style={styles.thTd}>Delivery Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <OrderRow
-                key={order.id}
-                id={order.id}
-                userId={order.userId}
-                cake={order.cake}
-                price={order.price}
-                status={order.status}
-              />
+    <div className="dashboardContainer">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <h2 className="logo">Elito Seller</h2>
+        <nav>
+          <ul className="navList">
+            {["Dashboard", "Orders", "Products", "Add Cake", "Profile"].map((tab) => (
+              <li key={tab}>
+                <button
+                  className={activeTab === tab ? "active" : ""}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab}
+                </button>
+              </li>
             ))}
-          </tbody>
-        </table>
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <div className="mainContent">
+        <header className="topHeader">
+          <h1>{activeTab}</h1>
+          <button className="logoutBtn">Logout</button>
+        </header>
+
+         {/* Notification */}
+         {notifications.length > 0 && (
+          <div className="notificationBanner">
+            {notifications[notifications.length - 1]}
+          </div>
+        )}
+
+        {/* Dashboard */}
+        {activeTab === "Dashboard" && (
+          <div className="statsContainer">
+            <div className="statBox">
+              <h3>Total Sales</h3>
+              <p>$10,500</p>
+            </div>
+            <div className="statBox">
+              <h3>Orders</h3>
+              <p>240</p>
+            </div>
+            <div className="statBox">
+              <h3>Cakes Listed</h3>
+              <p>50</p>
+            </div>
+          </div>
+        )}
+
+       
+         {/* Orders Section with Fetched Data */}
+         {activeTab === "Orders" && (
+          <div className="ordersSection">
+            <h2>Recent Orders</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Cake</th>
+                  <th>Status</th>
+                  <th>Price (LKR)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.length > 0 ? (
+                  orders.map((order) => (
+                    <tr key={order._id}>
+                      <td>{order._id}</td>
+                      <td>{order.buyerDetails?.name || "N/A"}</td>
+                      <td>
+                        <img
+                          src={order.cakeId.image}
+                          alt={order.cakeId.name}
+                          style={{ width: "50px", height: "50px" }}
+                        />
+                        {order.cakeId.name}
+                      </td>
+                      <td className={`status ${order.status.toLowerCase()}`}>{order.status}</td>
+                      <td>{order.price}</td>
+                      <td>
+                        <button onClick={() => handleStatusChange(order._id, "accepted")}>
+                          Accept
+                        </button>
+                        <button onClick={() => handleStatusChange(order._id, "denied")}>
+                          Deny
+                        </button>
+                        <button onClick={() => handleDeleteOrder(order._id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6}>No orders found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Products Section */}
+        {activeTab === "Products" && (
+          <div className="productsSection">
+            <h2>My Cakes</h2>
+            <ul className="productList">
+              <li>🎂 Chocolate Cake - $40</li>
+              <li>🍰 Vanilla Cake - $35</li>
+              <li>🧁 Cupcakes - $25</li>
+            </ul>
+          </div>
+        )}
+
+        {/* Add Cake Section */}
+        {activeTab === "Add Cake" && (
+          <div className="addCakeSection">
+            <Addcake/>
+          </div>
+        )}
+
+        {/* Profile Section */}
+        {activeTab === "Profile" && (
+          <div className="profileSection">
+            <h2>Seller Profile</h2>
+            <p><strong>Name:</strong> John Doe</p>
+            <p><strong>Email:</strong> johndoe@example.com</p>
+            <p><strong>Phone:</strong> +123456789</p>
+          </div>
+        )}
       </div>
+
+      {/* CSS Styling */}
+      <style jsx>{`
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Poppins", sans-serif;
+        }
+
+        .dashboardContainer {
+          display: flex;
+          height: 100vh;
+          background-color: #f9f9f9;
+        }
+
+        /* Sidebar */
+        .sidebar {
+          width: 250px;
+          background: linear-gradient(135deg, #4a148c, #6a1b9a);
+          color: white;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+        }
+
+        .logo {
+          text-align: center;
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 20px;
+        }
+
+        .navList {
+          list-style: none;
+        }
+
+        .navList li {
+          margin: 10px 0;
+        }
+
+        .navList button {
+          width: 100%;
+          color: white;
+          background: none;
+          border: none;
+          padding: 12px;
+          border-radius: 5px;
+          font-size: 16px;
+          text-align: left;
+          cursor: pointer;
+          transition: 0.3s;
+        }
+
+        .navList button:hover,
+        .navList .active {
+          background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .mainContent {
+          flex: 1;
+          padding: 20px;
+        }
+
+        .topHeader {
+          display: flex;
+          justify-content: space-between;
+          background: white;
+          padding: 15px;
+          border-radius: 8px;
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logoutBtn {
+          background: #ff3b3b;
+          color: white;
+          border: none;
+          padding: 8px 15px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        .statsContainer {
+          display: flex;
+          gap: 20px;
+          margin-top: 20px;
+        }
+
+        .statBox {
+          flex: 1;
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          text-align: center;
+          box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ordersSection, .productsSection, .addCakeSection, .profileSection {
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          margin-top: 20px;
+        }
+
+        .productList {
+          list-style: none;
+        }
+
+        .addBtn {
+          margin-top: 10px;
+          background: #6a1b9a;
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        table th, table td {
+          padding: 10px;
+          border: 1px solid #ddd;
+          text-align: center;
+        }
+
+        .status.shipped {
+          color: green;
+          font-weight: bold;
+        }
+
+        .status.pending {
+          color: orange;
+          font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+          .dashboardContainer {
+            flex-direction: column;
+          }
+        }
+      `}</style>
     </div>
   );
 };
 
-export default SellerPage;
+export default SellerDashboard;

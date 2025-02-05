@@ -3,10 +3,12 @@ import { connectToDatabase } from '../../../../lib/db';
 import Product from '../../../../models/product'; // Adjust based on your actual directory structure
 import { NextResponse } from 'next/server'; // Import the correct NextResponse for App Directory
 interface Product {
+  sellerId: string;
   _id: string;
   name: string;
   price: number;
   image: string;
+  category: string;
 }
 // Named GET export for the App Directory structure
 export async function GET() {

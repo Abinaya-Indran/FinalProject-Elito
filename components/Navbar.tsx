@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');  // Add state for search query
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +23,24 @@ const Navbar = () => {
     setUser(null);
     router.push("/login");
   };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  // Sample cake data for demonstration (replace with your actual data source)
+  const cakes = [
+    { name: "Chocolate Cake", category: "Birthday" },
+    { name: "Red Velvet Cake", category: "Wedding" },
+    { name: "Cupcake", category: "Birthday" },
+    { name: "Love Cake", category: "Love" },
+  ];
+
+  const filteredCakes = cakes.filter(
+    (cake) =>
+      cake.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      cake.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <header style={styles.header}>
@@ -39,7 +58,7 @@ const Navbar = () => {
             </Link>
           </li>
 
-          {/* Categories Dropdown */}
+          {/* Categories Dropdown
           <li
             style={styles.dropdown}
             onMouseEnter={() => setDropdownOpen(true)}
@@ -75,7 +94,7 @@ const Navbar = () => {
                 </li>
               </ul>
             )}
-          </li>
+          </li> */}
 
           <li>
             <Link href="/contact" style={styles.navLink}>
@@ -88,7 +107,6 @@ const Navbar = () => {
               Delivery
             </Link>
           </li>
-      
 
           {!user ? (
             <li>
@@ -129,9 +147,23 @@ const Navbar = () => {
           type="text"
           placeholder="Search for cakes..."
           style={styles.searchInput}
+          value={searchQuery} // Bind value to state
+          onChange={handleSearch} // Handle input changes
         />
         <button style={styles.searchButton}>🔍</button>
       </div>
+
+      {/* Display filtered cakes (for demonstration)
+      <div>
+        <h3>Search Results:</h3>
+        <ul>
+          {filteredCakes.map((cake, index) => (
+            <li key={index}>
+              {cake.name} - {cake.category} Cake
+            </li>
+          ))}
+        </ul>
+      </div> */}
     </header>
   );
 };

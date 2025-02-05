@@ -8,10 +8,12 @@ import { FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa"; // Import ic
 const ProductPage = () => {
   interface Product {
     _id: string;
+    sellerId: string;
     name: string;
     price: number;
     image: string;
-    rating?: number; // New rating field (optional)
+    rating: number; // New rating field (optional)
+    category: string;
   }
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -44,10 +46,11 @@ const ProductPage = () => {
 
     if (searchQuery) {
       filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        product.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.name?.toLowerCase().includes(searchQuery.toLowerCase()) // Added name filter
       );
     }
-
+  
     if (maxPrice !== null) {
       filtered = filtered.filter((product) => product.price <= maxPrice);
     }
@@ -242,9 +245,7 @@ const ProductPage = () => {
                       <FaShoppingCart />
                     </button>
                   </Link>
-                  {/* <button className="cart-button" onClick={() => addToCart(product)}>
-                    <FaShoppingCart /> */}
-                  {/* </button> */}
+                  
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CakeDetails from "../components/Cakedetails";
-import OrderPage from "../components/Order";
+import OrderPage from "./order";
 import PaymentPage from "../components/paymnet";
 import DeliveryStatus from "../components/deliverystatus";
 

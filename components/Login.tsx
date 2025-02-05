@@ -46,7 +46,7 @@ const Login = () => {
         } else if (data.user?.role === "Seller") {
           await router.push("/sellerpage");
         } else if (data.user?.role === "Admin") {
-          await router.push("/admin/dashboard");
+          await router.push("/Admin");
         } else {
           setError("Invalid role");
         }

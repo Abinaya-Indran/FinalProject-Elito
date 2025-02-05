@@ -1,16 +1,18 @@
-
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Order from '../../../components/order'
+import OrderStatus from '../../../components/orderstatus'
 
-function orderPage() {
+
+
+function orderstatus() {
     return (
         <div>
-            <Navbar/><br/><br/>
-            <Order/><br/><br/><br/>
+            <Navbar/>
+            <OrderStatus/>
             <Bottom/>
+           
         </div>
     )
 }
 
-export default orderPage
+export default orderstatus

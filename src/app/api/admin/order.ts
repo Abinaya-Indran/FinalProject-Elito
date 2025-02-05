@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToDatabase } from '../../../../lib/db'; // Correct import
-import Order from '../../../../models/Order';
+import Order from '../../../../models/order';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {

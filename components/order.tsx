@@ -1,20 +1,45 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const Order = () => {
   const router = useRouter();
+
+  const [cakeId, setCakeId] = useState<string>("");
+  const [buyerId, setBuyerId] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get("/api/cookie");
+        setBuyerId(response.data.user.userId);
+      } catch (error) {
+        console.error("Error fetching user ID:", error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (router.isReady) {
+      const cakeId = router.query.productId;
+      setCakeId(typeof cakeId === "string" ? cakeId : "");
+    }
+  }, [router.isReady, router.query]);
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     phoneNumber: "",
-    whatsappNumber: "",
     address: "",
     email: "",
     deliveryCity: "",
     deliveryArea: "",
     deliveryDate: "",
-    deliveryTime: "",
   });
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -22,53 +47,56 @@ const Order = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handlePlaceOrder = async () => {
     const errorList: string[] = [];
-    for (const key in formData) {
-      if (formData[key as keyof typeof formData].trim() === "") {
-        errorList.push(key);
-      }
-    }
+
+    if (!cakeId.trim()) errorList.push("cakeId is required");
+    if (!buyerId.trim()) errorList.push("buyerId is required");
+
+    Object.entries(formData).forEach(([key, value]) => {
+      if (!value.trim()) errorList.push(`${key} is required`);
+    });
 
     if (errorList.length > 0) {
       setErrors(errorList);
-    } else {
-      setErrors([]);
-      setLoading(true);
+      return;
+    }
 
-      try {
-        const response = await fetch("/api/Order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            cakeId: router.query.cakeId, // Assume cakeId is passed in the query
-            sellerId: router.query.sellerId, // Assume sellerId is passed in the query
-            buyerDetails: {
-              ...formData,
-            },
-            deliveryDetails: {
-              deliveryCity: formData.deliveryCity,
-              deliveryArea: formData.deliveryArea,
-              deliveryDate: formData.deliveryDate,
-              deliveryTime: formData.deliveryTime,
-            },
-          }),
-        });
+    setErrors([]);
+    setLoading(true);
+    setSuccessMessage(""); // Reset previous success message
 
-        if (response.ok) {
-          router.push("/payment");
-        } else {
-          const errorData = await response.json();
-          alert(errorData.error || "Failed to place the order");
-        }
-      } catch (error) {
-        alert("An unexpected error occurred");
-      } finally {
-        setLoading(false);
+    try {
+      const response = await axios.post("/api/order", {
+        cakeId,
+        buyerId,
+        buyerDetails: formData,
+        deliveryDetails: {
+          deliveryCity: formData.deliveryCity,
+          deliveryArea: formData.deliveryArea,
+          deliveryDate: formData.deliveryDate,
+        },
+      });
+
+      if (response.status !== 201) {
+        alert("Failed to place the order");
+        return;
       }
+
+      setSuccessMessage("Order sent successfully!");
+      setTimeout(() => {
+        
+      if (response.status === 201 && response.data.order) {
+        router.push(`/orderstatus?orderId=${response.data.order._id}`)
+      }
+      }, 2000);
+    } catch (error) {
+      alert("An unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,6 +104,21 @@ const Order = () => {
     <>
       <div className="formSection">
         <h2 className="heading">Order Details</h2>
+
+        {successMessage && (
+          <div className="successMessage">
+            <p>{successMessage}</p>
+          </div>
+        )}
+
+        {errors.length > 0 && (
+          <div className="errorMessage">
+            {errors.map((err, index) => (
+              <p key={index}>{err}</p>
+            ))}
+          </div>
+        )}
+
         <div className="formGroup">
           <input
             type="text"
@@ -83,7 +126,7 @@ const Order = () => {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            className={`input ${errors.includes("firstName") ? "error" : ""}`}
+            className={`input ${errors.includes("firstName is required") ? "error" : ""}`}
           />
           <input
             type="text"
@@ -91,9 +134,10 @@ const Order = () => {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            className={`input ${errors.includes("lastName") ? "error" : ""}`}
+            className={`input ${errors.includes("lastName is required") ? "error" : ""}`}
           />
         </div>
+
         <div className="formGroup">
           <input
             type="text"
@@ -101,21 +145,10 @@ const Order = () => {
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
-            className={`input ${
-              errors.includes("phoneNumber") ? "error" : ""
-            }`}
-          />
-          <input
-            type="text"
-            placeholder="WhatsApp Number"
-            name="whatsappNumber"
-            value={formData.whatsappNumber}
-            onChange={handleChange}
-            className={`input ${
-              errors.includes("whatsappNumber") ? "error" : ""
-            }`}
+            className={`input ${errors.includes("phoneNumber is required") ? "error" : ""}`}
           />
         </div>
+
         <div className="formGroup">
           <input
             type="text"
@@ -123,7 +156,7 @@ const Order = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            className={`input ${errors.includes("address") ? "error" : ""}`}
+            className={`input ${errors.includes("address is required") ? "error" : ""}`}
           />
           <input
             type="email"
@@ -131,7 +164,7 @@ const Order = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className={`input ${errors.includes("email") ? "error" : ""}`}
+            className={`input ${errors.includes("email is required") ? "error" : ""}`}
           />
         </div>
 
@@ -143,9 +176,7 @@ const Order = () => {
             name="deliveryCity"
             value={formData.deliveryCity}
             onChange={handleChange}
-            className={`input ${
-              errors.includes("deliveryCity") ? "error" : ""
-            }`}
+            className={`input ${errors.includes("deliveryCity is required") ? "error" : ""}`}
           />
           <input
             type="text"
@@ -153,45 +184,28 @@ const Order = () => {
             name="deliveryArea"
             value={formData.deliveryArea}
             onChange={handleChange}
-            className={`input ${
-              errors.includes("deliveryArea") ? "error" : ""
-            }`}
+            className={`input ${errors.includes("deliveryArea is required") ? "error" : ""}`}
           />
         </div>
         <div className="formGroup">
-          <label htmlFor="deliveryDate" className="label">
-            Delivery Date
-          </label>
+          <label htmlFor="deliveryDate" className="label">Delivery Date</label>
           <input
             type="date"
             id="deliveryDate"
             name="deliveryDate"
             value={formData.deliveryDate}
             onChange={handleChange}
-            className={`input ${
-              errors.includes("deliveryDate") ? "error" : ""
-            }`}
-          />
-          <label htmlFor="deliveryTime" className="label">
-            Delivery Time
-          </label>
-          <input
-            type="time"
-            id="deliveryTime"
-            name="deliveryTime"
-            value={formData.deliveryTime}
-            onChange={handleChange}
-            className={`input ${
-              errors.includes("deliveryTime") ? "error" : ""
-            }`}
+            className={`input ${errors.includes("deliveryDate is required") ? "error" : ""}`}
           />
         </div>
+
         <div className="buttonContainer">
           <button className="button" onClick={handlePlaceOrder} disabled={loading}>
             {loading ? "Placing Order..." : "Place Order"}
           </button>
         </div>
       </div>
+
       <style jsx>{`
         .formSection {
           background: #fff;
@@ -206,6 +220,23 @@ const Order = () => {
           font-size: 1.8em;
           font-weight: 600;
           color: #333;
+          text-align: center;
+        }
+        .successMessage {
+          background-color: #d4edda;
+          color: #155724;
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 15px;
+          text-align: center;
+          font-weight: bold;
+        }
+        .errorMessage {
+          background-color: #ffdddd;
+          color: red;
+          padding: 10px;
+          border-radius: 5px;
+          margin-bottom: 15px;
           text-align: center;
         }
         .formGroup {
@@ -223,11 +254,6 @@ const Order = () => {
         }
         .input.error {
           border-color: red;
-        }
-        .label {
-          flex: 1 1 100%;
-          font-weight: bold;
-          margin-top: 10px;
         }
         .buttonContainer {
           text-align: center;

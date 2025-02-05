@@ -1,71 +1,90 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import axios from 'axios';
 
 interface Product {
+  sellerId: string;
   name: string;
   price: number;
   image: string;
   createdAt?: Date;
   description?: string;
-  stock?: number;
-}
-
-interface ApiResponse {
-  product?: Product;
-  error?: string;
+  category?: string;
 }
 
 export default function AddProduct() {
   const [product, setProduct] = useState<Product>({
+    sellerId: '',
     name: '',
     price: 0,
     image: '',
     description: '',
     createdAt: new Date(),
-    stock: 0,
+    category: '',
   });
   const [preview, setPreview] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [sellerId, setSellerId] = useState<string>('');
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get('/api/cookie');
+        setSellerId(response.data.user.userId);
+      } catch (error) {
+        console.error('Error fetching user ID:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = (event: ProgressEvent<FileReader>) => {
-        const result = event.target?.result;
-        if (typeof result === 'string') {
-          setPreview(result);
-          setProduct((prevProduct) => ({
-            ...prevProduct,
-            image: result,
-          }));
-        }
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setPreview(result);
+        setProduct((prev) => ({ ...prev, image: result }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage('');
+
+    if (!sellerId) {
+      alert('Seller ID is missing');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/addcake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: product }),
+      const response = await axios.post('/api/addcake', {data: { ...product, sellerId } });
+      console.log('Response:', response.data);
+
+      // const result = await response.json();
+
+      // if (!response.ok) {
+      //   throw new Error(result.error || 'Error adding product');
+      // }
+
+      alert('Product added successfully');
+      setProduct({
+        sellerId: '',
+        name: '',
+        price: 0,
+        image: '',
+        description: '',
+        createdAt: new Date(),
+        category: '',
       });
-      if (!response.ok) {
-        const result = await response.json();
-        console.error(result.error);
-        alert('Error adding product');
-      } else {
-        const result: ApiResponse = await response.json();
-        console.log('Product added:', result.product);
-        alert('Product added successfully');
-      }
+      setPreview('');
     } catch (err) {
       console.error('Error:', err);
-      alert('Error adding product');
+      alert(err instanceof Error ? err.message : 'Error adding product');
     }
   };
 
@@ -98,13 +117,7 @@ export default function AddProduct() {
           </div>
           <div className="form-group">
             <label htmlFor="image">Product Image</label>
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              required
-            />
+            <input type="file" id="image" accept="image/*" onChange={handleImageChange} required />
             {preview && <Image src={preview} alt="Preview" width={200} height={200} />}
           </div>
           <div className="form-group">
@@ -128,19 +141,20 @@ export default function AddProduct() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="stock">Stock</label>
+            <label htmlFor="category">Category</label>
             <input
-              type="number"
-              id="stock"
-              placeholder="Stock"
-              value={product.stock || ''}
-              onChange={(e) => setProduct({ ...product, stock: parseInt(e.target.value, 10) })}
+              type="text"
+              id="category"
+              placeholder="Category"
+              value={product.category || ''}
+              onChange={(e) => setProduct({ ...product, category: e.target.value })}
             />
           </div>
           <button type="submit" className="submit-btn">Add Product</button>
           {message && <p className="form-message">{message}</p>}
         </div>
       </form>
+
 
       <style jsx>{`
         .form-container {

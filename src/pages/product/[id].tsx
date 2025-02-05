@@ -12,8 +12,7 @@ const ProductDetails = () => {
     price: number;
     image: string;
     description: string;
-    stock: number;
-    createdAt: string;
+    category: string;
     seller: {
       name: string;
       contact: string;
@@ -56,20 +55,16 @@ const ProductDetails = () => {
         <h1 style={styles.title}>{product.name}</h1>
         <p style={styles.price}>LKR {product.price}</p>
         <p style={styles.description}>{product.description}</p>
-        <p style={styles.stock}>
-          Stock: {product.stock > 0 ? product.stock : "Out of stock"}
-        </p>
-        <p style={styles.date}>Added on: {new Date(product.createdAt).toLocaleDateString()}</p>
+        <p style={styles.category}>Category: {product.category}</p>
 
         {/* Seller Details */}
         <div style={styles.sellerInfo}>
           <h3>Seller Information</h3>
           <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
-          <p><strong>Contact:</strong> {product.seller?.contact || "Not Available"}</p>
         </div>
 
         <div style={styles.addToCart}>
-          <Link href="/order" passHref>
+          <Link href={`/order?productId=${product._id}`} passHref>
             <button style={styles.cartButton}>Buy Now</button>
           </Link>
           <Link href="/yourcart" passHref>
@@ -122,6 +117,10 @@ const styles = {
   description: {
     fontSize: "18px",
     color: "#666",
+  },
+  category: {
+    fontSize: "18px",
+    color: "#777",
   },
   stock: {
     fontSize: "18px",
