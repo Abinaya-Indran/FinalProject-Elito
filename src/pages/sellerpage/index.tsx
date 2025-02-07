@@ -7,9 +7,9 @@ import SellerPage from '../../../components/sellerpage'
 function sellerPage() {
     return (
         <div>
-            {/* <Navbar/><br/><br/><br/>     */}
+            <Navbar/><br/><br/><br/>    
             <SellerPage/>
-            {/* <Bottom/> */}
+            <Bottom/>
         </div>
     )
 }

@@ -1,78 +1,148 @@
+// src/components/SellerDashboard.tsx
 import { useState, useEffect } from "react";
-import Addcake from "./AddCake";
-import io from "socket.io-client";
+import Addcake from "./AddCake"; // Assuming you have an AddCake component
+import axios from "axios";
+import { response } from "express";
+import toast from "react-hot-toast";
 
 const SellerDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
   interface Order {
     _id: string;
     buyerDetails?: {
-      name: string;
+      firstName: string;
+      lastName: string;
     };
     cakeId: {
-      name: string;
       image: string;
-      price: number;
+      name: string;
     };
     status: string;
     price: number;
   }
-  
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [notifications, setNotifications] = useState<string[]>([]);
 
-    // Fetch orders from API
-    useEffect(() => {
-      const fetchOrders = async () => {
-        try {
-          const response = await fetch("/api/order"); // Adjust endpoint if needed
-          if (!response.ok) throw new Error("Failed to fetch orders");
-          const data = await response.json();
-          setOrders(data);
-        } catch (error) {
-          console.error("Error fetching orders:", error);
+  const [orders, setOrders] = useState<Order[]>([]);
+  interface Product {
+    _id: string;
+    image: string;
+    name: string;
+    price: number;
+    category:string;
+  }
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [notifications, setNotifications] = useState<string[]>([]);
+  const [id, setId] = useState<string>('')
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { data } = await axios.get('/api/cookie');
+        const userId = data?.user?.userId;
+        setId(userId);
+  
+        if (userId) {
+          const [productRes, orderRes] = await Promise.all([
+            axios.post('/api/Product/getbyuserid', { userId }),
+            axios.post('/api/order/getbyuserid', { userId })
+          ]);
+  
+          setProducts(productRes.data.cakes);
+          setOrders(orderRes.data.orders);
         }
-      };
-  
-      if (activeTab === "Orders") {
-        fetchOrders();
+      } catch (error) {
+        toast.error('Error fetching user data');
       }
-    }, [activeTab]);
+    };
   
-    const handleStatusChange = async (orderId: string, newStatus: string) => {
-      // Make API call to update the order status
-      const response = await fetch(`/api/order/${orderId}`, {
-        method: "PUT",
-        body: JSON.stringify({ status: newStatus }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.ok) {
-        const updatedOrder = await response.json();
-        setOrders((prevOrders) =>
-          prevOrders.map((order) =>
-            order._id === updatedOrder.order._id ? updatedOrder.order : order
+    fetchUser();
+  }, [activeTab]); 
+  
+  console.log(orders)
+  
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    // Make API call to update the order status
+    const response = await fetch(`/api/order/${orderId}`, {
+      method: "PUT",
+      body: JSON.stringify({ status: newStatus }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.ok) {
+      const updatedOrder = await response.json();
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === updatedOrder.order._id ? updatedOrder.order : order
+        )
+      );
+    } else {
+      console.error("Failed to update order status");
+    }
+  };
+  
+
+  // const handleDeleteOrder = async (orderId: string) => {
+  //   try {
+  //     const response = await axios.delete(`/api/order/${orderId}`);
+  //     if (response.status === 200) {
+  //       setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting order:", error);
+  //   }
+  // };
+
+  const handleEdit = (productId: string) => {
+    alert(`Edit product: ${productId}`);
+    // Navigate to edit page or open modal
+  };
+
+  const handleDelete = async (productId: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`/api/Product/${productId}`);
+      setProducts(products.filter((product) => product._id !== productId));
+    } catch (error) {
+      alert("Failed to delete product");
+    }
+  };
+
+  const handleEditCake = async (productId: string, updatedProduct: { name: string; price: number; image: string }) => {
+    console.log("Editing Product ID:", productId);
+    console.log("Updated Data:", updatedProduct);
+  
+    try {
+      const response = await axios.put(`/api/Product/${productId}`, updatedProduct);
+      console.log("API Response:", response);
+  
+      if (response.status === 200) {
+        setProducts((prevProducts) =>
+          prevProducts.map((product) =>
+            product._id === productId ? { ...product, ...updatedProduct } : product
           )
         );
-      } else {
-        console.error("Failed to update order status");
+        toast.success("Product updated successfully");
       }
-    };
+    } catch (error) {
+      console.error("Edit Product Error:", error);
+      toast.error("Failed to update product");
+    }
+  };
   
-    const handleDeleteOrder = async (orderId: string) => {
-      // Make API call to delete the order
-      const response = await fetch(`/api/order/${orderId}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        setOrders(orders.filter((order) => order._id !== orderId));
-      } else {
-        console.error("Failed to delete order");
-      }
-    };
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/logout"); // Adjust based on your API
+      window.location.href = "/login"; // Redirect to login page
+    } catch (error) {
+      toast.error("Logout failed");
+    }
+  };
   
-  
+
   return (
     <div className="dashboardContainer">
       {/* Sidebar */}
@@ -101,8 +171,8 @@ const SellerDashboard = () => {
           <button className="logoutBtn">Logout</button>
         </header>
 
-         {/* Notification */}
-         {notifications.length > 0 && (
+        {/* Notification */}
+        {notifications.length > 0 && (
           <div className="notificationBanner">
             {notifications[notifications.length - 1]}
           </div>
@@ -126,9 +196,8 @@ const SellerDashboard = () => {
           </div>
         )}
 
-       
-         {/* Orders Section with Fetched Data */}
-         {activeTab === "Orders" && (
+        {/* Orders Section */}
+        {activeTab === "Orders" && (
           <div className="ordersSection">
             <h2>Recent Orders</h2>
             <table>
@@ -138,7 +207,6 @@ const SellerDashboard = () => {
                   <th>Customer</th>
                   <th>Cake</th>
                   <th>Status</th>
-                  <th>Price (LKR)</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -147,27 +215,21 @@ const SellerDashboard = () => {
                   orders.map((order) => (
                     <tr key={order._id}>
                       <td>{order._id}</td>
-                      <td>{order.buyerDetails?.name || "N/A"}</td>
+                      <td>{`${order.buyerDetails?.firstName} ${order.buyerDetails?.lastName}` || "N/A"}</td>
                       <td>
-                        <img
-                          src={order.cakeId.image}
-                          alt={order.cakeId.name}
-                          style={{ width: "50px", height: "50px" }}
-                        />
-                        {order.cakeId.name}
+                      <img
+                        src={order.cakeId?.image || ""}
+                        alt={order.cakeId?.name || "Cake"}
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                      {order.cakeId?.name || ""}
                       </td>
                       <td className={`status ${order.status.toLowerCase()}`}>{order.status}</td>
-                      <td>{order.price}</td>
+
                       <td>
-                        <button onClick={() => handleStatusChange(order._id, "accepted")}>
-                          Accept
-                        </button>
-                        <button onClick={() => handleStatusChange(order._id, "denied")}>
-                          Deny
-                        </button>
-                        <button onClick={() => handleDeleteOrder(order._id)}>
-                          Delete
-                        </button>
+                        <button onClick={() => handleStatusChange(order._id, "accepted")}>Accept</button>
+                        <button onClick={() => handleStatusChange(order._id, "denied")}>Deny</button>
+                       
                       </td>
                     </tr>
                   ))
@@ -182,21 +244,47 @@ const SellerDashboard = () => {
         )}
 
         {/* Products Section */}
-        {activeTab === "Products" && (
-          <div className="productsSection">
-            <h2>My Cakes</h2>
-            <ul className="productList">
-              <li>🎂 Chocolate Cake - $40</li>
-              <li>🍰 Vanilla Cake - $35</li>
-              <li>🧁 Cupcakes - $25</li>
-            </ul>
+        {activeTab === "Products" && ( 
+           <div className="container">
+              <table className="product-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Category</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product._id}>
+                    <td>
+                      <img src={product.image} alt={product.name} className="product-image" />
+                    </td>
+                    <td>{product.name}</td>
+                    <td>LKR{product.price.toFixed(2)}</td>
+                    <td>{product.category}</td>
+                    <td>
+                        <button onClick={() => handleEditCake(product._id, { name: product.name, price: product.price, image: product.image })}>
+                        ✏️ Edit
+                      </button>
+                      <button onClick={() => handleDelete(product._id)}>
+                        🗑️ Delete
+                      </button>
+                    </td>
+                   
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
 
         {/* Add Cake Section */}
         {activeTab === "Add Cake" && (
           <div className="addCakeSection">
-            <Addcake/>
+            <Addcake />
           </div>
         )}
 
@@ -226,7 +314,6 @@ const SellerDashboard = () => {
           background-color: #f9f9f9;
         }
 
-        /* Sidebar */
         .sidebar {
           width: 250px;
           background: linear-gradient(135deg, #4a148c, #6a1b9a);
@@ -270,7 +357,6 @@ const SellerDashboard = () => {
           background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Main Content */
         .mainContent {
           flex: 1;
           padding: 20px;
@@ -320,16 +406,6 @@ const SellerDashboard = () => {
           list-style: none;
         }
 
-        .addBtn {
-          margin-top: 10px;
-          background: #6a1b9a;
-          color: white;
-          border: none;
-          padding: 10px 15px;
-          border-radius: 5px;
-          cursor: pointer;
-        }
-
         table {
           width: 100%;
           border-collapse: collapse;
@@ -340,6 +416,42 @@ const SellerDashboard = () => {
           padding: 10px;
           border: 1px solid #ddd;
           text-align: center;
+        }
+
+        .container {
+          max-width: 1300px;
+          margin: 0 auto;
+          padding: 20px;
+          text-align: center;
+        }
+        .title {
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+        .product-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .product-table th, .product-table td {
+          border: 1px solid #ddd;
+          padding: 12px;
+          text-align: left;
+        }
+        .product-table th {
+          background-color:#6a1b9a;
+          color:white;
+          font-weight: bold;
+        }
+        .product-table tr:nth-child(even) {
+          background-color: #fafafa;
+        }
+        .product-image {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 8px;
         }
 
         .status.shipped {

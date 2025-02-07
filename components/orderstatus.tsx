@@ -29,6 +29,12 @@ const OrderStatus = () => {
     fetchOrderStatus();
   }, [orderId]);
 
+  const handleOkClick = () => {
+    if (status === "accepted") {
+      router.push("/payment"); // Redirect to payment page
+    }
+  };
+
   return (
     <div className="container">
       {status === "pending" && (
@@ -42,6 +48,7 @@ const OrderStatus = () => {
         <div className="status-card accepted">
           <h2>✅ Order Accepted!</h2>
           <p>The seller has accepted your order for <strong>{cakeName}</strong>. Get ready for your delicious treat! 🎉</p>
+          <button onClick={handleOkClick} className="ok-button">OK</button>
         </div>
       )}
 
@@ -109,6 +116,22 @@ const OrderStatus = () => {
         strong {
           font-weight: 700;
           color: #333;
+        }
+
+        .ok-button {
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: background-color 0.3s;
+        }
+
+        .ok-button:hover {
+          background-color: #218838;
         }
       `}</style>
     </div>

@@ -176,7 +176,7 @@ const styles: { [key: string]: CSSProperties } = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#B864D4",
+    backgroundColor: "#BA55D3",
     color: "white",
     padding: "10px 20px",
     marginTop: "15px",
