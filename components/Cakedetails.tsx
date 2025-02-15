@@ -1,9 +1,11 @@
 "use client";
 
+import "../../../styles/global.css";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
+
 
 const ProductDetails = () => {
   interface Product {
@@ -12,19 +14,21 @@ const ProductDetails = () => {
     price: number;
     image: string;
     description: string;
-    stock: number;
-    createdAt: string;
+    category: string;
     seller: {
       name: string;
       contact: string;
     };
+    createdAt?: string;
   }
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const router = useRouter();
-  const { id } = router.query;
+  const params = useParams();
+  const id = params?.id as string | undefined;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -42,9 +46,30 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
+  const handleSizeSelect = (size: string) => {
+    setSelectedSize(size);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!product) return <div>Product not found</div>;
+
+  const buttonStyle = (size: string) => {
+    const isSelected = selectedSize === size;
+    return {
+      padding: "12px 25px",
+      background: isSelected ? "#B864D4" : "#F9F9F9",
+      border: `2px solid ${isSelected ? "#B864D4" : "#ccc"}`,
+      borderRadius: "5px",
+      cursor: "pointer",
+      fontSize: "16px",
+      transition: "all 0.3s ease, transform 0.2s ease",
+      fontFamily: "Poppins",
+      color: isSelected ? "white" : "#333",
+      boxShadow: isSelected ? "0px 6px 12px rgba(0, 0, 0, 0.15)" : "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      transform: isSelected ? "scale(1.05)" : "scale(1)",
+    };
+  };
 
   return (
     <section style={styles.container}>
@@ -54,22 +79,42 @@ const ProductDetails = () => {
 
       <div style={styles.details}>
         <h1 style={styles.title}>{product.name}</h1>
-        <p style={styles.price}>LKR {product.price}</p>
-        <p style={styles.description}>{product.description}</p>
-        <p style={styles.stock}>
-          Stock: {product.stock > 0 ? product.stock : "Out of stock"}
-        </p>
-        <p style={styles.date}>Added on: {new Date(product.createdAt).toLocaleDateString()}</p>
+        <p style={styles.price}>Rs {product.price}</p>
+        <p style={styles.description}>Description: {product.description}</p>
+        <p style={styles.date}>Added on: {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "N/A"}</p>
+
+        {/* Size Options */}
+        <div style={styles.sizeOptions}>
+          <label style={styles.label}>Size (Optional):</label>
+          <div style={styles.sizeButtonGroup}>
+            {["500g", "1kg", "2kg", "3kg"].map((size) => (
+              <button key={size} style={buttonStyle(size)} onClick={() => handleSizeSelect(size)}>
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Personalized Icing Message */}
+        <div>
+          <p>Personalized icing message on the cake</p>
+          <input type="text" placeholder="Personalized Icing Message" style={styles.input} />
+        </div>
+        <div>
+          <p>If you want any changes  </p>
+          <input type="text" placeholder="text here" style={styles.input} />
+        </div>
+
 
         {/* Seller Details */}
         <div style={styles.sellerInfo}>
           <h3>Seller Information</h3>
           <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
-          <p><strong>Contact:</strong> {product.seller?.contact || "Not Available"}</p>
         </div>
 
+        {/* Buttons */}
         <div style={styles.addToCart}>
-          <Link href="/order" passHref>
+          <Link href={`/order?productId=${product._id}`} passHref>
             <button style={styles.cartButton}>Buy Now</button>
           </Link>
           <Link href="/yourcart" passHref>
@@ -123,14 +168,29 @@ const styles = {
     fontSize: "18px",
     color: "#666",
   },
-  stock: {
-    fontSize: "18px",
-    fontWeight: "bold",
-    color: "#D9534F",
-  },
   date: {
     fontSize: "16px",
     color: "#777",
+  },
+  sizeOptions: {
+    marginTop: "15px",
+  },
+  label: {
+    fontSize: "18px",
+    fontWeight: "bold",
+  },
+  sizeButtonGroup: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "10px",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    marginTop: "10px",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    fontSize: "16px",
   },
   sellerInfo: {
     padding: "15px",

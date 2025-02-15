@@ -1,129 +1,281 @@
-// // src/app/components/ProductDetails.tsx
-// "use client";
+"use client";
 
-// import React, { useEffect, useState } from "react";
-// import { useRouter } from "next/router";
-// import axios from "axios";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Link from "next/link";
+import { FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
+import product from "../models/product";
+import toast from "react-hot-toast";
 
-// // Type definition for product
-// interface Product {
-//   _id: string;
-//   name: string;
-//   price: number;
-//   description: string;
-//   category: string;
-//   stock: number;
-//   imageUrl: string;
-// }
+const ProductPage = () => {
+  interface Product {
+    _id: string;
+    sellerId: string;
+    name: string;
+    price: number;
+    image: string;
+    rating: number;
+    category: string;
+  }
 
-// const ProductDetails = () => {
-//   const router = useRouter();
-//   const { productId } = router.query; // Get the productId from URL
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [cart, setCart] = useState<Product[]>([]);
 
-//   const [product, setProduct] = useState<Product | null>(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("/api/Product");
+        setProducts(response.data);
+        setFilteredProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-//   useEffect(() => {
-//     if (!productId) return;
+    fetchProducts();
+  }, []);
 
-//     const fetchProductDetails = async () => {
-//       try {
-//         // Ensure the correct API path (lowercase 'product')
-//         const response = await axios.get(`/api/product/${productId}`);
-//         setProduct(response.data);
-//       } catch (error) {
-//         console.error("Error fetching product details:", error);
-//         setError("Failed to load product details");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
+  useEffect(() => {
+    let filtered = products;
 
-//     fetchProductDetails();
-//   }, [productId]);
+    if (searchQuery) {
+      filtered = filtered.filter((product) =>
+        product.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.name?.toLowerCase().includes(searchQuery.toLowerCase()) // Added name filter
+      );
+    }
+  
+    if (maxPrice !== null) {
+      filtered = filtered.filter((product) => product.price <= maxPrice);
+    }
 
-//   // Handle loading, error, and no product found
-//   if (loading) return <div>Loading...</div>;
-//   if (error) return <div>{error}</div>;
-//   if (!product) return <div>Product not found</div>;
+    setFilteredProducts(filtered);
+  }, [searchQuery, maxPrice, products]);
 
-//   return (
-//     <div>
-//       <style jsx>{`
-//         .details-container {
-//           max-width: 800px;
-//           margin: 2rem auto;
-//           padding: 1rem;
-//           background-color: #fff;
-//           border: 1px solid #e2e2e2;
-//           border-radius: 1rem;
-//           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//         }
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
 
-//         .details-image {
-//           width: 100%;
-//           height: 400px;
-//           object-fit: cover;
-//           border-radius: 1rem;
-//         }
+  const addToCart = async (id: string) => {
+    const cookieResponse = await axios.get('/app/cookie')
+    const userId = cookieResponse.data.userId
 
-//         .details-content {
-//           padding: 1rem;
-//         }
+    const addToCartProduct = await axios.post('/api/cart', {
+      userId: userId, 
+      productId: id,
+      quantity: 1,
+    })
 
-//         .details-title {
-//           font-size: 2rem;
-//           font-weight: bold;
-//           color: #333;
-//         }
+    if (addToCartProduct.status === 200 && addToCartProduct.data.product) {
+      toast.success('Product added in your cart.')
+    } else {
+      toast.error('Failed to add to cart product.')
+    }
+    // const updatedCart = [...cart, product];
+    // setCart(updatedCart);
+    // localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
 
-//         .details-price {
-//           font-size: 1.5rem;
-//           color: #777;
-//           margin: 1rem 0;
-//         }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (products.length === 0) return <div>No products available</div>;
 
-//         .details-description {
-//           font-size: 1.125rem;
-//           color: #555;
-//         }
+  return (
+    <div>
+      <style jsx>{`
+        .page-container {
+          min-height: 100vh;
+          background-color:#F7F7F7;
+          padding: 2rem;
+        }
+        .page-title {
+          font-size: 2.5rem;
+          font-weight: bold;
+          text-align: center;
+          color:black;
+          margin-bottom: 2rem;
+        }
+        .filter-container {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 2rem;
+          justify-content: center;
+        }
+        .filter-input {
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: 1px solid #ccc;
+          border-radius: 0.5rem;
+        }
+        .product-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(20vw, 5fr));
+          gap: 3rem;
+          justify-items: center;
+         
+        }
+        .product-card {
+          background-color:white;
+          border-radius: 1rem;
+          overflow: hidden;
+          box-shadow: 0 10px 15px rgba(54, 54, 54, 0.48);
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          width: 100%;
+          max-width: 900px;
+          text-align: center;
+          margin: 0 auto;
+          position: relative;
+          cursor: pointer;
+        }
+        .product-card:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+        }
+        .product-image {
+          width: 100%;
+          height: 350px;
+          object-fit: cover;
+          border-bottom: 1px solid white;
+        }
+        .card-content {
+          padding: 1rem;
+          background: linear-gradient(145deg,white,white);
+          position: relative;
+          background-color:"#AF0171";
+        }
+        .product-name {
+          font-size: 1.5rem;
+          font-weight:bold;
+          color:#262626;
+          margin-bottom: 0.5rem;
+        }
+        .product-price {
+          font-size: 1.3rem;
+          color:#C14679;
+          font-weight: 700;
+          margin-bottom: 0.5rem;
+        }
+        .ratings {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+        .star {
+          color: #ffd700;
+          font-size: 1.2rem;
+          margin-right: 0.2rem;
+        }
+        .buttons-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          margin-top: 1rem;
+          // background-color:#C64B8C
+        }
+        .view-details {
+          // background-color: #b864d4;
+           background-color:#C14679;
+          color: white;
+          font-size: 1rem;
+          font-weight: 500;
+          padding: 0.75rem;
+          border: none;
+          border-radius: 0.5rem;
+          flex-grow: 1;
+          transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .view-details:hover {
+          background-color: #944bb8;
+          transform: scale(1.05);
+        }
+        .cart-button {
+          // background-color: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 1.5rem;
+          color:#C14679;
+          transition: transform 0.3s ease;
+          background-color:white;
+          
+        }
+        .cart-button:hover {
+          transform: scale(1.2);
+          color: #944bb8;
+        }
+      `}</style>
 
-//         .details-category {
-//           margin-top: 1rem;
-//           font-size: 1rem;
-//           color: #888;
-//         }
+      <div className="page-container">
+        <h1 className="page-title">Our Cakes</h1>
 
-//         .details-stock {
-//           margin-top: 1rem;
-//           font-size: 1rem;
-//           color: ${product.stock > 0 ? "#4caf50" : "#f44336"};
-//         }
-//       `}</style>
+        <div className="filter-container">
+          <input
+            type="text"
+            className="filter-input"
+            placeholder="Search by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <input
+            type="number"
+            className="filter-input"
+            placeholder="Max Price"
+            value={maxPrice === null ? "" : maxPrice}
+            onChange={(e) =>
+              setMaxPrice(e.target.value ? parseInt(e.target.value, 10) : null)
+            }
+          />
+        </div>
 
-//       <div className="details-container">
-//         <img
-//           src={product.imageUrl || "/default-image.jpg"} // Default image if none provided
-//           alt={product.name}
-//           className="details-image"
-//         />
-//         <div className="details-content">
-//           <h1 className="details-title">{product.name}</h1>
-//           <p className="details-price">₹{product.price}</p>
-//           <p className="details-description">
-//             {product.description || "No description available."}
-//           </p>
-//           <p className="details-category">
-//             Category: {product.category || "Uncategorized"}
-//           </p>
-//           <p className="details-stock">
-//             {product.stock > 0 ? "In Stock" : "Out of Stock"}
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+        <div className="product-grid">
+          {filteredProducts.map((product) => (
+            <div key={product._id} className="product-card">
+              <img src={product.image} alt={product.name} className="product-image" />
+              <div className="card-content">
+                <h2 className="product-name">{product.name}</h2>
+                <p className="product-price">LKR {product.price}</p>
 
-// export default ProductDetails;
+                <div className="ratings">
+                  {[...Array(5)].map((_, index) => (
+                    index < (product.rating || 0) ? 
+                    <FaStar key={index} className="star" /> : 
+                    <FaRegStar key={index} className="star" />
+                  ))}
+                </div>
+
+                <div className="buttons-container">
+                  <Link href={`/product/${product._id}`}>
+                    <button className="view-details">View Details</button>
+                  </Link>
+                  <Link href="/yourcart">
+                    <button
+                      className="cart-button"
+                      onClick={() => addToCart(product._id)}
+                    >
+                      <FaShoppingCart />
+                    </button>
+                  </Link>
+                  
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductPage;

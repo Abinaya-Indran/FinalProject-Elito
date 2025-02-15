@@ -263,7 +263,7 @@ const SellerDashboard = () => {
                       <img src={product.image} alt={product.name} className="product-image" />
                     </td>
                     <td>{product.name}</td>
-                    <td>LKR{product.price.toFixed(2)}</td>
+                    <td>LKR {product.price.toFixed(2)}</td>
                     <td>{product.category}</td>
                     <td>
                         <button onClick={() => handleEditCake(product._id, { name: product.name, price: product.price, image: product.image })}>

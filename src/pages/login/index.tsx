@@ -1,6 +1,7 @@
 import Bottom from '../../../components/bottomFooter'
 import Login from '../../../components/Login'
 import Navbar from '../../../components/Navbar'
+import "../../../styles/global.css";
 
 function LoginPage() {
     return (

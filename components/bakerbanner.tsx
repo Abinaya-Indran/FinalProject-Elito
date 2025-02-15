@@ -9,7 +9,7 @@ export default function Home() {
         <div className="text-section">
           <h1>Start selling cakes</h1>
 
-          <Link href="/sellersignup" passHref>
+          <Link href="/register" passHref>
             <button className="cta-button">Create your store</button>
           </Link>
         </div>
@@ -37,6 +37,7 @@ export default function Home() {
           margin: 0;
           padding: 0;
           box-sizing: border-box;
+          overflow:hidden;
         }
 
         /* Hero Section */
@@ -64,17 +65,18 @@ export default function Home() {
 
         .cta-button {
           padding: 15px 30px;
-          background-color: #ff6384;
+          background-color:#C14679;
           color: white;
           border: none;
-          border-radius: 4px;
-          font-size: 16px;
+          border-radius: 7px;
+          font-size: 20px;
           cursor: pointer;
           fontFamily: "poppins, sans-serif",
         }
 
         .cta-button:hover {
-          background-color: #e55774;
+            background-color: #944bb8;
+            transform: scale(1.09);
         }
 
         .image-section {

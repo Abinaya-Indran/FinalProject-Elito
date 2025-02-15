@@ -1,17 +1,60 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+
+interface Review {
+  _id?: string;
+  rating: number;
+  review: string;
+}
 
 const RatingPage = () => {
+  const searchParams = useSearchParams();
+  const cakeId = searchParams ? searchParams.get("cakeId") : null; // Get `cakeId` from URL
+
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
-  const [reviews, setReviews] = useState<{ rating: number, review: string }[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch reviews for the specific cakeId
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!cakeId) return;
+      try {
+        const res = await fetch(`/api/reviews?cakeId=${cakeId}`);
+        const data = await res.json();
+        setReviews(data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, [cakeId]);
+
+  // Submit a new review
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (rating && review.trim()) {
-      setReviews([...reviews, { rating, review }]);
-      setRating(0);
-      setReview("");
+    if (!rating || !review.trim() || !cakeId) return;
+
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cakeId, rating, review }),
+      });
+
+      if (res.ok) {
+        const newReview = await res.json();
+        setReviews([newReview, ...reviews]); // Show new review at the top
+        setRating(0);
+        setReview("");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
     }
   };
 
@@ -43,9 +86,12 @@ const RatingPage = () => {
           Submit Review
         </button>
       </form>
+
       <div className="reviews-section">
         <h2 className="reviews-title">Customer Reviews</h2>
-        {reviews.length > 0 ? (
+        {loading ? (
+          <p>Loading reviews...</p>
+        ) : reviews.length > 0 ? (
           reviews.map((r, index) => (
             <div key={index} className="review-card">
               <div className="review-rating">
@@ -61,7 +107,9 @@ const RatingPage = () => {
           <p className="no-reviews">No reviews yet. Be the first to review!</p>
         )}
       </div>
-      <style jsx>{`
+
+
+<style jsx>{`
         .rating-review-container {
           max-width: 600px;
           margin: 100px auto;
@@ -71,12 +119,12 @@ const RatingPage = () => {
         }
         .title {
           text-align: center;
-          color:green;
+          color: #B864D4;
           margin-bottom: 20px;
         }
         .rating-form {
-          background-color: #fdf3f3;
-          border: 1px solid #f1dede;
+          background-color: #FDF3F3;
+          border: 1px solid #F1DEDE;
           border-radius: 8px;
           padding: 20px;
           margin-bottom: 20px;
@@ -95,14 +143,14 @@ const RatingPage = () => {
           transition: color 0.3s;
         }
         .star-button.active {
-          color: #ffba5a;
+          color: #FFBA5A;
         }
         .review-textarea {
           width: 100%;
           height: 100px;
           margin-bottom: 15px;
           padding: 10px;
-          border: 1px solid #f1dede;
+          border: 1px solid #F1DEDE;
           border-radius: 8px;
           resize: none;
           font-size: 14px;
@@ -110,7 +158,7 @@ const RatingPage = () => {
         .submit-button {
           display: block;
           width: 100%;
-          background-color:green;
+          background-color: #B864D4;
           color: #fff;
           border: none;
           padding: 10px;
@@ -120,7 +168,7 @@ const RatingPage = () => {
           transition: background-color 0.3s;
         }
         .submit-button:hover {
-          background-color: green;
+          background-color: #B864D4;
         }
         .reviews-section {
           margin-top: 30px;
@@ -130,15 +178,15 @@ const RatingPage = () => {
           margin-bottom: 20px;
         }
         .review-card {
-          background-color: #fdf3f3;
-          border: 1px solid #f1dede;
+          background-color: #FDF3F3;
+          border: 1px solid #F1DEDE;
           border-radius: 8px;
           padding: 15px;
           margin-bottom: 15px;
         }
         .review-rating {
           font-size: 18px;
-          color: green;
+          color: #FFBA5A;
           margin-bottom: 10px;
         }
         .empty-stars {
@@ -156,5 +204,6 @@ const RatingPage = () => {
     </div>
   );
 };
+
 
 export default RatingPage;

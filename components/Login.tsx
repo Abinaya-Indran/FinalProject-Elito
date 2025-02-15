@@ -26,7 +26,7 @@ const Login = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
-        credentials: "include", // Ensure cookies are included
+        credentials: "include",
       });
 
       const data = await response.json();
@@ -59,56 +59,83 @@ const Login = () => {
   };
 
   return (
-    <section className="login-container">
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
-        <button type="submit">LOG IN</button>
-      </form>
+    <section className="login-background">
+      <div className="login-container">
+        <h1>Log In</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+          <button type="submit">LOG IN</button>
+        </form>
 
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
+        {error && <p className="error-message">{error}</p>}
+        {success && <p className="success-message">{success}</p>}
 
-      <a href="#" className="forgot-password">
-        Forgot your password?
-      </a>
-      <Link href="/register" className="create-account">
-        Create account
-      </Link>
+        <a href="#" className="forgot-password">
+          Forgot your password?
+        </a>
+        <Link href="/register" className="create-account">
+          Create account
+        </Link>
+      </div>
 
       <style jsx>{`
-        .login-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 30px;
-          max-width: 400px;
-          height: 55vh;
-          margin: 50px auto;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-          border-radius: 10px;
-          background-color: #f9f9f9;
-          font-family: "Poppins", sans-serif;
-        }
+      .login-background {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
 
+      /* Pseudo-element for blurring */
+      .login-background::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("https://res.cloudinary.com/dgyfbm2en/image/upload/v1739410646/cake-1227842_640_zvzfmn.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(2px); /* Apply blur */
+        z-index: -1;
+      }
+
+      .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        max-width: 400px;
+        height: 55vh;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        font-family: "Poppins", sans-serif;
+        position: relative;
+        z-index: 1;
+      }
         .login-container h1 {
-          color: #b864d4;
+          color:#E1578A;
           font-size: 28px;
           font-weight: bold;
           margin-bottom: 20px;
@@ -140,7 +167,7 @@ const Login = () => {
         .login-container button {
           width: 100%;
           padding: 12px;
-          background-color: #b864d4;
+          background-color:#E1578A;
           color: white;
           font-size: 18px;
           font-weight: bold;
@@ -168,7 +195,7 @@ const Login = () => {
         }
 
         .login-container a {
-          color: #b864d4;
+          color:#E1578A;
           text-decoration: none;
           font-size: 14px;
           margin-top: 10px;

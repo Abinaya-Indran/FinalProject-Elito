@@ -3,7 +3,7 @@ import "../../styles/global.css";
 import { Component } from "react"
 import Navbar from "../../components/Navbar"
 import Banner from '../../components/Banner'
-import ProductPage from "../../components/Productpage"
+import ProductPage from "../../components/productcard"
 import Bottom from "../../components/bottomFooter"
 import Footer from "../../components/Footer"
 import Bakerbanner from '../../components/bakerbanner'
@@ -22,7 +22,7 @@ function Home() {
             <Topcake/><br/><br/>
             {/* <ProductPage/><br/><br/> */}
             <Bakerbanner/><br/><br/><br/><br/>
-            <RatingPage/>
+            {/* <RatingPage/> */}
             <Contact/><br/>
             <Footer/>
             <Bottom/>

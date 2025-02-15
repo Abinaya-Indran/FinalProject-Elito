@@ -121,9 +121,9 @@ import { CSSProperties } from "react";
 
 const styles: { [key: string]: CSSProperties } = {
   container: {
-    fontFamily: "'poppins', sans-serif",
-    backgroundColor: "#F8F9FA",
-    padding: "20px",
+    fontFamily: "'poppins'",
+    backgroundColor: "#F7F7F7",
+    padding: "100px",
   },
   header: {
     textAlign: "center",
@@ -132,7 +132,7 @@ const styles: { [key: string]: CSSProperties } = {
   title: {
     fontSize: "36px",
     fontWeight: "bold",
-    color: "#6C63FF",
+    color: "#C14679",
     marginBottom: "10px",
   },
   subtitle: {
@@ -178,11 +178,11 @@ const styles: { [key: string]: CSSProperties } = {
     minHeight: "100px",
   },
   button: {
-    backgroundColor: "#6C63FF",
+    backgroundColor: "#C14679",
     color: "#FFFFFF",
     padding: "10px 15px",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "8px",
     fontSize: "16px",
     cursor: "pointer",
     transition: "background-color 0.3s",

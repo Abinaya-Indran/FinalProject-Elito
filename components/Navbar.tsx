@@ -1,283 +1,105 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart, faSearch, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');  // Add state for search query
-  const router = useRouter();
-
-  useEffect(() => {
-    const userInfo = localStorage.getItem("user");
-    if (userInfo) {
-      setUser(JSON.parse(userInfo));
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
-    router.push("/login");
-  };
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
-
-  // Sample cake data for demonstration (replace with your actual data source)
-  const cakes = [
-    { name: "Chocolate Cake", category: "Birthday" },
-    { name: "Red Velvet Cake", category: "Wedding" },
-    { name: "Cupcake", category: "Birthday" },
-    { name: "Love Cake", category: "Love" },
-  ];
-
-  const filteredCakes = cakes.filter(
-    (cake) =>
-      cake.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      cake.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <header style={styles.header}>
+    <nav style={styles.navbar}>
       {/* Logo Section */}
       <div style={styles.logo}>
-        <Image src="/images/Logo.png" alt="logo" width={180} height={180} />
+        Eli<span style={styles.logoSpan}>to</span>
       </div>
 
-      {/* Navigation Section */}
-      <nav style={styles.nav}>
-        <ul style={styles.navList}>
-          <li>
-            <Link href="/" style={styles.navLink}>
-              Home
-            </Link>
-          </li>
+      {/* Navigation Links */}
+      <ul style={styles.navList}>
+        <li><Link href="/" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Home</Link></li>
+        <li><Link href="/product" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>cakes</Link></li>
+        <li><Link href="/shop" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Shop</Link></li>
+        {/* <li><Link href="/blog" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Blog</Link></li> */}
+        <li><Link href="/contact" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Contact</Link></li>
+      </ul>
 
-          {/* Categories Dropdown
-          <li
-            style={styles.dropdown}
-            onMouseEnter={() => setDropdownOpen(true)}
-            onMouseLeave={() => setDropdownOpen(false)}
-          >
-            <span style={styles.navLink}>Categories ▼</span>
-            {dropdownOpen && (
-              <ul style={styles.dropdownMenu}>
-                <li style={styles.dropdownItem}>
-                  <Link href="/birthdaycakes" style={styles.dropdownLink}>
-                    🎂 Birthday Cakes
-                  </Link>
-                </li>
-                <li style={styles.dropdownItem}>
-                  <Link href="/lovecakes" style={styles.dropdownLink}>
-                    ❤️ Love Cakes
-                  </Link>
-                </li>
-                <li style={styles.dropdownItem}>
-                  <Link href="/weddingcakes" style={styles.dropdownLink}>
-                    💍 Wedding Cakes
-                  </Link>
-                </li>
-                <li style={styles.dropdownItem}>
-                  <Link href="/cupcakes" style={styles.dropdownLink}>
-                    🧁 Cupcakes
-                  </Link>
-                </li>
-                <li style={styles.dropdownItem}>
-                  <Link href="/piececakes" style={styles.dropdownLink}>
-                    🍰 Piece Cakes
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </li> */}
-
-          <li>
-            <Link href="/contact" style={styles.navLink}>
-              Contact
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/delivery" style={styles.navLink}>
-              Delivery
-            </Link>
-          </li>
-
-          {!user ? (
-            <li>
-              <Link href="/login" style={styles.navLink}>
-                Log In
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <span onClick={handleLogout} style={styles.navLink}>
-                Log Out
-              </span>
-            </li>
-          )}
-        </ul>
-      </nav>
-
-      {/* Right Section: Cart & User Icon */}
-      <div style={styles.rightSection}>
-        <Link href="/yourcart">
-          <img
-            src="/images/shopping-cart.png"
-            alt="Cart"
-            style={styles.iconImg}
-          />
-        </Link>
-
-        {user && (
-          <Link href="/editProfile">
-            <img src="/images/user.png" alt="User" style={styles.iconImg} />
-          </Link>
-        )}
+      {/* Icons and Button */}
+      <div style={styles.iconContainer}>
+        <FontAwesomeIcon icon={faSearch} style={styles.icon} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#666"} />
+        <FontAwesomeIcon icon={faShoppingCart} style={styles.icon} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#666"} />
+        <button style={styles.button} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#C64B8C"; e.currentTarget.style.color = "white"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#C64B8C"; }}>
+          <FontAwesomeIcon icon={faEnvelope} style={styles.buttonIcon} /> Get in Touch
+        </button>
       </div>
-
-      {/* Search Bar */}
-      <div style={styles.searchContainer}>
-        <input
-          type="text"
-          placeholder="Search for cakes..."
-          style={styles.searchInput}
-          value={searchQuery} // Bind value to state
-          onChange={handleSearch} // Handle input changes
-        />
-        <button style={styles.searchButton}>🔍</button>
-      </div>
-
-      {/* Display filtered cakes (for demonstration)
-      <div>
-        <h3>Search Results:</h3>
-        <ul>
-          {filteredCakes.map((cake, index) => (
-            <li key={index}>
-              {cake.name} - {cake.category} Cake
-            </li>
-          ))}
-        </ul>
-      </div> */}
-    </header>
+    </nav>
   );
 };
 
-// Inline CSS styles
-import { CSSProperties } from "react";
-
-const styles: { [key: string]: CSSProperties } = {
-  header: {
+// Inline CSS Styles
+const styles: { [key: string]: React.CSSProperties } = {
+  navbar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#BA55D3",
-    color: "white",
-    padding: "10px 20px",
-    marginTop: "15px",
+    padding: "15px 40px",
+    backgroundColor: "#C14679",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    fontFamily: "Poppins, sans-serif",
+    position: "sticky",
     width: "100%",
-    height: "90px",
+    top: 0,
+    left: 0,
+    zIndex: 1000,
   },
   logo: {
-    display: "flex",
-    marginTop: "5px",
-    padding: "10px 0px",
-    alignItems: "center",
-    justifyContent: "center",
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#C64B8C",
   },
-  nav: {
-    flex: 1,
-    textAlign: "center",
+  logoSpan: {
+    color: "#262626",
   },
   navList: {
     display: "flex",
-    justifyContent: "center",
     listStyle: "none",
-    gap: "40px",
+    gap: "30px",
     margin: 0,
     padding: 0,
   },
   navLink: {
-    color: "white",
-    textDecoration: "none",
-    fontSize: "25px",
-    fontWeight: "bold",
-    transition: "color 0.3s",
-    cursor: "pointer",
-    fontFamily: "poppins, sans-serif",
-  },
-  dropdown: {
-    position: "relative",
-    cursor: "pointer",
-  },
-  dropdownMenu: {
-    position: "absolute",
-    top: "100%",
-    left: "0",
-    backgroundColor: "white",
-    color: "black",
-    listStyle: "none",
-    padding: "10px 0",
-    borderRadius: "8px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-    zIndex: 1000,
-    minWidth: "200px",
-    textAlign: "left",
-  },
-  dropdownItem: {
-    padding: "12px 20px",
-    transition: "background-color 0.3s, color 0.3s",
-    cursor: "pointer",
-  },
-  dropdownLink: {
-    color: "black",
     textDecoration: "none",
     fontSize: "20px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
+    fontWeight: "500",
+    color: "#262626",
+    transition: "color 0.3s ease",
   },
-  searchContainer: {
+  iconContainer: {
     display: "flex",
     alignItems: "center",
-    backgroundColor: "white",
+    gap: "15px",
+  },
+  icon: {
+    fontSize: "20px",
+    color: "#666",
+    cursor: "pointer",
+    transition: "color 0.3s ease",
+  },
+  button: {
+    backgroundColor: "transparent",
+    border: "2px solid #C64B8C",
+    color: "#C64B8C",
+    padding: "8px 16px",
     borderRadius: "20px",
-    overflow: "hidden",
-    maxWidth: "300px",
-    width: "100%",
-    margin: "0px 20px",
-  },
-  searchInput: {
-    border: "none",
-    padding: "10px",
-    outline: "none",
-    flex: 1,
     fontSize: "16px",
-  },
-  searchButton: {
-    backgroundColor: "black",
-    border: "none",
-    color: "white",
-    padding: "10px 15px",
+    fontWeight: "500",
     cursor: "pointer",
-    fontSize: "16px",
-  },
-  rightSection: {
+    transition: "all 0.3s ease",
     display: "flex",
     alignItems: "center",
-    gap: "20px",
-    marginRight: "20px",
   },
-  iconImg: {
-    width: "30px",
-    height: "30px",
-    cursor: "pointer",
+  buttonIcon: {
+    marginRight: "8px",
   },
 };
+
+// Add hover effects
 
 export default Navbar;

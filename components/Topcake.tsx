@@ -1,17 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHeart } from "react-icons/fa"; // ❤️ Favorite icon
+import { FaHeart, FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa";
 
 const TopCake = () => {
   const [cakes, setCakes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cart, setCart] = useState<any[]>([]);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
-    fetch("/api/Product") // Adjust the API route accordingly
+    fetch("/api/Product")
       .then((res) => res.json())
       .then((data) => {
-        setCakes(data.slice(0, 8)); // Show only first 8 cakes
+        setCakes(data.slice(0, 8));
         setLoading(false);
       })
       .catch((error) => {
@@ -20,9 +22,34 @@ const TopCake = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  const addToCart = (cake: any) => {
+    const updatedCart = [...cart, cake];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setMessage("Added to cart!");
+
+    // Hide the message after 3 seconds
+    setTimeout(() => {
+      setMessage("");
+    }, 3000);
+  };
+
   return (
     <div style={styles.pageContainer}>
       <h2 style={styles.pageTitle}>Top Cakes</h2>
+
+      {message && (
+        <div style={styles.messageBox}>
+          <p style={styles.message}>{message}</p>
+        </div>
+      )}
 
       {loading ? (
         <p style={styles.loadingMessage}>Loading cakes...</p>
@@ -38,19 +65,27 @@ const TopCake = () => {
               <div style={styles.cardContent}>
                 <h3 style={styles.productName}>{cake.name || "Unnamed Cake"}</h3>
                 <p style={styles.productPrice}>LKR {cake.price || "N/A"}</p>
+
+                {/* Rating */}
+                <div style={styles.ratings}>
+                  {[...Array(5)].map((_, index) => (
+                    index < (cake.rating || 0) ? 
+                    <FaStar key={index} style={styles.star} /> : 
+                    <FaRegStar key={index} style={styles.star} />
+                  ))}
+                </div>
+
                 <div style={styles.buttonsContainer}>
                   <Link href={`/product/${cake._id}`}>
                     <button style={styles.viewDetails} className="hover-button">View Details</button>
                   </Link>
-                  <Link href="/yourcart">
                   <button
-                    style={styles.favButton}
-                    onClick={() => console.log(`Added ${cake.name} to favorites`)}
-                    className="fav-button"
+                    style={styles.cartButton}
+                    onClick={() => addToCart(cake)}
+                    className="cart-button"
                   >
-                    <FaHeart />
+                    <FaShoppingCart />
                   </button>
-                  </Link>
                 </div>
               </div>
             </div>
@@ -77,9 +112,10 @@ const TopCake = () => {
             background-color: #9b50b2 !important;
             transform: scale(1.05);
           }
-          .fav-button:hover {
+         
+          .cart-button:hover {
             transform: scale(1.2);
-            color: red;
+            color: #944bb8;
           }
         `}
       </style>
@@ -91,14 +127,14 @@ const TopCake = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   pageContainer: {
     padding: "2rem",
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#F7F7F7",
     fontFamily: "poppins, sans-serif",
   },
   pageTitle: {
     fontSize: "2.5rem",
     fontWeight: "bold",
     textAlign: "center",
-    color: "#b864d4",
+    color: "#C14679",
     marginBottom: "2rem",
     fontFamily: "poppins, sans-serif",
   },
@@ -119,7 +155,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     position: "relative",
     cursor: "pointer",
-    
   },
   productImage: {
     width: "100%",
@@ -130,21 +165,32 @@ const styles: { [key: string]: React.CSSProperties } = {
   cardContent: {
     padding: "1rem",
     background: "linear-gradient(145deg, #f7f7f7, #ffffff)",
-    
+    // background: "linear-gradient(145deg, #C64B8C,#C64B8C)",
   },
   productName: {
     fontSize: "1.5rem",
     fontWeight: "bold",
-    color: "#333",
+    color: "#262626",
     marginBottom: "0.5rem",
     fontFamily: "poppins, sans-serif",
   },
   productPrice: {
     fontSize: "1.3rem",
-    color: "#b864d4",
+    color: "#C14679",
     fontWeight: "700",
     marginBottom: "0.5rem",
     fontFamily: "poppins, sans-serif",
+  },
+  ratings: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: "1rem",
+  },
+  star: {
+    color: "black",
+    fontSize: "1.2rem",
+    marginRight: "0.2rem",
   },
   buttonsContainer: {
     display: "flex",
@@ -154,7 +200,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "1rem",
   },
   viewDetails: {
-    backgroundColor: "#b864d4",
+    backgroundColor: "#C14679",
     color: "white",
     fontFamily: "poppins, sans-serif",
     fontSize: "1rem",
@@ -171,7 +217,15 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "none",
     cursor: "pointer",
     fontSize: "1.5rem",
-    color: "#b864d4",
+    color: "#C14679",
+    transition: "transform 0.3s ease, color 0.3s ease",
+  },
+  cartButton: {
+    backgroundColor: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "1.5rem",
+    color: "#C14679",
     transition: "transform 0.3s ease, color 0.3s ease",
   },
   loadingMessage: {
@@ -189,7 +243,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: "3rem",
   },
   viewMoreButton: {
-    backgroundColor: "blue",
+    backgroundColor: "#C14679",
     color: "white",
     margin: "20px auto",
     fontFamily: "poppins, sans-serif",
@@ -200,6 +254,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "0.5rem",
     cursor: "pointer",
     transition: "background-color 0.3s ease, transform 0.3s ease",
+  },
+  messageBox: {
+    textAlign: "center",
+    marginBottom: "1rem",
+    backgroundColor: "#e0f7fa",
+    padding: "0.5rem",
+    borderRadius: "0.5rem",
+  },
+  message: {
+    fontSize: "1.2rem",
+    color: "#00796b",
   },
 };
 

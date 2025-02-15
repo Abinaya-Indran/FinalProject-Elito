@@ -39,15 +39,15 @@ const OrderStatus = () => {
     <div className="container">
       {status === "pending" && (
         <div className="status-card pending">
-          <h2>🎂 Order Sent!</h2>
-          <p>Your order for <strong>{cakeName}</strong> has been sent to the seller. Please wait for confirmation. 🚀</p>
+          <h2>Order Sent!</h2>
+          <p>Your order for <strong>{cakeName}</strong> has been sent to the seller. Please wait for confirmation. </p>
         </div>
       )}
 
       {status === "accepted" && (
         <div className="status-card accepted">
           <h2>✅ Order Accepted!</h2>
-          <p>The seller has accepted your order for <strong>{cakeName}</strong>. Get ready for your delicious treat! 🎉</p>
+          <p>The seller has accepted your order for <strong>{cakeName}</strong>. Get ready for your delicious treat! </p>
           <button onClick={handleOkClick} className="ok-button">OK</button>
         </div>
       )}
@@ -55,7 +55,7 @@ const OrderStatus = () => {
       {status === "declined" && (
         <div className="status-card declined">
           <h2>❌ Order Declined</h2>
-          <p>We're sorry! The seller is unable to fulfill your order for <strong>{cakeName}</strong> at this time. 😞</p>
+          <p>We're sorry! The seller is unable to fulfill your order for <strong>{cakeName}</strong> at this time. </p>
         </div>
       )}
 

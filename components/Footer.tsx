@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer
       style={{
-        fontFamily: "Times New Roman', Times, serif",
+        fontFamily: "Times New Roman'",
         fontSize: "20px",
         color: "black",
         backgroundColor: "#f5f5f5",

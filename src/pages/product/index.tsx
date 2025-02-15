@@ -1,6 +1,7 @@
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Productpage from '../../../components/Productpage'
+import Productpage from '../../../components/productcard'
+import "../../../styles/global.css";
 
 
 

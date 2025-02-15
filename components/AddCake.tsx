@@ -167,6 +167,7 @@ export default function AddProduct() {
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           max-width: 600px;
           margin: 2rem auto;
+          fontfamily:"poppins"
         }
         .form-title {
           font-size: 2rem;

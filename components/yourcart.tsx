@@ -6,7 +6,6 @@ import Link from "next/link";
 interface CartItem {
   id: number;
   name: string;
-  size?: string;
   price: number;
   quantity: number;
   image: string;
@@ -64,11 +63,11 @@ const YourCart = () => {
                       <img src={item.image} alt={item.name} style={styles.productImage} />
                       <div>
                         <p style={styles.productName}>{item.name}</p>
-                        {item.size && <p style={styles.productSize}>Size: {item.size}</p>}
+                        {/* {item.size && <p style={styles.productSize}>Size: {item.size}</p>} */}
                       </div>
                     </div>
                   </td>
-                  <td style={styles.tableCell}>₹ {item.price.toLocaleString()}</td>
+                  <td style={styles.tableCell}>Rs {item.price.toLocaleString()}</td>
                   <td style={styles.tableCell}>
                     <input
                       type="number"
@@ -78,7 +77,7 @@ const YourCart = () => {
                       style={styles.quantityInput}
                     />
                   </td>
-                  <td style={styles.tableCell}>₹ {(item.price * item.quantity).toLocaleString()}</td>
+                  <td style={styles.tableCell}>Rs {(item.price * item.quantity).toLocaleString()}</td>
                   <td style={styles.tableCell}>
                     <button onClick={() => handleRemove(item.id)} style={styles.removeButton}>Remove</button>
                   </td>
@@ -89,7 +88,7 @@ const YourCart = () => {
 
           <div style={styles.cartSummary}>
             <p style={styles.summaryText}>
-              <span>Subtotal</span> <span>₹ {subtotal.toLocaleString()}</span>
+              <span>Subtotal</span> <span>Rs  {subtotal.toLocaleString()}</span>
             </p>
             <p style={styles.taxInfo}>Tax included and shipping calculated at checkout</p>
             <Link href="/order">

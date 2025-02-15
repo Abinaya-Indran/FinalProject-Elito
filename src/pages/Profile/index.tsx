@@ -1,6 +1,7 @@
 import Bottom from '../../../components/bottomFooter'
 import EditProfile from '../../../components/editprofile'
 import Navbar from '../../../components/Navbar'
+import "../../../styles/global.css";
 
 
 

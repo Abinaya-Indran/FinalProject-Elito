@@ -191,7 +191,12 @@ const AdminDashboard = () => {
 
 // 🌟 Improved Styles
 const styles: { [key: string]: React.CSSProperties } = {
-  container: { display: "flex", height: "100vh", backgroundColor: "#F4F7FC" },
+  container: { 
+    display: "flex", 
+    height: "100vh", 
+    backgroundColor: "#F4F7FC", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
   sidebar: {
     width: "250px",
@@ -202,11 +207,22 @@ const styles: { [key: string]: React.CSSProperties } = {
     flexDirection: "column",
     alignItems: "center",
     boxShadow: "4px 0px 10px rgba(0, 0, 0, 0.2)",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  logo: { fontSize: "26px", fontWeight: "bold", marginBottom: "20px" },
+  logo: { 
+    fontSize: "26px", 
+    fontWeight: "bold", 
+    marginBottom: "20px", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  navList: { listStyleType: "none", padding: 0, width: "100%" },
+  navList: { 
+    listStyleType: "none", 
+    padding: 0, 
+    width: "100%", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
   navItem: {
     padding: "12px",
@@ -218,6 +234,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: "10px",
     backgroundColor: "#663399",
     color: "#fff",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
   navItemActive: {
@@ -231,15 +248,36 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#FFD700",
     color: "#4B0082",
     fontWeight: "bold",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  main: { flex: 1, padding: "20px", overflowY: "auto" },
+  main: { 
+    flex: 1, 
+    padding: "20px", 
+    overflowY: "auto", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  header: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" },
+  header: { 
+    display: "flex", 
+    justifyContent: "space-between", 
+    alignItems: "center", 
+    marginBottom: "20px", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  headerTitle: { fontSize: "24px", color: "#333" },
+  headerTitle: { 
+    fontSize: "24px", 
+    color: "#333", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  stats: { display: "flex", justifyContent: "space-between", marginBottom: "20px" },
+  stats: { 
+    display: "flex", 
+    justifyContent: "space-between", 
+    marginBottom: "20px", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
   statCard: {
     flex: 1,
@@ -249,18 +287,30 @@ const styles: { [key: string]: React.CSSProperties } = {
     textAlign: "center",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
     margin: "0 10px",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  statNumber: { fontSize: "28px", fontWeight: "bold", color: "#4B0082" },
+  statNumber: { 
+    fontSize: "28px", 
+    fontWeight: "bold", 
+    color: "#4B0082", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
   tableSection: {
     backgroundColor: "#fff",
     padding: "20px",
     borderRadius: "12px",
     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  sectionTitle: { fontSize: "20px", fontWeight: "bold", marginBottom: "10px" },
+  sectionTitle: { 
+    fontSize: "20px", 
+    fontWeight: "bold", 
+    marginBottom: "10px", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
   table: {
     width: "100%",
@@ -268,6 +318,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "8px",
     overflow: "hidden",
     boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
   th: {
@@ -275,20 +326,39 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#4B0082",
     color: "#fff",
     textAlign: "left",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
   td: {
     padding: "12px",
     borderBottom: "1px solid #ddd",
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  rowEven: { backgroundColor: "#f9f9f9" },
+  rowEven: { 
+    backgroundColor: "#f9f9f9", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  actionButton: { padding: "6px 12px", borderRadius: "5px", border: "none", cursor: "pointer" },
+  actionButton: { 
+    padding: "6px 12px", 
+    borderRadius: "5px", 
+    border: "none", 
+    cursor: "pointer", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  viewButton: { backgroundColor: "#4B0082", color: "#fff" },
+  viewButton: { 
+    backgroundColor: "#4B0082", 
+    color: "#fff", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 
-  editButton: { backgroundColor: "#ff9800", color: "#fff" },
+  editButton: { 
+    backgroundColor: "#ff9800", 
+    color: "#fff", 
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
 };
 
 export default AdminDashboard;
