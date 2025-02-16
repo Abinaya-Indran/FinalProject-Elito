@@ -40,7 +40,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "15px 40px",
-    backgroundColor: "#C14679",
+    backgroundColor: "#dddddd",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     fontFamily: "Poppins, sans-serif",
     position: "sticky",
