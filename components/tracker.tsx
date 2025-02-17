@@ -18,7 +18,7 @@ export default function Tracker() {
       case 3:
         return <PaymentPage />;
       case 4:
-        return <DeliveryStatus />;
+        return <Tracker/>;
       default:
         return <CakeDetails />;
     }
@@ -43,7 +43,7 @@ export default function Tracker() {
           Next Step
         </button>
       ) : (
-        <p className="success-message">🎉 Your cake is successfully delivered! 🎂</p>
+        <p className="success-message"> Your cake is successfully delivered! </p>
       )}
 
       <style jsx>{`

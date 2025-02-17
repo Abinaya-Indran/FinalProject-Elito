@@ -47,7 +47,7 @@ export default function Home() {
           align-items: center;
           justify-content: space-between;
           padding: 40px 20px;
-          background-color: #f9f9f9;
+          background-color: white;
         }
 
         .text-section {
@@ -57,7 +57,7 @@ export default function Home() {
         }
 
         .text-section h1 {
-          font-size: 48px;
+          font-size: 40px;
           color: #333;
           margin-bottom: 20px;
           fontFamily: "poppins,sans-serif",
@@ -75,8 +75,8 @@ export default function Home() {
         }
 
         .cta-button:hover {
-            background-color: #944bb8;
-            transform: scale(1.09);
+            background-color: #A13A66 ;
+            transform: scale(1.06);
         }
 
         .image-section {

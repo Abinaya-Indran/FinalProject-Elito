@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faSearch, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
+
 const Navbar = () => {
+  const pathname = usePathname(); // Get the current route
+
   return (
     <nav style={styles.navbar}>
       {/* Logo Section */}
@@ -14,24 +18,41 @@ const Navbar = () => {
 
       {/* Navigation Links */}
       <ul style={styles.navList}>
-        <li><Link href="/" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Home</Link></li>
-        <li><Link href="/product" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>cakes</Link></li>
-        <li><Link href="/shop" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Shop</Link></li>
-        {/* <li><Link href="/blog" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Blog</Link></li> */}
-        <li><Link href="/contact" style={styles.navLink} onMouseEnter={(e) => e.currentTarget.style.color = "#C14679"} onMouseLeave={(e) => e.currentTarget.style.color = "#262626"}>Contact</Link></li>
+        {navItems.map(({ name, path }) => (
+          <li key={path}>
+            <Link
+              href={path}
+              style={{
+                ...styles.navLink,
+                ...(pathname === path ? styles.activeNavLink : {}),
+              }}
+            >
+              {name}
+            </Link>
+          </li>
+        ))}
       </ul>
 
       {/* Icons and Button */}
       <div style={styles.iconContainer}>
-        <FontAwesomeIcon icon={faSearch} style={styles.icon} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#666"} />
-        <FontAwesomeIcon icon={faShoppingCart} style={styles.icon} onMouseEnter={(e) => e.currentTarget.style.color = "#C64B8C"} onMouseLeave={(e) => e.currentTarget.style.color = "#666"} />
-        <button style={styles.button} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#C64B8C"; e.currentTarget.style.color = "white"; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = "#C64B8C"; }}>
+        <FontAwesomeIcon icon={faSearch} style={styles.icon} />
+        <Link href={"/yourcart"} passHref><FontAwesomeIcon icon={faShoppingCart} style={styles.icon} /></Link>
+        <Link href={"/contact"} passHref>
+        <button style={styles.button}>
           <FontAwesomeIcon icon={faEnvelope} style={styles.buttonIcon} /> Get in Touch
         </button>
+        </Link>
       </div>
     </nav>
   );
 };
+
+// Navigation items
+const navItems = [
+  { name: "Home", path: "/" },
+  { name: "Cakes", path: "/product" },
+  { name: "About", path: "/aboutus" },
+];
 
 // Inline CSS Styles
 const styles: { [key: string]: React.CSSProperties } = {
@@ -40,7 +61,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "15px 40px",
-    backgroundColor: "#dddddd",
+    backgroundColor: "white",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     fontFamily: "Poppins, sans-serif",
     position: "sticky",
@@ -52,7 +73,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   logo: {
     fontSize: "28px",
     fontWeight: "bold",
-    color: "#C64B8C",
+    color: "#C14679",
   },
   logoSpan: {
     color: "#262626",
@@ -69,7 +90,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "20px",
     fontWeight: "500",
     color: "#262626",
-    transition: "color 0.3s ease",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    transition: "all 0.3s ease",
+  },
+  activeNavLink: {
+    backgroundColor: "#C14679",
+    color: "white",
   },
   iconContainer: {
     display: "flex",
@@ -84,8 +111,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   button: {
     backgroundColor: "transparent",
-    border: "2px solid #C64B8C",
-    color: "#C64B8C",
+    border: "2px solid #C14679",
+    color: "#C14679",
     padding: "8px 16px",
     borderRadius: "20px",
     fontSize: "16px",
@@ -99,7 +126,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginRight: "8px",
   },
 };
-
-// Add hover effects
 
 export default Navbar;

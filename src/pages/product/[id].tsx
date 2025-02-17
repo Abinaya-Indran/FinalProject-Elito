@@ -56,8 +56,8 @@ const ProductDetails = () => {
     const isSelected = selectedSize === size;
     return {
       padding: "12px 25px",
-      background: isSelected ? "#B864D4" : "#F9F9F9",
-      border: `2px solid ${isSelected ? "#B864D4" : "#ccc"}`,
+      background: isSelected ? " #C14679" : "white",
+      border: `2px solid ${isSelected ? " #C14679" : "#ccc"}`,
       borderRadius: "5px",
       cursor: "pointer",
       fontSize: "16px",
@@ -157,43 +157,43 @@ king:{
     display: "flex",
     flexDirection: "column" as const,
     gap: "20px",
-    backgroundColor: "#fdfdfd",
+   
   },
   title: {
     fontSize: "32px",
     fontWeight: "bold",
     color: "#333",
-    backgroundColor: "#fdfdfd",
+   
   },
   price: {
     fontSize: "22px",
     color: "#555",
-    backgroundColor: "#fdfdfd",
+  
   },
   description: {
     fontSize: "18px",
     color: "#666",
-    backgroundColor: "#fdfdfd",
+   
   },
   date: {
     fontSize: "16px",
     color: "#777",
-    backgroundColor: "#fdfdfd",
+  
   },
   sizeOptions: {
     marginTop: "15px",
-    backgroundColor: "#fdfdfd",
+    
   },
   label: {
     fontSize: "18px",
     fontWeight: "bold",
-    backgroundColor: "#fdfdfd",
+   
   },
   sizeButtonGroup: {
     display: "flex",
     gap: "10px",
     marginTop: "10px",
-    backgroundColor: "#fdfdfd",
+  
   },
   input: {
     width: "100%",
@@ -202,24 +202,24 @@ king:{
     border: "1px solid #ccc",
     borderRadius: "5px",
     fontSize: "16px",
-    backgroundColor: "#fdfdfd",
+   
   },
   sellerInfo: {
     padding: "15px",
     backgroundColor: "#f3f3f3",
     borderRadius: "8px",
-    backgroundColor: "#fdfdfd",
+   
   },
   addToCart: {
     display: "flex",
     justifyContent: "flex-start",
     gap: "10px",
     marginTop: "20px",
-    backgroundColor: "#fdfdfd",
+   
 
   },
   cartButton: {
-    backgroundColor: "#B864D4",
+    backgroundColor: " #C14679",
     color: "white",
     padding: "12px 20px",
     border: "none",

@@ -7,7 +7,7 @@ const TypedText = () => {
 
   useEffect(() => {
     const options: TypedOptions = {
-      strings: ["Delicious cakes for your sweet moments!"], // Animated slogan
+      strings: ["The sweetest way to buy and sell the cakes! "], // Animated slogan
       typeSpeed: 60,
       backSpeed: 30,
       backDelay: 1500,
@@ -27,9 +27,9 @@ const TypedText = () => {
 
 const styles = {
   animatedText: {
-    fontSize: "50px",
-    fontWeight: "bold",
-    color: "white", // Golden color
+    fontSize: "30px",
+    // fontWeight: "",
+    color: "black", // Golden color
   },
 };
 

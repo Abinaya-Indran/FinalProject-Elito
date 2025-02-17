@@ -103,7 +103,7 @@ const ProductPage = () => {
           font-size: 2.5rem;
           font-weight: bold;
           text-align: center;
-          color:black;
+          color:#333;
           margin-bottom: 2rem;
         }
         .filter-container {
@@ -120,7 +120,7 @@ const ProductPage = () => {
         }
         .product-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(20vw, 5fr));
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
           gap: 3rem;
           justify-items: center;
          
@@ -132,14 +132,14 @@ const ProductPage = () => {
           box-shadow: 0 10px 15px rgba(54, 54, 54, 0.48);
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           width: 100%;
-          max-width: 900px;
+          max-width: 400px;
           text-align: center;
           margin: 0 auto;
           position: relative;
           cursor: pointer;
         }
         .product-card:hover {
-          transform: translateY(-10px);
+          // transform: translateY(-10px);
           box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
         }
         .product-image {
@@ -155,13 +155,13 @@ const ProductPage = () => {
           background-color:"#AF0171";
         }
         .product-name {
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           font-weight:bold;
           color:#262626;
           margin-bottom: 0.5rem;
         }
         .product-price {
-          font-size: 1.3rem;
+          font-size: 1.0rem;
           color:#C14679;
           font-weight: 700;
           margin-bottom: 0.5rem;
@@ -183,11 +183,10 @@ const ProductPage = () => {
           align-items: center;
           gap: 1rem;
           margin-top: 1rem;
-          // background-color:#C64B8C
+        
         }
-        .view-details {
-          // background-color: #b864d4;
-           background-color:#C14679;
+        .view-details { 
+          background-color: #C14679;
           color: white;
           font-size: 1rem;
           font-weight: 500;
@@ -198,11 +197,11 @@ const ProductPage = () => {
           transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .view-details:hover {
-          background-color: #944bb8;
+          background-color: #A13A66;
           transform: scale(1.05);
         }
         .cart-button {
-          // background-color: transparent;
+          background-color: transparent;
           border: none;
           cursor: pointer;
           font-size: 1.5rem;
@@ -213,7 +212,7 @@ const ProductPage = () => {
         }
         .cart-button:hover {
           transform: scale(1.2);
-          color: #944bb8;
+          color: #A13A66;
         }
       `}</style>
 

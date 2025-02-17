@@ -7,8 +7,8 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = ({ step }) => {
   const steps = [
     "Choose Cake",
-    "Order Details",
-    "Order Accepted",
+    "Place Order",
+    "Accept Order",
     "Payment",
     "Delivered",
   ];

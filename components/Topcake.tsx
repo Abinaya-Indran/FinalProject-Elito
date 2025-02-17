@@ -13,7 +13,7 @@ const TopCake = () => {
     fetch("/api/Product")
       .then((res) => res.json())
       .then((data) => {
-        setCakes(data.slice(0, 8));
+        setCakes(data.slice(0, 4));
         setLoading(false);
       })
       .catch((error) => {
@@ -105,17 +105,17 @@ const TopCake = () => {
       <style>
         {`
           .product-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.2);
+            // transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
           }
           .hover-button:hover {
-            background-color: #9b50b2 !important;
+            background-color: #A13A66 !important;
             transform: scale(1.05);
           }
          
           .cart-button:hover {
             transform: scale(1.2);
-            color: #944bb8;
+            color: #A13A66;
           }
         `}
       </style>
@@ -131,10 +131,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "poppins, sans-serif",
   },
   pageTitle: {
-    fontSize: "2.5rem",
+    fontSize: "3rem",
     fontWeight: "bold",
     textAlign: "center",
-    color: "#C14679",
+    color: "#333",
     marginBottom: "2rem",
     fontFamily: "poppins, sans-serif",
   },
@@ -145,7 +145,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyItems: "center",
   },
   productCard: {
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F7F7F7",
     borderRadius: "1rem",
     overflow: "hidden",
     boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
@@ -153,6 +153,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: "100%",
     maxWidth: "400px",
     textAlign: "center",
+    margin: "0 auto",
     position: "relative",
     cursor: "pointer",
   },
@@ -168,14 +169,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     // background: "linear-gradient(145deg, #C64B8C,#C64B8C)",
   },
   productName: {
-    fontSize: "1.5rem",
+    fontSize: "1.2rem",
     fontWeight: "bold",
     color: "#262626",
     marginBottom: "0.5rem",
     fontFamily: "poppins, sans-serif",
   },
   productPrice: {
-    fontSize: "1.3rem",
+    fontSize: "1.0rem",
     color: "#C14679",
     fontWeight: "700",
     marginBottom: "0.5rem",
@@ -212,19 +213,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "background-color 0.3s ease, transform 0.3s ease",
     cursor: "pointer",
   },
-  favButton: {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "1.5rem",
-    color: "#C14679",
-    transition: "transform 0.3s ease, color 0.3s ease",
-  },
+  // favButton: {
+  //   backgroundColor: "transparent",
+  //   border: "none",
+  //   cursor: "pointer",
+  //   fontSize: "1.5rem",
+  //   color: "#C14679",
+  //   transition: "transform 0.3s ease, color 0.3s ease",
+  // },
   cartButton: {
     backgroundColor: "transparent",
     border: "none",
     cursor: "pointer",
-    fontSize: "1.5rem",
+    fontSize: "1.6rem",
     color: "#C14679",
     transition: "transform 0.3s ease, color 0.3s ease",
   },

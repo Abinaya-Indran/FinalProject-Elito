@@ -7,9 +7,9 @@ const Footer = () => {
     <footer
       style={{
         fontFamily: "Times New Roman'",
-        fontSize: "20px",
+        fontSize: "16px",
         color: "black",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#f7f7f7",
       }}
     >
       {/* Top Section */}
