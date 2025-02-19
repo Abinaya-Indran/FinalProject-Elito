@@ -1,6 +1,10 @@
 "use client";
 
+import { useState } from "react";
+
 const AboutUs = () => {
+  const [activeTab, setActiveTab] = useState("mission");
+
   return (
     <section className="about-us">
       <h2 className="title">ABOUT US</h2>
@@ -16,38 +20,49 @@ const AboutUs = () => {
             PROVIDING QUALITY BAKED GOODS FOR ALL CUSTOMERS
           </h3>
           <p className="description">
-            Our mission is to create a bakery that makes the best quality baked
-            goods on-site from scratch, and where both employees and customers
-            would feel comfortable.
+            {activeTab === "mission" &&
+              "Our mission is to create a bakery that makes the best quality baked goods on-site from scratch, and where both employees and customers feel comfortable."}
+            {activeTab === "values" &&
+              "Our values include quality, integrity, and customer satisfaction. We strive to deliver freshly baked goods made with the best ingredients."}
+            {activeTab === "goals" &&
+              "Our goal is to expand our bakery business globally while maintaining high standards in taste, hygiene, and customer service."}
           </p>
-          {/* <div className="mission-values">
-        <div className="item active">
-          <span className="number">01</span>
-          <span className="label">OUR MISSION</span>
-        </div>
-        <div className="item">
-          <span className="number">02</span>
-          <span className="label">OUR VALUES</span>
-        </div>
-        <div className="item">
-          <span className="number">03</span>
-          <span className="label">OUR GOALS</span>
-        </div>
-      </div> */}
+          <div className="mission-values">
+            <div
+              className={`item ${activeTab === "mission" ? "active" : ""}`}
+              onClick={() => setActiveTab("mission")}
+            >
+              <span className="number">01</span>
+              <span className="label">OUR MISSION</span>
+            </div>
+            <div
+              className={`item ${activeTab === "values" ? "active" : ""}`}
+              onClick={() => setActiveTab("values")}
+            >
+              <span className="number">02</span>
+              <span className="label">OUR VALUES</span>
+            </div>
+            <div
+              className={`item ${activeTab === "goals" ? "active" : ""}`}
+              onClick={() => setActiveTab("goals")}
+            >
+              <span className="number">03</span>
+              <span className="label">OUR GOALS</span>
+            </div>
+          </div>
         </div>
       </div>
-      
+
       <style jsx>{`
         .about-us {
           text-align: center;
           padding: 50px 20px;
         }
         .title {
-          font-size:50px;
+          font-size: 50px;
           font-weight: bold;
           margin-bottom: 50px;
           color: #262626;
-          
         }
         .content {
           display: flex;
@@ -59,8 +74,7 @@ const AboutUs = () => {
         }
         .image-container {
           flex: 1;
-          padding-right:50px
-         
+          padding-right: 50px;
         }
         .image-container img {
           width: 100%;
@@ -79,13 +93,7 @@ const AboutUs = () => {
           margin: 15px 0;
           font-size: 18px;
           color: #555;
-        }
-        .read-more {
-          text-decoration: none;
-          color: #c64b8c;
-          font-weight: bold;
-          border-bottom: 2px solid #c64b8c;
-          padding-bottom: 2px;
+          transition: opacity 0.3s ease-in-out;
         }
         .mission-values {
           display: flex;
@@ -97,6 +105,12 @@ const AboutUs = () => {
           text-align: center;
           color: #999;
           font-size: 18px;
+          cursor: pointer;
+          padding: 10px 20px;
+          transition: color 0.3s ease-in-out;
+        }
+        .item:hover {
+          color: #c64b8c;
         }
         .item .number {
           font-size: 32px;

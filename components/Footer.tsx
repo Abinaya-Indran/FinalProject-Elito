@@ -67,17 +67,17 @@ const Footer = () => {
         }}
       >
         <div style={{ textAlign: "center", margin: "0 10px" }}>
-          <Image src="/images/delivery.png" alt="Delivery" width={50} height={50} />
+          <Image src="/images/delivery.png" alt="Delivery" width={60} height={50} />
           <h5 style={{ fontSize: "16px", marginBottom: "5px" }}>Delivery</h5>
           <p style={{ fontSize: "14px", color: "#555" }}>Fast and Responsible Delivery</p>
         </div>
         <div style={{ textAlign: "center", margin: "0 10px" }}>
-          <Image src="/images/value.png" alt="Value for Money" width={50} height={50} />
+          <Image src="/images/value-removebg-preview (1).png" alt="Value for Money" width={70} height={50} />
           <h5 style={{ fontSize: "16px", marginBottom: "5px" }}>100% Value For Your Money</h5>
           <p style={{ fontSize: "14px", color: "#555" }}>We can make your dream come true.</p>
         </div>
         <div style={{ textAlign: "center", margin: "0 10px" }}>
-          <Image src="/images/online.png" alt="Support" width={50} height={50} />
+          <Image src="/images/online-removebg-preview (1).png" alt="Support" width={50} height={50} />
           <h5 style={{ fontSize: "16px", marginBottom: "5px" }}>24/7 Online Support</h5>
           <p style={{ fontSize: "14px", color: "#555" }}>Via Facebook Messenger Service.</p>
         </div>

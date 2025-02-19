@@ -76,7 +76,8 @@ const Navbar = () => {
            <FontAwesomeIcon icon={faUser} style={styles.icon} />
          </Link>
           )}
-        <FontAwesomeIcon icon={faSearch} style={styles.icon} />
+
+        <Link href={"/product"} passHref><FontAwesomeIcon icon={faSearch} style={styles.icon} /></Link>
         <Link href={"/yourcart"} passHref>
           <FontAwesomeIcon icon={faShoppingCart} style={styles.icon} />
         </Link>
