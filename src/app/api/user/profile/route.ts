@@ -32,28 +32,39 @@ export const POST = async (req: NextRequest) => {
 export const PATCH = async (req: NextRequest) => {
   try {
     await connectToDatabase();
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+    const body = await req.json();
+    const { _id, name, email, password, role, address, phoneNumber, cakeShopName, sellerType } = body;
 
-    if (!id) {
+    if (!_id) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    const updateData = await req.json();
-    const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
+    const updates: Record<string, any> = {}
+    if (name) updates.name = name
+    if (email) updates.email = email
+    if (password) updates.password = password
+    if (role) updates.role = role
+    if (address) updates.address = address
+    if (phoneNumber) updates.phoneNumber = phoneNumber
+    if (cakeShopName) updates.cakeShopName = cakeShopName
+    if (sellerType) updates.sellerType = sellerType
 
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: _id },
+      { $set: updates },
+      { new: true }
+    )
+    console.log('Abinaya', body, _id)
+    console.log('Updated User Data', updatedUser)
     if (!updatedUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(
-      { message: "User updated successfully", updatedUser },
-      { status: 200 }
-    );
+    return NextResponse.json(updatedUser, { status: 200 });
   } catch (error: any) {
-    console.error("Error updating user:", error.message);
+    console.error("Error fetching user:", error.message);
     return NextResponse.json(
-      { message: "Failed to update user.", error: error.message },
+      { message: "Failed to fetch user.", error: error.message },
       { status: 500 }
     );
   }

@@ -28,8 +28,7 @@ const TypedText = () => {
 const styles = {
   animatedText: {
     fontSize: "30px",
-    // fontWeight: "",
-    color: "black", // Golden color
+    color: "black", 
   },
 };
 

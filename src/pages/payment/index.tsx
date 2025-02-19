@@ -1,15 +1,15 @@
 import Bottom from '../../../components/bottomFooter'
 import Navbar from '../../../components/Navbar'
-import Payment from '../../../components/paymnet'
+import Payment from '../../../components/payment'
 import ProgressBar from '../../../components/deliverystatus'
 
 
 function paymentPage() {
     return (
         <div>
-            <Navbar/><br/><br/>
+            <Navbar/>
             <ProgressBar step={4}/>
-            <Payment /><br/><br/>
+            <Payment />
             <Bottom/>
         </div>
     )

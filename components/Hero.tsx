@@ -2,46 +2,78 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import TypedText from "./typedtext"; // Ensure this component exists
 
 const Hero = () => {
+  return (
+    <Swiper
+      modules={[Navigation, Pagination, Autoplay]}
+      navigation
+      pagination={{ clickable: true }}
+      autoplay={{ delay: 3000 }}
+      loop
+      className="mySwiper"
+    >
+      {/* Slide 1 */}
+      <SwiperSlide>
+        <HeroSlide
+          title="Delicious"
+          subtitle="Cakes For You"
+          imgSrc="/images/cake-8988890_640-removebg-preview (1).png"
+        />
+      </SwiperSlide>
+
+      {/* Slide 2 */}
+      <SwiperSlide>
+        <HeroSlide
+          title="Celebrate"
+          subtitle="Every Moment with Cakes"
+          imgSrc="/images/pink-9014358_640-removebg-preview.png" // Change this to another cake image
+        />
+      </SwiperSlide>
+    </Swiper>
+  );
+};
+
+const HeroSlide = ({ title, subtitle, imgSrc }: { title: string; subtitle: string; imgSrc: string }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <section style={styles.heroSection}>
       {/* Left Content */}
       <div style={styles.textContainer}>
-        <h1 style={styles.headingPrimary}>Delicious</h1>
-        <h2 style={styles.headingSecondary}>Cakes For You</h2>
+        <h1 style={styles.headingPrimary}>{title}</h1>
+        <h2 style={styles.headingSecondary}>{subtitle}</h2>
+        <br />
         <p style={styles.description}>
           <span style={styles.typedText}>
             <TypedText />
           </span>
           <br />
         </p>
-        <br/>
-        {/* Glowing Button */}
+        <br /><br />
         <Link href="/product" passHref>
-        <button
-          style={{
-            ...styles.glowingButton,
-            ...(isHovered ? styles.glowingButtonHover : {}),
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          Shop Now
-        </button>
+          <button
+            style={{
+              ...styles.glowingButton,
+              ...(isHovered ? styles.glowingButtonHover : {}),
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            Shop Now
+          </button>
         </Link>
       </div>
 
       {/* Right Image */}
       <div style={styles.imageContainer}>
-        <img
-          src="/images/cake-8988890_640-removebg-preview (1).png"
-          alt="Cake"
-          style={styles.image}
-        />
+        <img src={imgSrc} alt="Cake" style={styles.image} />
       </div>
     </section>
   );
@@ -54,13 +86,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     justifyContent: "space-between",
     padding: "50px 10%",
+    paddingTop: "50px",
     backgroundColor: "#F7F7F7",
     minHeight: "30vh",
     fontFamily: "Poppins, sans-serif",
     flexWrap: "wrap",
   },
   textContainer: {
-    maxWidth: "500px",
+    maxWidth: "600px",
     flex: 1,
   },
   headingPrimary: {
@@ -69,7 +102,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: "600",
     fontFamily: "'Great Vibes', cursive",
     fontStyle: "normal",
-    marginBottom: "5px",
   },
   headingSecondary: {
     color: "#262626",
@@ -78,15 +110,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   description: {
     color: "#666",
-    fontSize: "18px",
-    marginTop: "15px",
-    lineHeight: "1.6",
+    fontSize: "15px",
+    lineHeight: "1.4",
   },
   typedText: {
     color: "#C14679",
-    fontSize: "50px",
-    // fontWeight: "600",
-    // fontStyle: "italic",
+    fontSize: "30px",
+    fontStyle: "italic",
   },
   glowingButton: {
     marginTop: "25px",
@@ -120,20 +150,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth: "700px",
   },
 };
-
-// Add keyframes for glowing effect (Inject in global CSS)
-const glowKeyframes = `
-  @keyframes pulseGlow {
-    0% { boxShadow: "0 0 30px rgba(193, 70, 121, 0.7), 0 0 60px rgba(193, 70, 121, 0.6)"; }
-    50% { boxShadow: "0 0 60px rgba(193, 70, 121, 0.9), 0 0 90px rgba(193, 70, 121, 0.7)"; }
-    100% { boxShadow: "0 0 30px rgba(206, 16, 209, 0.7), 0 0 60px rgba(193, 70, 121, 0.6)"; }
-  }
-`;
-
-if (typeof document !== "undefined") {
-  const styleSheet = document.createElement("style");
-  styleSheet.innerText = glowKeyframes;
-  document.head.appendChild(styleSheet);
-}
 
 export default Hero;

@@ -3,7 +3,19 @@
 import React, { useEffect, useState } from "react";
 import AddProduct from "./AddCake";
 import AdminProductPage from "./adminProduct";
+import AddcakePage from "@/pages/addcake";
 
+
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber?: string;
+  address?: string;
+  role: string;
+  sellerType?: string;
+  cakeShopName?: string;
+}
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("Dashboard"); // Track active section
@@ -11,12 +23,20 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (activeSection === "Users") {
       fetchUsers();
     }
-    if (activeSection === "Orders") fetchOrders();
+    if (activeSection === "Orders") {
+      fetchOrders();
+    }
+    if (activeSection === "Payment details") {
+      fetchPaymentDetails();
+    }
   }, [activeSection]);
 
   const fetchUsers = async () => {
@@ -47,13 +67,47 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchPaymentDetails = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/payment"); // Update with your actual API endpoint
+      if (!response.ok) throw new Error("Failed to fetch payment details");
+      const data = await response.json();
+      setPaymentDetails(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+ 
+  const handleView = async (userId: string) => {
+    try {
+      const res = await fetch("/api/user/getuser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setSelectedUser(data.user);
+        setModalOpen(true);
+      } else {
+        alert("Failed to fetch user details.");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  };
+
   return (
     <div style={styles.container}>
       {/* Sidebar */}
       <aside style={styles.sidebar}>
         <h1 style={styles.logo}>Admin Panel</h1>
         <ul style={styles.navList}>
-          {["Dashboard", "Orders", "Cake Listings", "Add New Cake", "Users", "Settings", "Logout"].map((item) => (
+          {["Dashboard", "Orders", "Cake Listings", "Add New Cake", "Users", "Payment details"].map((item) => (
             <li
               key={item}
               style={activeSection === item ? styles.navItemActive : styles.navItem}
@@ -126,7 +180,7 @@ const AdminDashboard = () => {
         {/* Add New Cake Section */}
         {activeSection === "Add New Cake" && (
           <section>
-            <AddProduct />
+            <AddcakePage/>
           </section>
         )}
         
@@ -137,17 +191,34 @@ const AdminDashboard = () => {
           </section>
         )}
 
-        {/* Settings Section */}
-        {activeSection === "Settings" && (
-          <section>
-            <h3>Settings Coming Soon...</h3>
-          </section>
-        )}
-        
-        {/* Logout Section */} 
-        {activeSection === "Logout" && (
-          <section>
-            <h3>Logout Coming Soon...</h3>
+         {/* Payment Details Section */}
+         {activeSection === "Payment details" && (
+          <section style={styles.tableSection}>
+            <h3 style={styles.sectionTitle}>Payment Details</h3>
+            {loading && <p>Loading...</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Payment ID</th>
+                  <th style={styles.th}>Order ID</th>
+                  <th style={styles.th}>Amount</th>
+                  <th style={styles.th}>Status</th>
+                  <th style={styles.th}>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentDetails.map((payment, index) => (
+                  <tr key={payment._id} style={index % 2 === 0 ? styles.rowEven : {}}>
+                    <td style={styles.td}>{payment._id}</td>
+                    <td style={styles.td}>{payment.orderId}</td>
+                    <td style={styles.td}>{payment.amount}</td>
+                    <td style={styles.td}>{payment.status}</td>
+                    <td style={styles.td}>{payment.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
         )}
 
@@ -175,11 +246,30 @@ const AdminDashboard = () => {
                     <td style={styles.td}>{user.role}</td>
                     <td style={styles.td}>{user.email}</td>
                     <td style={styles.td}>
-                      <button style={{ ...styles.actionButton, ...styles.viewButton }}>View</button>
-                      <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button>
+                       <button onClick={() => handleView(user._id)}>View</button>
+                      {/* <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button> */}
                     </td>
                   </tr>
                 ))}
+                 {modalOpen && selectedUser && (
+                  <div className="modal">
+                    <h2>User Details</h2>
+                    <p><strong>Name:</strong> {selectedUser.name}</p>
+                    <p><strong>Email:</strong> {selectedUser.email}</p>
+                    {selectedUser.phoneNumber && <p><strong>Phone:</strong> {selectedUser.phoneNumber}</p>}
+                    {selectedUser.address && <p><strong>Address:</strong> {selectedUser.address}</p>}
+                    <p><strong>Role:</strong> {selectedUser.role}</p>
+                    {selectedUser.role === "Seller" && (
+                      <>
+                        <p><strong>Seller Type:</strong> {selectedUser.sellerType}</p>
+                        {selectedUser.sellerType === "Cake Shop" && selectedUser.cakeShopName && (
+                          <p><strong>Cake Shop Name:</strong> {selectedUser.cakeShopName}</p>
+                        )}
+                      </>
+                    )}
+                    <button onClick={() => setModalOpen(false)}>Close</button>
+                  </div>
+                )}
               </tbody>
             </table>
           </section>
@@ -194,13 +284,13 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: { 
     display: "flex", 
     height: "100vh", 
-    backgroundColor: "#F4F7FC", 
+    backgroundColor: " #F7F7F7", 
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
   sidebar: {
     width: "250px",
-    backgroundColor: "#4B0082",
+    backgroundColor: " #EDEDED",
     padding: "20px",
     color: "white",
     display: "flex",
@@ -212,6 +302,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   logo: { 
     fontSize: "26px", 
+    color:"#333",
     fontWeight: "bold", 
     marginBottom: "20px", 
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
@@ -232,7 +323,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "16px",
     transition: "0.3s",
     marginBottom: "10px",
-    backgroundColor: "#663399",
+    backgroundColor: " #8B3D60",
     color: "#fff",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
@@ -245,8 +336,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: "16px",
     transition: "0.3s",
     marginBottom: "10px",
-    backgroundColor: "#FFD700",
-    color: "#4B0082",
+    backgroundColor: " #C14679",
+    color: "",
     fontWeight: "bold",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
@@ -293,7 +384,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   statNumber: { 
     fontSize: "28px", 
     fontWeight: "bold", 
-    color: "#4B0082", 
+    color: "#C14679", 
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
@@ -323,7 +414,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 
   th: {
     padding: "12px",
-    backgroundColor: "#4B0082",
+    backgroundColor: "#8B3D60",
     color: "#fff",
     textAlign: "left",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
@@ -333,6 +424,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     padding: "12px",
     borderBottom: "1px solid #ddd",
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  },
+
+  tdHover: {
+    backgroundColor: "pink",
   },
 
   rowEven: { 
@@ -349,14 +444,14 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   viewButton: { 
-    backgroundColor: "#4B0082", 
+    backgroundColor: "#C14679", 
     color: "#fff", 
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
   editButton: { 
-    backgroundColor: "#ff9800", 
-    color: "#fff", 
+    backgroundColor: "#gray", 
+    color: "#333", 
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 };

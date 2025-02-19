@@ -21,8 +21,8 @@ function Home() {
     return (
         <div>
             {/* <Header/> */}
-            <Navbar /><br/><br/>
-            <Banner/><br/><br/>
+            <Navbar />
+            <Banner/>
             <WhatWeOffer/><br/><br/>
             <Topcake/><br/><br/>
             <Bakerbanner/><br/><br/><br/><br/>

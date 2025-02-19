@@ -13,11 +13,8 @@ const ProductDetails = () => {
     image: string;
     description: string;
     category: string;
-    seller: {
-      name: string;
-      contact: string;
-    };
-    createdAt?: string;
+    quantity:string;
+  
   }
 
   const [product, setProduct] = useState<Product | null>(null);
@@ -69,6 +66,10 @@ const ProductDetails = () => {
     };
   };
 
+  const handleBuyNow = async () => {
+    router.push(`/order?productId=${product._id}`)
+  }
+
   return (
     <section className="king" style={styles.container}>
       <div style={styles.productImage}>
@@ -79,24 +80,25 @@ const ProductDetails = () => {
         <h1 style={styles.title}>{product.name}</h1>
         <p style={styles.price}>Rs {product.price}</p>
         <p style={styles.description}>Description: {product.description}</p>
-        <p style={styles.date}>Added on: {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "N/A"}</p>
-
+        <p style={styles.quantity}> {product.quantity}</p>
+        {/* <p style={styles.date}>Added on: {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "N/A"}</p> */}
+       
         {/* Size Options */}
-        <div style={styles.sizeOptions}>
+        {/* <div style={styles.sizeOptions}>
           <label style={styles.label}>Size (Optional):</label>
           <div style={styles.sizeButtonGroup}>
-            {["500g", "1kg", "2kg", "3kg"].map((size) => (
+            {["M", "L", "XL", "XXL"].map((size) => (
               <button key={size} style={buttonStyle(size)} onClick={() => handleSizeSelect(size)}>
                 {size}
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Personalized Icing Message */}
         <div>
           <p>Personalized icing message on the cake</p>
-          <input type="text" placeholder="Personalized Icing Message" style={styles.input} />
+          <input type="text" placeholder="Eg- Happy birthday Amma" style={styles.input} />
         </div>
         <div>
           <p>If you want any changes  </p>
@@ -105,16 +107,14 @@ const ProductDetails = () => {
 
 
         {/* Seller Details */}
-        <div style={styles.sellerInfo}>
+        {/* <div style={styles.sellerInfo}>
           <h3>Seller Information</h3>
           <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
-        </div>
+        </div> */}
 
         {/* Buttons */}
         <div style={styles.addToCart}>
-          <Link href={`/order?productId=${product._id}`} passHref>
-            <button style={styles.cartButton}>Buy Now</button>
-          </Link>
+          <button onClick={handleBuyNow} style={styles.cartButton}>Buy Now</button>
           <Link href="/yourcart" passHref>
             <button style={styles.cartButton}>Add To Cart</button>
           </Link>
@@ -125,10 +125,6 @@ const ProductDetails = () => {
 };
 
 const styles = {
-
-king:{
-  backgroundColor: "black",
-},
 
   container: {
     display: "flex",
@@ -157,43 +153,49 @@ king:{
     display: "flex",
     flexDirection: "column" as const,
     gap: "20px",
-   
+
   },
   title: {
     fontSize: "32px",
     fontWeight: "bold",
     color: "#333",
-   
+
   },
   price: {
-    fontSize: "22px",
-    color: "#555",
-  
+    fontSize: "30px",
+    color: "#C14679",
+    fontWeight: "bold",
+
   },
   description: {
     fontSize: "18px",
+    color: "#333",
+    
+
+  },
+  quantity: {
+    fontSize: "18px",
     color: "#666",
-   
   },
   date: {
     fontSize: "16px",
     color: "#777",
-  
+
   },
   sizeOptions: {
     marginTop: "15px",
-    
+
   },
   label: {
     fontSize: "18px",
     fontWeight: "bold",
-   
+
   },
   sizeButtonGroup: {
     display: "flex",
     gap: "10px",
     marginTop: "10px",
-  
+
   },
   input: {
     width: "100%",
@@ -202,20 +204,20 @@ king:{
     border: "1px solid #ccc",
     borderRadius: "5px",
     fontSize: "16px",
-   
+
   },
   sellerInfo: {
     padding: "15px",
     backgroundColor: "#f3f3f3",
     borderRadius: "8px",
-   
+
   },
   addToCart: {
     display: "flex",
     justifyContent: "flex-start",
     gap: "10px",
     marginTop: "20px",
-   
+
 
   },
   cartButton: {

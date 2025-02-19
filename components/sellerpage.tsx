@@ -4,6 +4,8 @@ import Addcake from "./AddCake"; // Assuming you have an AddCake component
 import axios from "axios";
 import { response } from "express";
 import toast from "react-hot-toast";
+import Profile from "./editprofile"; // Assuming you have a Profile component
+
 
 const SellerDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -82,17 +84,6 @@ const SellerDashboard = () => {
     }
   };
   
-
-  // const handleDeleteOrder = async (orderId: string) => {
-  //   try {
-  //     const response = await axios.delete(`/api/order/${orderId}`);
-  //     if (response.status === 200) {
-  //       setOrders((prevOrders) => prevOrders.filter((order) => order._id !== orderId));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting order:", error);
-  //   }
-  // };
 
   const handleEdit = (productId: string) => {
     alert(`Edit product: ${productId}`);
@@ -228,7 +219,7 @@ const SellerDashboard = () => {
 
                       <td>
                         <button onClick={() => handleStatusChange(order._id, "accepted")}>Accept</button>
-                        <button onClick={() => handleStatusChange(order._id, "denied")}>Deny</button>
+                        <button onClick={() => handleStatusChange(order._id, "declined")}>Decline</button>
                        
                       </td>
                     </tr>
@@ -291,10 +282,7 @@ const SellerDashboard = () => {
         {/* Profile Section */}
         {activeTab === "Profile" && (
           <div className="profileSection">
-            <h2>Seller Profile</h2>
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Email:</strong> johndoe@example.com</p>
-            <p><strong>Phone:</strong> +123456789</p>
+            <Profile/>
           </div>
         )}
       </div>
@@ -310,13 +298,12 @@ const SellerDashboard = () => {
 
         .dashboardContainer {
           display: flex;
-          height: 100vh;
           background-color: #f9f9f9;
         }
 
         .sidebar {
           width: 250px;
-          background: linear-gradient(135deg, #4a148c, #6a1b9a);
+          background: linear-gradient(135deg,  #8B3D60, #8B3D60);
           color: white;
           padding: 20px;
           display: flex;
@@ -326,7 +313,7 @@ const SellerDashboard = () => {
 
         .logo {
           text-align: center;
-          font-size: 22px;
+          font-size: 30px;
           font-weight: bold;
           margin-bottom: 20px;
         }
@@ -341,12 +328,13 @@ const SellerDashboard = () => {
 
         .navList button {
           width: 100%;
-          color: white;
+          color:#262626;
           background: none;
           border: none;
           padding: 12px;
           border-radius: 5px;
-          font-size: 16px;
+          font-size: 18px;
+          font-weight:600;
           text-align: left;
           cursor: pointer;
           transition: 0.3s;
@@ -354,7 +342,7 @@ const SellerDashboard = () => {
 
         .navList button:hover,
         .navList .active {
-          background: rgba(255, 255, 255, 0.2);
+          background:#F7F7F7;
         }
 
         .mainContent {
@@ -440,7 +428,7 @@ const SellerDashboard = () => {
           text-align: left;
         }
         .product-table th {
-          background-color:#6a1b9a;
+          background-color: #8B3D60;
           color:white;
           font-weight: bold;
         }
@@ -454,13 +442,18 @@ const SellerDashboard = () => {
           border-radius: 8px;
         }
 
-        .status.shipped {
+        .status.accepted {
           color: green;
           font-weight: bold;
         }
 
         .status.pending {
           color: orange;
+          font-weight: bold;
+        }
+        
+         .status.declined {
+          color:red;
           font-weight: bold;
         }
 

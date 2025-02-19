@@ -103,8 +103,8 @@ const Register: React.FC = () => {
     roleButton: (isActive: boolean) => ({
       padding: "10px 20px",
       borderRadius: "4px",
-      border: `1px solid ${isActive ? "#4caf50" : "#ddd"}`,
-      backgroundColor: isActive ? "#B864D4" : "#fff",
+      border: `1px solid ${isActive ? "#C14679" : "#ddd"}`,
+      backgroundColor: isActive ? " #C14679" : "#fff",
       color: isActive ? "#fff" : "#333",
       cursor: "pointer",
       flex: 1,
@@ -135,7 +135,7 @@ const Register: React.FC = () => {
     button: {
       width: "100%",
       padding: "10px",
-      backgroundColor: "#B864D4",
+      backgroundColor: " #C14679",
       color: "#fff",
       border: "none",
       borderRadius: "4px",
@@ -147,7 +147,7 @@ const Register: React.FC = () => {
       marginTop: "15px",
       textAlign: "center" as React.CSSProperties["textAlign"],
       fontSize: "0.9rem",
-      color: "#B864D4",
+      color: " #C14679",
       textDecoration: "none",
     },
     error: {

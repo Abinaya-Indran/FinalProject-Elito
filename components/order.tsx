@@ -4,13 +4,15 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import ProgressBar from "../components/deliverystatus"; // Import progress tracker
+import { useParams, useSearchParams } from "next/navigation";
 
 const Order = () => {
-  const router = useRouter();
-
   const [cakeId, setCakeId] = useState<string>("");
   const [buyerId, setBuyerId] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const productId = searchParams ? searchParams.get('productId') : null;
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -89,10 +91,10 @@ const Order = () => {
 
       setSuccessMessage("Order sent successfully!");
       setTimeout(() => {
-        
-      if (response.status === 201 && response.data.order) {
-        router.push(`/orderstatus?orderId=${response.data.order._id}`)
-      }
+
+        if (response.status === 201 && response.data.order) {
+          router.push(`/orderstatus?orderId=${response.data.order._id}&productId=${productId}`)
+        }
       }, 2000);
     } catch (error) {
       alert("An unexpected error occurred");

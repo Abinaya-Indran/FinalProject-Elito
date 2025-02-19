@@ -1,19 +1,20 @@
-import Bottom from '../../../components/bottomFooter'
-import EditProfile from '../../../components/editprofile'
-import Navbar from '../../../components/Navbar'
-import "../../../styles/global.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import EditProfile from "../../../components/editprofile";
+import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
+import Bottom from "../../../components/bottomFooter";
 
-
-
-
-function editProfilepage() {
-    return (
-        <div>
-            <Navbar/>
-            <EditProfile user={null} />
-            <Bottom/>
-        </div>
-    )
+function App() {
+  return (
+    <>
+     
+      <Navbar/>
+      <ToastContainer />
+      <EditProfile/>
+      <Bottom/>
+    </>
+  );
 }
 
-export default editProfilepage
+export default App;

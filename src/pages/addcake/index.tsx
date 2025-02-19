@@ -5,9 +5,9 @@ import Bottom from '../../../components/bottomFooter'
 function AddcakePage() {
     return (
         <div>
-            <Navbar/>
-            <AddCake/><br/><br/><br/><br/>
-            <Bottom/>
+           
+            <AddCake/>
+        
         </div>
     )
 }

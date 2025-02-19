@@ -3,7 +3,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Cookies from "js-cookie"; // For handling cookies
+import Cookies from "js-cookie"; 
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const router = useRouter();
@@ -31,25 +33,28 @@ const Login = () => {
 
       const data = await response.json();
 
-      console.log("API Response:", data); // Debugging
-
+      console.log("API Response:", data); 
       if (response.ok) {
-        setSuccess("Login successful!");
-
+        toast.success("Login successful!", { position: "top-right", autoClose: 2000 });
+  
         // Store user details locally
         localStorage.setItem("user", JSON.stringify(data.user));
         Cookies.set("token", data.token, { expires: 7 });
-
-        // Redirect based on user role
-        if (data.user?.role === "Buyer") {
-          await router.push("/product");
-        } else if (data.user?.role === "Seller") {
-          await router.push("/sellerpage");
-        } else if (data.user?.role === "Admin") {
-          await router.push("/Admin");
-        } else {
-          setError("Invalid role");
-        }
+  
+        // // Redirect based on user role
+        // setSuccess("Login successful! Redirecting...");
+  
+        setTimeout(() => {
+          if (data.user?.role === "Buyer") {
+            router.push("/product");
+          } else if (data.user?.role === "Seller") {
+            router.push("/sellerpage");
+          } else if (data.user?.role === "Admin") {
+            router.push("/Admin");
+          } else {
+            setError("Invalid role");
+          }
+        }, 2000); // Delay of 2 seconds before redirect
       } else {
         setError(data.error || "Invalid email or password.");
       }
@@ -57,7 +62,6 @@ const Login = () => {
       setError("An error occurred. Please try again.");
     }
   };
-
   return (
     <section className="login-background">
       <div className="login-container">
@@ -103,7 +107,7 @@ const Login = () => {
         overflow: hidden;
       }
 
-      /* Pseudo-element for blurring */
+     
       .login-background::before {
         content: "";
         position: absolute;
@@ -115,7 +119,6 @@ const Login = () => {
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        filter: blur(2px); /* Apply blur */
         z-index: -1;
       }
 
@@ -125,17 +128,19 @@ const Login = () => {
         align-items: center;
         justify-content: center;
         padding: 30px;
-        max-width: 400px;
+        max-width: 420px;
+        width:100%;
         height: 55vh;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
-        background-color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(255, 255, 255, 0.4);
         font-family: "Poppins", sans-serif;
         position: relative;
         z-index: 1;
+        backdrop-filter: blur(12px);
       }
         .login-container h1 {
-          color:#E1578A;
+          color:#333;
           font-size: 28px;
           font-weight: bold;
           margin-bottom: 20px;
@@ -151,23 +156,23 @@ const Login = () => {
         .login-container input {
           width: 100%;
           padding: 12px;
-          border: 1px solid #ccc;
+          border: none;
           border-radius: 5px;
           font-size: 16px;
-          background-color: #ffffff;
+          background-color: #fff6;
           box-sizing: border-box;
         }
 
         .login-container input:focus {
-          border-color: #b864d4;
+          border-color: #A13A66;
           outline: none;
-          box-shadow: 0 0 5px rgba(184, 100, 212, 0.5);
+          box-shadow: 0 0 5px #A13A66;
         }
 
         .login-container button {
           width: 100%;
           padding: 12px;
-          background-color:#E1578A;
+          background-color: #C14679;
           color: white;
           font-size: 18px;
           font-weight: bold;
@@ -178,7 +183,7 @@ const Login = () => {
         }
 
         .login-container button:hover {
-          background-color: #a052c6;
+          background-color: #A13A66;
           transform: scale(1.02);
         }
 
@@ -210,6 +215,9 @@ const Login = () => {
         }
 
         .create-account {
+          color:black;
+          fontweight:bold;
+          fontsize:18px;
           margin-top: 20px;
         }
       `}</style>

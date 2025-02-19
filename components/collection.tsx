@@ -43,9 +43,9 @@ const WhatWeOffer = () => {
             </div>
             <h3 className="offer-title">{offer.title}</h3>
             <p className="offer-description">{offer.description}</p>
-            <button className="read-more-btn">
+            {/* <button className="read-more-btn">
               READ MORE
-            </button>
+            </button> */}
           </div>
         ))}
       </div>

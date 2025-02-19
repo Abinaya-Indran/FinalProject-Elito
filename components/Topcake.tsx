@@ -66,14 +66,14 @@ const TopCake = () => {
                 <h3 style={styles.productName}>{cake.name || "Unnamed Cake"}</h3>
                 <p style={styles.productPrice}>LKR {cake.price || "N/A"}</p>
 
-                {/* Rating */}
+                {/* Rating
                 <div style={styles.ratings}>
                   {[...Array(5)].map((_, index) => (
                     index < (cake.rating || 0) ? 
                     <FaStar key={index} style={styles.star} /> : 
                     <FaRegStar key={index} style={styles.star} />
                   ))}
-                </div>
+                </div> */}
 
                 <div style={styles.buttonsContainer}>
                   <Link href={`/product/${cake._id}`}>
@@ -148,7 +148,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: "#F7F7F7",
     borderRadius: "1rem",
     overflow: "hidden",
-    boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
     transition: "transform 0.3s ease, box-shadow 0.3s ease",
     width: "100%",
     maxWidth: "400px",
@@ -213,14 +213,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     transition: "background-color 0.3s ease, transform 0.3s ease",
     cursor: "pointer",
   },
-  // favButton: {
-  //   backgroundColor: "transparent",
-  //   border: "none",
-  //   cursor: "pointer",
-  //   fontSize: "1.5rem",
-  //   color: "#C14679",
-  //   transition: "transform 0.3s ease, color 0.3s ease",
-  // },
+  
   cartButton: {
     backgroundColor: "transparent",
     border: "none",

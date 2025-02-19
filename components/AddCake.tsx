@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for Toastify
 
 interface Product {
   sellerId: string;
@@ -23,7 +25,6 @@ export default function AddProduct() {
     category: '',
   });
   const [preview, setPreview] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
   const [sellerId, setSellerId] = useState<string>('');
 
   useEffect(() => {
@@ -54,24 +55,19 @@ export default function AddProduct() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setMessage('');
 
     if (!sellerId) {
-      alert('Seller ID is missing');
+      toast.error('Seller ID is missing');
       return;
     }
 
     try {
-      const response = await axios.post('/api/addcake', {data: { ...product, sellerId } });
+      const response = await axios.post('/api/addcake', { data: { ...product, sellerId } });
       console.log('Response:', response.data);
 
-      // const result = await response.json();
+      // Toast success message
+      toast.success('Product added successfully');
 
-      // if (!response.ok) {
-      //   throw new Error(result.error || 'Error adding product');
-      // }
-
-      alert('Product added successfully');
       setProduct({
         sellerId: '',
         name: '',
@@ -84,7 +80,7 @@ export default function AddProduct() {
       setPreview('');
     } catch (err) {
       console.error('Error:', err);
-      alert(err instanceof Error ? err.message : 'Error adding product');
+      toast.error(err instanceof Error ? err.message : 'Error adding product');
     }
   };
 
@@ -151,10 +147,11 @@ export default function AddProduct() {
             />
           </div>
           <button type="submit" className="submit-btn">Add Product</button>
-          {message && <p className="form-message">{message}</p>}
         </div>
       </form>
 
+      {/* Include ToastContainer to render the toast notifications */}
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} />
 
       <style jsx>{`
         .form-container {
@@ -173,7 +170,7 @@ export default function AddProduct() {
           font-size: 2rem;
           font-weight: bold;
           margin-bottom: 1.5rem;
-          color: #B864D4;
+          color: #C14679;
         }
         .cake-form {
           width: 100%;
@@ -204,7 +201,7 @@ export default function AddProduct() {
           min-height: 100px;
         }
         .submit-btn {
-          background-color: #B864D4;
+          background-color: #C14679;
           color: white;
           font-size: 1rem;
           font-weight: 500;
@@ -215,21 +212,7 @@ export default function AddProduct() {
           transition: background-color 0.3s ease;
         }
         .submit-btn:hover {
-          background-color: #A755C4;
-        }
-        .form-message {
-          margin-top: 1rem;
-          color: green;
-          font-weight: bold;
-        }
-        .image-preview {
-          margin-top: 1rem;
-          max-width: 100%;
-          img {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-          }
+          background-color: #A13A66;
         }
       `}</style>
     </>

@@ -8,7 +8,7 @@ const Bottom = () => {
         color: "#ffffff",
         textAlign: "center",
         padding: "10px 0",
-        // position: "fixed",
+        // position: "sticky",
         bottom: 0,
         width: "100%",
         fontSize: "14px",

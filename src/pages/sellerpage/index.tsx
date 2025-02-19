@@ -8,7 +8,7 @@ import "../../../styles/global.css";
 function sellerPage() {
     return (
         <div>
-            <Navbar/><br/><br/><br/>    
+            <Navbar/>   
             <SellerPage/>
             <Bottom/>
         </div>

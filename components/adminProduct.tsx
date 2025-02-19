@@ -56,7 +56,7 @@ const AdminProductPage = () => {
 
   return (
     <div className="container">
-      <h1 className="title">Admin Product Dashboard</h1>
+      {/* <h1 className="title">Admin Product Dashboard</h1> */}
       <table className="product-table">
         <thead>
           <tr>
@@ -102,7 +102,7 @@ const AdminProductPage = () => {
           text-align: center;
           font-size: 2.5rem;
           font-weight: bold;
-          color: #5a189a;
+          color: #8B3D60;
           margin-bottom: 2rem;
         }
         .product-table {
@@ -121,7 +121,7 @@ const AdminProductPage = () => {
           border-bottom: 1px solid #ddd;
         }
         .product-table th {
-          background-color: #5a189a;
+          background-color: #8B3D60;
           color: white;
           font-size: 1.2rem;
         }
@@ -129,7 +129,7 @@ const AdminProductPage = () => {
           background-color: #f9f9f9;
         }
         .product-table tr:hover {
-          background-color: #f1e3ff;
+          background-color: pink;
         }
         .product-image {
           width: 60px;
@@ -148,15 +148,16 @@ const AdminProductPage = () => {
           transition: 0.3s;
         }
         .edit-btn {
-          background-color: #ffcc00;
-          color: #5a189a;
+          background-color: #c14679;
+          color: white;
         }
         .delete-btn {
           background-color: #e63946;
           color: white;
         }
         .edit-btn:hover {
-          background-color: #ffb700;
+          background-color:rgb(117, 39, 71);
+          color:white;
         }
         .delete-btn:hover {
           background-color: #d62828;

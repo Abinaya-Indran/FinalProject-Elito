@@ -60,32 +60,41 @@ const ProductPage = () => {
     setFilteredProducts(filtered);
   }, [searchQuery, maxPrice, products]);
 
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-
   const addToCart = async (id: string) => {
-    const cookieResponse = await axios.get('/app/cookie')
-    const userId = cookieResponse.data.userId
-
-    const addToCartProduct = await axios.post('/api/cart', {
-      userId: userId, 
-      productId: id,
-      quantity: 1,
-    })
-
-    if (addToCartProduct.status === 200 && addToCartProduct.data.product) {
-      toast.success('Product added in your cart.')
-    } else {
-      toast.error('Failed to add to cart product.')
+    try {
+      // Fetch userId from cookies
+      const cookieResponse = await axios.get('/app/cookie');
+      const userId = cookieResponse.data.userId;
+  
+      if (!userId) {
+        toast.error('Please log in to add items to your cart.');
+        return;
+      }
+  
+      // Add product to cart in the database
+      const response = await axios.post('/api/cart', {
+        userId: userId,
+        productId: id,
+        quantity: 1,
+      });
+  
+      if (response.status === 200 && response.data.product) {
+        // Update local state with new cart data
+        setCart((prevCart) => [...prevCart, response.data.product]);
+  
+        // Save cart to localStorage (optional)
+        localStorage.setItem("cart", JSON.stringify([...cart, response.data.product]));
+  
+        toast.success('Product added to your cart.');
+      } else {
+        toast.error('Failed to add product to cart.');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Something went wrong. Please try again.');
     }
-    // const updatedCart = [...cart, product];
-    // setCart(updatedCart);
-    // localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
+  
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -246,27 +255,17 @@ const ProductPage = () => {
                 <h2 className="product-name">{product.name}</h2>
                 <p className="product-price">LKR {product.price}</p>
 
-                <div className="ratings">
-                  {[...Array(5)].map((_, index) => (
-                    index < (product.rating || 0) ? 
-                    <FaStar key={index} className="star" /> : 
-                    <FaRegStar key={index} className="star" />
-                  ))}
-                </div>
 
                 <div className="buttons-container">
                   <Link href={`/product/${product._id}`}>
-                    <button className="view-details">View Details</button>
+                    <button className="view-details hover-button">View Details</button>
                   </Link>
-                  <Link href="/yourcart">
-                    <button
-                      className="cart-button"
-                      onClick={() => addToCart(product._id)}
-                    >
-                      <FaShoppingCart />
-                    </button>
-                  </Link>
-                  
+                  <button
+                    className="cart-button"
+                    onClick={() => addToCart(product._id)}
+                  >
+                    <FaShoppingCart />
+                  </button>
                 </div>
               </div>
             </div>

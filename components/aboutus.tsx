@@ -20,7 +20,7 @@ const AboutUs = () => {
             goods on-site from scratch, and where both employees and customers
             would feel comfortable.
           </p>
-          <div className="mission-values">
+          {/* <div className="mission-values">
         <div className="item active">
           <span className="number">01</span>
           <span className="label">OUR MISSION</span>
@@ -33,7 +33,7 @@ const AboutUs = () => {
           <span className="number">03</span>
           <span className="label">OUR GOALS</span>
         </div>
-      </div>
+      </div> */}
         </div>
       </div>
       
@@ -47,6 +47,7 @@ const AboutUs = () => {
           font-weight: bold;
           margin-bottom: 50px;
           color: #262626;
+          
         }
         .content {
           display: flex;

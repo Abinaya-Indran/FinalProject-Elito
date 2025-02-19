@@ -2,10 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 const OrderStatus = () => {
   const router = useRouter();
-  const { orderId } = router.query;
+  const searchParams = useSearchParams();
+  const orderId = searchParams ? searchParams.get("orderId") : null;
+  const productId = searchParams ? searchParams.get("productId") : null;
 
   const [status, setStatus] = useState<"pending" | "accepted" | "declined" | null>(null);
   const [cakeName, setCakeName] = useState("");
@@ -31,7 +34,7 @@ const OrderStatus = () => {
 
   const handleOkClick = () => {
     if (status === "accepted") {
-      router.push("/payment"); // Redirect to payment page
+      router.push(`/payment?orderId=${orderId}&productId=${productId}`);
     }
   };
 
@@ -43,19 +46,20 @@ const OrderStatus = () => {
           <p>Your order for <strong>{cakeName}</strong> has been sent to the seller. Please wait for confirmation. </p>
         </div>
       )}
-
-      {status === "accepted" && (
+    
+     {status === "accepted" && (
         <div className="status-card accepted">
           <h2>✅ Order Accepted!</h2>
           <p>The seller has accepted your order for <strong>{cakeName}</strong>. Get ready for your delicious treat! </p>
           <button onClick={handleOkClick} className="ok-button">OK</button>
         </div>
       )}
-
+    
       {status === "declined" && (
         <div className="status-card declined">
           <h2>❌ Order Declined</h2>
           <p>We're sorry! The seller is unable to fulfill your order for <strong>{cakeName}</strong> at this time. </p>
+         
         </div>
       )}
 
@@ -64,7 +68,7 @@ const OrderStatus = () => {
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 100vh;
+          height: 74vh;
           background: linear-gradient(to right, #f9f9f9, #f0f0f0);
           font-family: "Poppins", sans-serif;
         }

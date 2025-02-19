@@ -8,10 +8,6 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
     const { cakeId } = body;
 
-    // if (!cakeId || !Types.ObjectId.isValid(cakeId)) {
-    //   return NextResponse.json({ error: 'Valid account ID is required' }, { status: 400 });
-    // }
-
     await connectToDatabase();
 
     const cake = await Cake.findById(cakeId);

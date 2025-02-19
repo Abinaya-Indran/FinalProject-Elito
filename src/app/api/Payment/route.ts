@@ -1,89 +1,51 @@
-import { NextRequest, NextResponse } from "next/server";
-import Payment from "../../../../models/Payment";
-import { connectToDatabase } from "../../../../lib/db";
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
 
-// Add a Payment (POST)
-export async function POST(req: NextRequest) {
-  await connectToDatabase();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2025-01-27.acacia",
+});
 
-  const { paymentId, userId, orderId, amount, paymentMethod, status } =
-    await req.json();
-
+export async function POST(req: Request) {
   try {
-    const newPayment = await Payment.create({
-      paymentId,
-      userId,
-      orderId,
-      amount,
-      paymentMethod,
-      status,
-      createdAt: new Date(),
+    const { productName, productPrice, productImage, deliveryPrice } = await req.json();
+
+    // Calculate total price by adding delivery fee to the product price
+    const totalPrice = productPrice + deliveryPrice;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "lkr",
+            product_data: {
+              name: productName,
+              images: [productImage],
+            },
+            unit_amount: productPrice * 100,
+          },
+          quantity: 1,
+        },
+        {
+          price_data: {
+            currency: "lkr",
+            product_data: {
+              name: "Delivery Fee",
+              images: [],
+            },
+            unit_amount: deliveryPrice * 100,
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
     });
 
-    return NextResponse.json(
-      { message: "Payment added successfully", payment: newPayment },
-      { status: 201 }
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: "Error adding payment", error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ sessionId: session.id }, { status: 200 });
+  } catch (error) {
+    console.error("Stripe error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
-
-// Get All Payments (GET)
-export async function GET() {
-  await connectToDatabase();
-
-  try {
-    const payments = await Payment.find();
-    return NextResponse.json(payments, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json(
-      { message: "Error fetching payments", error: error.message },
-      { status: 500 }
-    );
-  }
-}
-
-// PATCH: Update a Payment
-export async function PATCH(req: NextRequest) {
-  await connectToDatabase(); // Ensure the DB connection
-
-  const { id } = req.nextUrl.searchParams; // Get the payment ID from query parameters
-  const updates = await req.json(); // Get the updates from the body
-
-  try {
-    const updatedPayment = await Payment.findByIdAndUpdate(id, updates, { new: true });
-    if (!updatedPayment) {
-      return NextResponse.json({ message: "Payment not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(
-      { message: "Payment updated successfully", payment: updatedPayment },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    return NextResponse.json({ message: "Error updating payment", error: error.message }, { status: 500 });
-  }
-}
-
-// DELETE: Delete a Payment
-export async function DELETE(req: NextRequest) {
-  await connectToDatabase(); // Ensure the DB connection
-
-  const { id } = req.nextUrl.searchParams; // Get the payment ID from query parameters
-
-  try {
-    const deletedPayment = await Payment.findByIdAndDelete(id);
-    if (!deletedPayment) {
-      return NextResponse.json({ message: "Payment not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ message: "Payment deleted successfully" }, { status: 200 });
-  } catch (error: any) {
-    return NextResponse.json({ message: "Error deleting payment", error: error.message }, { status: 500 });
-  }
-}
-
