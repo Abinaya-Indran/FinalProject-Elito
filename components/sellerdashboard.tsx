@@ -230,21 +230,21 @@ const SellerDashboard = () => {
         )}
 
        {/* Orders Section */}
-{activeTab === "Orders" && (
-  <div className="ordersSection">
-    <h2>Recent Orders</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Order ID</th>
-          <th>Customer</th>
-          <th>Cake</th>
-          <th>Delivery Details</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
+      {activeTab === "Orders" && (
+        <div className="ordersSection">
+          <h2>Recent Orders</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Cake</th>
+                <th>Delivery Details</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
             {orders.length > 0 ? (
               orders.map((order) => (
                 <tr key={order._id}>
@@ -255,12 +255,12 @@ const SellerDashboard = () => {
                     <p><strong>Phone Number: </strong>{order.buyerDetails?.phoneNumber}</p>
                   </td>
                   <td className="cake-info">
-                    <img
-                      src={order.cakeDetails.image || ""}
-                      alt={order.cakeDetails.name || "Cake"}
-                      className="cake-image"
-                    />
-                    {order.cakeDetails.name || ""}
+                  <img
+                    src={order.cakeDetails?.image || ""}
+                    alt={order.cakeDetails?.name || "Cake"}
+                    className="cake-image"
+                  />
+                  {order.cakeDetails?.name || ""}
                   </td>
                   <td>
                     <p><strong>City:</strong> {order.deliveryDetails.deliveryCity}</p>
@@ -288,24 +288,6 @@ const SellerDashboard = () => {
       </div>
     )}
 
-
-        {/* const OrderModal: React.FC<Order> = ({ order, onClose }) => {
-        return (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Order Details</h2>
-            <p><strong>Order ID:</strong> {order._id}</p>
-            <p><strong>Buyer Name:</strong> {order.buyerDetails?.firstName} {order.buyerDetails?.lastName}</p>
-            <p><strong>Phone:</strong> {order.buyerDetails?.phone}</p>
-            <p><strong>City:</strong> {order.buyerDetails?.city}</p>
-            <p><strong>Address:</strong> {order.buyerDetails?.address}</p>
-            <p><strong>Delivery Date:</strong> {order.deliveryDate}</p>
-            <p><strong>Cake Name:</strong> {order.cakeId?.name}</p>
-            <img src={order.cakeId?.image} alt={order.cakeId?.name} className="modal-image" />
-            <button className="close-btn" onClick={onClose}>Close</button>
-          </div>
-        </div> */}
-
         {/* Products Section */}
         {activeTab === "Products" && (
           <div className="container">
@@ -326,7 +308,7 @@ const SellerDashboard = () => {
                       <img src={product.image} alt={product.name} className="product-image" />
                     </td>
                     <td>{product.name}</td>
-                    <td>LKR {product.price.toFixed(2)}</td>
+                    <td>LKR {Number(product.price).toFixed(2)}</td>
                     <td>{product.category}</td>
                     <td>
                       <button onClick={() => handleEditCake(product)}>✏️ Edit</button>

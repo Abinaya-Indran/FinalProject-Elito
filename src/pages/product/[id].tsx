@@ -81,22 +81,11 @@ const ProductDetails = () => {
         <p style={styles.price}>Rs {product.price}</p>
         <p style={styles.description}>Description: {product.description}</p>
         <p style={styles.quantity}> {product.quantity}</p>
-        {/* <p style={styles.date}>Added on: {product.createdAt ? new Date(product.createdAt).toLocaleDateString() : "N/A"}</p> */}
        
-        {/* Size Options */}
-        {/* <div style={styles.sizeOptions}>
-          <label style={styles.label}>Size (Optional):</label>
-          <div style={styles.sizeButtonGroup}>
-            {["M", "L", "XL", "XXL"].map((size) => (
-              <button key={size} style={buttonStyle(size)} onClick={() => handleSizeSelect(size)}>
-                {size}
-              </button>
-            ))}
-          </div>
-        </div> */}
 
         {/* Personalized Icing Message */}
         <div>
+          <span>optional:</span><br/><br/>
           <p>Personalized icing message on the cake</p>
           <input type="text" placeholder="Eg- Happy birthday Amma" style={styles.input} />
         </div>
@@ -104,13 +93,6 @@ const ProductDetails = () => {
           <p>If you want any changes  </p>
           <input type="text" placeholder="text here" style={styles.input} />
         </div>
-
-
-        {/* Seller Details */}
-        {/* <div style={styles.sellerInfo}>
-          <h3>Seller Information</h3>
-          <p><strong>Seller Name:</strong> {product.seller?.name || "Not Available"}</p>
-        </div> */}
 
         {/* Buttons */}
         <div style={styles.addToCart}>
@@ -141,6 +123,13 @@ const styles = {
   productImage: {
     width: "600px",
   },
+
+  span : {
+    fontSize: "20px",
+    color: "#333",
+    fontWeight: "bold",
+  },
+  
   image: {
     width: "100%",
     height: "100%",

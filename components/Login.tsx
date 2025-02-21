@@ -37,12 +37,9 @@ const Login = () => {
       if (response.ok) {
         toast.success("Login successful!", { position: "top-right", autoClose: 2000 });
   
-        // Store user details locally
+      
         localStorage.setItem("user", JSON.stringify(data.user));
         Cookies.set("token", data.token, { expires: 7 });
-  
-        // // Redirect based on user role
-        // setSuccess("Login successful! Redirecting...");
   
         setTimeout(() => {
           if (data.user?.role === "Buyer") {
@@ -54,7 +51,7 @@ const Login = () => {
           } else {
             setError("Invalid role");
           }
-        }, 2000); // Delay of 2 seconds before redirect
+        }, 1000); 
       } else {
         setError(data.error || "Invalid email or password.");
       }
@@ -102,20 +99,20 @@ const Login = () => {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        height: 85.4vh;
         position: relative;
         overflow: hidden;
       }
 
      
-      .login-background::before {
+     .login-background::before {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url("https://res.cloudinary.com/dgyfbm2en/image/upload/v1740041227/view-plate-with-delicious-sweet-cupcake-dessert_vztjpx.jpg");
+        background-image: url("/images/colorful-delicious-cupcake-with-frosting-top.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -128,9 +125,10 @@ const Login = () => {
         align-items: center;
         justify-content: center;
         padding: 30px;
+        margin-left: 700px;
         max-width: 500px;
         width:100%;
-        height: 65vh;
+        height: 60vh;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         background-color: rgba(255, 255, 255, 0.4);
@@ -150,7 +148,7 @@ const Login = () => {
           width: 100%;
           display: flex;
           flex-direction: column;
-          gap: 15px;
+          gap: 30px;
         }
 
         .login-container input {
@@ -200,9 +198,10 @@ const Login = () => {
         }
 
         .login-container a {
-          color:white;
+          color:#A13A66;
           text-decoration: none;
           font-size: 14px;
+          font-weight: bold;
           margin-top: 10px;
         }
 
@@ -219,13 +218,14 @@ const Login = () => {
           text-decoration: underline;
         }
 
-        .create-account {
-          color:black;
+        .login-container .create-account {
+          color:blue;
           fontweight:bold;
           fontsize:20px;
           margin-top: 20px;
           text-decoration: none;
         }
+
       `}</style>
     </section>
   );

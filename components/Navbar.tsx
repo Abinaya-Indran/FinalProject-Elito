@@ -45,7 +45,7 @@ const Navbar = () => {
     <nav style={styles.navbar}>
       {/* Logo Section */}
       <div onClick={handleHomeClick} style={{ ...styles.logo, cursor: "pointer" }}>
-        Eli<span style={styles.logoSpan}>to</span>
+        <img src="/images/White and Dark Brown Bold Food Logo.svg" alt="logo" style={{ width: "50px", marginRight: "10px" }} />
       </div>
 
       {/* Navigation Links */}

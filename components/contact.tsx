@@ -99,16 +99,16 @@ const ContactPage = () => {
         <div style={styles.infoContainer}>
           <h2 style={styles.sectionTitle}>Contact Information</h2>
           <p style={styles.infoText}>
-            📍 <strong>Address:</strong> 123 Cake Street, Sweet City, SC 12345
+            📍 <strong>Address:</strong>No-80,Viyasar Road,Thonikkal,Vavuniya.
           </p>
           <p style={styles.infoText}>
-            📞 <strong>Phone:</strong> +1 (555) 123-4567
+            📞 <strong>Phone:</strong> 0776511492
           </p>
           <p style={styles.infoText}>
-            ✉️ <strong>Email:</strong> support@cakeonline.com
+            ✉️ <strong>Email:</strong> elitocakes28@gmail.com
           </p>
           <p style={styles.infoText}>
-            ⏰ <strong>Hours:</strong> Mon - Sat: 9:00 AM - 8:00 PM
+            ⏰ <strong>Hours:</strong> 24 Hours
           </p>
         </div>
       </div>
@@ -124,6 +124,12 @@ const styles: { [key: string]: CSSProperties } = {
     fontFamily: "'poppins'",
     backgroundColor: "#F7F7F7",
     padding: "100px",
+    boxSizing: "border-box",
+    overflow: "hidden",
+    // maxWidth: "1200px",
+    maxHeight: "100vh",
+    margin: "0 auto",
+   
   },
   header: {
     textAlign: "center",

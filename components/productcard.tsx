@@ -104,7 +104,7 @@ const ProductPage = () => {
     <div>
       <style jsx>{`
         .page-container {
-          min-height: 100vh;
+          min-height: 120vh;
           background-color:#F7F7F7;
           padding: 2rem;
         }
@@ -153,7 +153,7 @@ const ProductPage = () => {
         }
         .product-image {
           width: 100%;
-          height: 350px;
+          height: 380px;
           object-fit:fill;
           border-bottom: 1px solid white;
         }
@@ -174,17 +174,6 @@ const ProductPage = () => {
           color:#C14679;
           font-weight: 700;
           margin-bottom: 0.5rem;
-        }
-        .ratings {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-bottom: 1rem;
-        }
-        .star {
-          color: #ffd700;
-          font-size: 1.2rem;
-          margin-right: 0.2rem;
         }
         .buttons-container {
           display: flex;

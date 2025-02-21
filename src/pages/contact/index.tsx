@@ -9,9 +9,9 @@ function contactPage() {
     return (
         <div>
 
-            <Navbar/><br/><br/><br/><br/>
-            <Contact/><br/><br/><br/><br/><br/><br/><br/>
-            {/* <Footer/> */}
+            <Navbar/>
+            <Contact/>
+            <Footer/>
             <Bottom/>
 
         </div>

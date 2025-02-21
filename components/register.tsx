@@ -85,7 +85,11 @@ const Register: React.FC = () => {
       justifyContent: "center",
       alignItems: "center",
       height: "100vh",
-      backgroundColor: "#f9f5f0",
+      backgroundImage: "url('/images/bride-groom-cut-delicious-wedding-cake-decorated-with-beige.jpg')", // Update with your image path
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      
     },
     form: {
       backgroundColor: "#fff",

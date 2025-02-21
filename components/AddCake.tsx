@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for Toastify
+import 'react-toastify/dist/ReactToastify.css'; 
 
 interface Product {
   sellerId: string;
@@ -26,6 +26,7 @@ export default function AddProduct() {
   });
   const [preview, setPreview] = useState<string>('');
   const [sellerId, setSellerId] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -61,11 +62,12 @@ export default function AddProduct() {
       return;
     }
 
+    setLoading(true); 
+
     try {
       const response = await axios.post('/api/addcake', { data: { ...product, sellerId } });
       console.log('Response:', response.data);
 
-      // Toast success message
       toast.success('Product added successfully');
 
       setProduct({
@@ -81,6 +83,8 @@ export default function AddProduct() {
     } catch (err) {
       console.error('Error:', err);
       toast.error(err instanceof Error ? err.message : 'Error adding product');
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -146,11 +150,16 @@ export default function AddProduct() {
               onChange={(e) => setProduct({ ...product, category: e.target.value })}
             />
           </div>
-          <button type="submit" className="submit-btn">Add Product</button>
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              'Add Cake'
+            )}
+          </button>
         </div>
       </form>
 
-      {/* Include ToastContainer to render the toast notifications */}
       <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} />
 
       <style jsx>{`
@@ -164,7 +173,7 @@ export default function AddProduct() {
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           max-width: 600px;
           margin: 2rem auto;
-          fontfamily:"poppins"
+          font-family: "Poppins", sans-serif;
         }
         .form-title {
           font-size: 2rem;
@@ -196,10 +205,6 @@ export default function AddProduct() {
           width: 100%;
           box-sizing: border-box;
         }
-        .form-group textarea {
-          resize: vertical;
-          min-height: 100px;
-        }
         .submit-btn {
           background-color: #C14679;
           color: white;
@@ -210,9 +215,27 @@ export default function AddProduct() {
           border-radius: 5px;
           cursor: pointer;
           transition: background-color 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          height: 40px;
         }
-        .submit-btn:hover {
+        .submit-btn:disabled {
           background-color: #A13A66;
+          cursor: not-allowed;
+        }
+        .loading-spinner {
+          width: 18px;
+          height: 18px;
+          border: 3px solid white;
+          border-top: 3px solid transparent;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
       `}</style>
     </>
