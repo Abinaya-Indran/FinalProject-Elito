@@ -1,60 +1,89 @@
-"use client";
+import React, { useState } from 'react';
+import DeliveryTracking from '../components/deliverytracking';
 
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import axios from "axios";
+const SuccessPage: React.FC = () => {
+  const [showDeliveryTracking, setShowDeliveryTracking] = useState(false);
 
-const SuccessPage = () => {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams ? searchParams.get("session_id") : null;
-  const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState("Verifying payment...");
-
-  useEffect(() => {
-    if (!sessionId) {
-      setMessage("No payment session found.");
-      setLoading(false);
-      return;
-    }
-
-    const verifyPayment = async () => {
-      try {
-        const response = await axios.post("/api/verify-payment", { sessionId });
-        if (response.data.success) {
-          setMessage("Thank you! Your payment was successful.");
-        } else {
-          setMessage("Payment verification failed. Please contact support.");
-        }
-      } catch (error) {
-        console.error("Payment verification error:", error);
-        setMessage("An error occurred while verifying your payment.");
-      }
-      setLoading(false);
-    };
-
-    verifyPayment();
-  }, [sessionId]);
+  const handleGoBackHome = () => {
+    setShowDeliveryTracking(true);
+  };
 
   return (
-    <div className="thankYouPage">
-      <h1>{loading ? "Processing..." : message}</h1>
-      <p>We appreciate your purchase.</p>
-
-      <style jsx>{`
-        .thankYouPage {
-          text-align: center;
-          padding: 50px;
-          background: white;
-        }
-        h1 {
-          color: #c64b8c;
-        }
-        p {
-          color: #555;
-        }
-      `}</style>
+    <div style={styles.container}>
+      {showDeliveryTracking ? (
+        <DeliveryTracking />
+      ) : (
+        <div style={styles.card}>
+          <div style={styles.iconContainer}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              style={styles.icon}
+            >
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+          </div>
+          <h1 style={styles.title}>Payment Successful!</h1>
+          <p style={styles.message}>
+            Thank you for your purchase. Your payment has been successfully processed.
+          </p>
+          <button style={styles.button} onClick={handleGoBackHome}>
+            Track Delivery
+          </button>
+        </div>
+      )}
     </div>
   );
+};
+
+const styles = {
+  container: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '87vh',
+    backgroundColor: '#f0f2f5',
+    fontFamily: 'Arial, sans-serif',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: '10px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '40px',
+    textAlign: 'center' as 'center',
+    maxWidth: '400px',
+    width: '100%',
+  },
+  iconContainer: {
+    marginBottom: '20px',
+  },
+  icon: {
+    width: '64px',
+    height: '64px',
+    color: '#4CAF50',
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: '10px',
+  },
+  message: {
+    fontSize: '16px',
+    color: '#666666',
+    marginBottom: '20px',
+  },
+  button: {
+    backgroundColor: '#C14679',
+    color: '#ffffff',
+    border: 'none',
+    borderRadius: '5px',
+    padding: '10px 20px',
+    fontSize: '16px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+  },
 };
 
 export default SuccessPage;

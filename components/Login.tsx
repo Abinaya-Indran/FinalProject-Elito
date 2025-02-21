@@ -115,7 +115,7 @@ const Login = () => {
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: url("https://res.cloudinary.com/dgyfbm2en/image/upload/v1739410646/cake-1227842_640_zvzfmn.jpg");
+        background-image: url("https://res.cloudinary.com/dgyfbm2en/image/upload/v1740041227/view-plate-with-delicious-sweet-cupcake-dessert_vztjpx.jpg");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -128,9 +128,9 @@ const Login = () => {
         align-items: center;
         justify-content: center;
         padding: 30px;
-        max-width: 420px;
+        max-width: 500px;
         width:100%;
-        height: 55vh;
+        height: 65vh;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
         background-color: rgba(255, 255, 255, 0.4);
@@ -191,7 +191,7 @@ const Login = () => {
           color: red;
           font-size: 15px;
           margin-top: 20px;
-        }
+        }  
 
         .login-container .success-message {
           color: green;
@@ -200,7 +200,7 @@ const Login = () => {
         }
 
         .login-container a {
-          color:#E1578A;
+          color:white;
           text-decoration: none;
           font-size: 14px;
           margin-top: 10px;
@@ -208,6 +208,11 @@ const Login = () => {
 
         .forgot-password {
           margin-top: 15px;
+         
+        }
+
+        .login-container a:hover {
+          text-decoration: underline;
         }
 
         .login-container a:hover {
@@ -217,8 +222,9 @@ const Login = () => {
         .create-account {
           color:black;
           fontweight:bold;
-          fontsize:18px;
+          fontsize:20px;
           margin-top: 20px;
+          text-decoration: none;
         }
       `}</style>
     </section>

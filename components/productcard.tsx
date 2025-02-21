@@ -154,7 +154,7 @@ const ProductPage = () => {
         .product-image {
           width: 100%;
           height: 350px;
-          object-fit: cover;
+          object-fit:fill;
           border-bottom: 1px solid white;
         }
         .card-content {

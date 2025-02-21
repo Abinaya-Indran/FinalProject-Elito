@@ -77,9 +77,9 @@ const AdminProductPage = () => {
               <td>{product.price}</td>
               <td>{product.category}</td>
               <td>
-                <button className="edit-btn" onClick={() => handleEdit(product._id)}>
+                {/* <button className="edit-btn" onClick={() => handleEdit(product._id)}>
                   <FaEdit />
-                </button>
+                </button> */}
                 <button className="delete-btn" onClick={() => handleDelete(product._id)}>
                   <FaTrash />
                 </button>
@@ -102,7 +102,7 @@ const AdminProductPage = () => {
           text-align: center;
           font-size: 2.5rem;
           font-weight: bold;
-          color: #8B3D60;
+          color: #C14679;
           margin-bottom: 2rem;
         }
         .product-table {
@@ -130,6 +130,7 @@ const AdminProductPage = () => {
         }
         .product-table tr:hover {
           background-color: pink;
+          
         }
         .product-image {
           width: 60px;

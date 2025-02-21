@@ -27,6 +27,20 @@ const AboutUs = () => {
             {activeTab === "goals" &&
               "Our goal is to expand our bakery business globally while maintaining high standards in taste, hygiene, and customer service."}
           </p>
+          <div className="icons">
+            <div className="icon">
+              <img src="/images/muffin_17519788.png" alt="Quality" />
+              <span>Quality</span>
+            </div>
+            <div className="icon">
+              <img src="/images/fresh_6718209.png" alt="Freshness" />
+              <span>Freshness</span>
+            </div>
+            <div className="icon">
+              <img src="/images/career_9647991.png" alt="Passion" />
+              <span>Passion</span>
+            </div>
+          </div>
           <div className="mission-values">
             <div
               className={`item ${activeTab === "mission" ? "active" : ""}`}
@@ -104,23 +118,44 @@ const AboutUs = () => {
         .item {
           text-align: center;
           color: #999;
-          font-size: 18px;
+          font-size: 20px;
           cursor: pointer;
           padding: 10px 20px;
           transition: color 0.3s ease-in-out;
         }
         .item:hover {
-          color: #c64b8c;
+          color: #c14679;
         }
         .item .number {
           font-size: 32px;
           font-weight: bold;
         }
         .item.active {
-          color: #c64b8c;
+          color: #C14679;
         }
         .item.active .number {
-          color: #c64b8c;
+          color: #C14679;
+        }
+           .icons {
+          display: flex;
+          justify-content: space-between;
+          gap: 30px;
+          margin-top: 50px;
+        }
+        .icon {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .icon img {
+          width: 50px;
+          height: 50px;
+        }
+        .icon span {
+          font-size: 16px;
+          color: #262626;
+          font-weight: 500;
         }
         @media (max-width: 768px) {
           .content {

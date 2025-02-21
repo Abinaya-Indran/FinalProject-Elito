@@ -27,6 +27,13 @@ const AdminDashboard = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Define counts for the dashboard
+  const orderCount = orders.length;
+  const deliveredCount = orders.filter(order => order.status === "Delivered").length;
+  const pendingCount = orders.filter(order => order.status === "Pending").length;
+  const productCount = 0; // Replace with actual product count logic
+  const userCount = users.length;
+
   useEffect(() => {
     if (activeSection === "Users") {
       fetchUsers();
@@ -125,23 +132,32 @@ const AdminDashboard = () => {
           <h2 style={styles.headerTitle}>{activeSection}</h2>
         </header>
 
-        {/* Render Section Based on Selected Menu Item */}
-        {activeSection === "Dashboard" && (
-          <section style={styles.stats}>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>150</h3>
-              <p style={styles.statLabel}>Total Orders</p>
-            </div>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>50</h3>
-              <p style={styles.statLabel}>Delivered</p>
-            </div>
-            <div style={styles.statCard}>
-              <h3 style={styles.statNumber}>20</h3>
-              <p style={styles.statLabel}>Pending Orders</p>
-            </div>
-          </section>
-        )}
+      {/* Render Section Based on Selected Menu Item */}
+          {activeSection === "Dashboard" && (
+            <section style={styles.stats}>
+              <div style={styles.statCard}>
+                <h3 style={styles.statNumber}>{orderCount}</h3> {/* Order count */}
+                <p style={styles.statLabel}>Total Orders</p>
+              </div>
+              <div style={styles.statCard}>
+                <h3 style={styles.statNumber}>{deliveredCount}</h3> {/* Delivered count */}
+                <p style={styles.statLabel}>Delivered</p>
+              </div>
+              <div style={styles.statCard}>
+                <h3 style={styles.statNumber}>{pendingCount}</h3> {/* Pending orders count */}
+                <p style={styles.statLabel}>Pending Orders</p>
+              </div>
+              <div style={styles.statCard}>
+                <h3 style={styles.statNumber}>{productCount}</h3> {/* Product count */}
+                <p style={styles.statLabel}>Total Products</p>
+              </div>
+              <div style={styles.statCard}>
+                <h3 style={styles.statNumber}>{userCount}</h3> {/* User count */}
+                <p style={styles.statLabel}>Total Users</p>
+              </div>
+            </section>
+          )}
+
 
          {/* Orders Section */}
          {activeSection === "Orders" && (
@@ -168,7 +184,7 @@ const AdminDashboard = () => {
                     <td style={styles.td}>{order.status}</td>
                     <td style={styles.td}>
                       <button style={{ ...styles.actionButton, ...styles.viewButton }}>View</button>
-                      <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button>
+                      {/* <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button> */}
                     </td>
                   </tr>
                 ))}
@@ -222,58 +238,63 @@ const AdminDashboard = () => {
           </section>
         )}
 
-        {/* Users Section */}
-        {activeSection === "Users" && (
-          <section style={styles.tableSection}>
-            <h3 style={styles.sectionTitle}>Users</h3>
-            {loading && <p>Loading...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>User ID</th>
-                  <th style={styles.th}>Name</th>
-                  <th style={styles.th}>Role</th>
-                  <th style={styles.th}>Email</th>
-                  <th style={styles.th}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, index) => (
-                  <tr key={user._id} style={index % 2 === 0 ? styles.rowEven : {}}>
-                    <td style={styles.td}>{user._id}</td>
-                    <td style={styles.td}>{user.name}</td>
-                    <td style={styles.td}>{user.role}</td>
-                    <td style={styles.td}>{user.email}</td>
-                    <td style={styles.td}>
-                       <button onClick={() => handleView(user._id)}>View</button>
-                      {/* <button style={{ ...styles.actionButton, ...styles.editButton }}>Edit</button> */}
-                    </td>
-                  </tr>
-                ))}
-                 {modalOpen && selectedUser && (
-                  <div className="modal">
-                    <h2>User Details</h2>
-                    <p><strong>Name:</strong> {selectedUser.name}</p>
-                    <p><strong>Email:</strong> {selectedUser.email}</p>
-                    {selectedUser.phoneNumber && <p><strong>Phone:</strong> {selectedUser.phoneNumber}</p>}
-                    {selectedUser.address && <p><strong>Address:</strong> {selectedUser.address}</p>}
-                    <p><strong>Role:</strong> {selectedUser.role}</p>
-                    {selectedUser.role === "Seller" && (
-                      <>
-                        <p><strong>Seller Type:</strong> {selectedUser.sellerType}</p>
-                        {selectedUser.sellerType === "Cake Shop" && selectedUser.cakeShopName && (
-                          <p><strong>Cake Shop Name:</strong> {selectedUser.cakeShopName}</p>
-                        )}
-                      </>
+       {/* Users Section */}
+            {activeSection === "Users" && (
+              <section style={styles.tableSection}>
+                <h3 style={styles.sectionTitle}>Users</h3>
+                {loading && <p>Loading...</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>User ID</th>
+                      <th style={styles.th}>Name</th>
+                      <th style={styles.th}>Role</th>
+                      <th style={styles.th}>Email</th>
+                      <th style={styles.th}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user, index) => (
+                      <tr key={user._id} style={index % 2 === 0 ? styles.rowEven : {}}>
+                        <td style={styles.td}>{user._id}</td>
+                        <td style={styles.td}>{user.name}</td>
+                        <td style={styles.td}>{user.role}</td>
+                        <td style={styles.td}>{user.email}</td>
+                        <td style={styles.td}>
+                          <button onClick={() => handleView(user._id)}>View</button>
+                        </td>
+                      </tr>
+                    ))}
+                    {modalOpen && selectedUser && (
+                      <div style={styles.modalBackdrop}>
+                        <div style={styles.modal}>
+                          <h2 style={styles.modalTitle}>User Details</h2>
+                          <div style={styles.modalContent}>
+                            <p><strong>Name:</strong> {selectedUser.name}</p>
+                            <p><strong>Email:</strong> {selectedUser.email}</p>
+                            {selectedUser.phoneNumber && <p><strong>Phone:</strong> {selectedUser.phoneNumber}</p>}
+                            {selectedUser.address && <p><strong>Address:</strong> {selectedUser.address}</p>}
+                            <p><strong>Role:</strong> {selectedUser.role}</p>
+                            {selectedUser.role === "Seller" && (
+                              <>
+                                <p><strong>Seller Type:</strong> {selectedUser.sellerType}</p>
+                                {selectedUser.sellerType === "Cake Shop" && selectedUser.cakeShopName && (
+                                  <p><strong>Cake Shop Name:</strong> {selectedUser.cakeShopName}</p>
+                                )}
+                              </>
+                            )}
+                            <button onClick={() => setModalOpen(false)} style={styles.closeButton}>Close</button>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                    <button onClick={() => setModalOpen(false)}>Close</button>
-                  </div>
-                )}
-              </tbody>
-            </table>
-          </section>
-        )}
+                  </tbody>
+                </table>
+              </section>
+            )}
+
+
       </main>
     </div>
   );
@@ -449,11 +470,80 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
   },
 
-  editButton: { 
-    backgroundColor: "#gray", 
-    color: "#333", 
-    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
-  },
+    // tableSection: {
+    //   padding: "20px",
+    //   backgroundColor: "#fff",
+    //   borderRadius: "8px",
+    //   boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+    // },
+    // sectionTitle: {
+    //   fontSize: "24px",
+    //   color: "#262626",
+    //   marginBottom: "20px",
+    // },
+    // table: {
+    //   width: "100%",
+    //   borderCollapse: "collapse",
+    //   marginBottom: "20px",
+    // },
+    // th: {
+    //   padding: "10px",
+    //   backgroundColor: "#f1f1f1",
+    //   borderBottom: "1px solid #ddd",
+    //   textAlign: "left",
+    // },
+    // td: {
+    //   padding: "10px",
+    //   borderBottom: "1px solid #ddd",
+    // },
+    // rowEven: {
+    //   backgroundColor: "#f9f9f9",
+    // },
+    modalBackdrop: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      animation: "fadeIn 0.3s ease-in-out",
+    },
+    modal: {
+      backgroundColor: "#fff",
+      padding: "30px",
+      borderRadius: "8px",
+      maxWidth: "600px",
+      width: "90%",
+      boxShadow: "0 5px 15px rgba(0, 0, 0, 0.2)",
+      animation: "zoomIn 0.3s ease-in-out",
+    },
+    modalTitle: {
+      fontSize: "26px",
+      marginBottom: "20px",
+      color: "#262626",
+    },
+    modalContent: {
+      fontSize: "16px",
+      color: "#444",
+    },
+    closeButton: {
+      backgroundColor: "#C64B8C",
+      color: "#fff",
+      padding: "10px 20px",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      marginTop: "20px",
+    },
+  
+  // editButton: { 
+  //   backgroundColor: "#gray", 
+  //   color: "#333", 
+  //   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" // Add sans-serif font stack
+  // },
 };
 
 export default AdminDashboard;

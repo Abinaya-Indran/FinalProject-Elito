@@ -7,16 +7,16 @@ export default function Home() {
     <div className="container">
       <main className="hero">
         <div className="text-section">
-          <h1>Start selling cakes</h1>
-
+          <h1>Start Selling & Grow Your Business with Elito</h1>
+          <p>Join Elito and reach more customers with ease. List your cakes, manage orders, and boost your sales effortlessly!</p><br/><br/>
           <Link href="/register" passHref>
-            <button className="cta-button">Create your store</button>
+            <button className="cta-button">Become a seller</button>
           </Link>
         </div>
         <div className="image-section">
         
           <img
-            src="/images/baker.jpg"
+            src="/images/woman-putting-walnut-top-classic-cake-decorated-with-figs-syrup.jpg"
             alt="Baker preparing cakes"
             className="hero-image"
           />
@@ -62,6 +62,12 @@ export default function Home() {
           margin-bottom: 20px;
           fontFamily: "poppins,sans-serif",
         }
+        .text-section p{
+          font-size: 20px;
+          color: #333;
+          margin-bottom: 20px;
+          fontFamily: "poppins,sans-serif",
+        }
 
         .cta-button {
           padding: 15px 30px;
@@ -86,9 +92,10 @@ export default function Home() {
         }
 
         .hero-image {
-          max-width: 100%;
+          max-width: 50%;
           border-radius: 8px;
         }
+       
       `}</style>
     </div>
   );

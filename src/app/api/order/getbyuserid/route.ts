@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest) => {
     const sellerObjectId = new Types.ObjectId(userId);
 
     // Find cakes sold by this seller
-    const cakes = await Cake.find({ sellerId: sellerObjectId });
+    const cakes = await Cake.find({ sellerId: sellerObjectId })
 
     if (cakes.length === 0) {
       return NextResponse.json({ error: 'No cakes found for this seller' }, { status: 404 });
@@ -28,13 +28,25 @@ export const POST = async (req: NextRequest) => {
     // Extract cake IDs
     const cakeIds = cakes.map(cake => cake._id);
 
-    // Find orders that contain any of these cake IDs
+    // Fetch orders that contain any of these cake IDs
     const orders = await Order.find({ cakeId: { $in: cakeIds } });
+    
+    // Fetch cake images separately
+    const cakesWithImages = await Cake.find({ _id: { $in: cakeIds } }).select('_id image name');
+    
+    // Convert cakesWithImages array into a Map for quick lookup
+    const cakeImageMap = new Map(cakesWithImages.map(cake => [cake._id.toString(), { image: cake.image, name: cake.name }]));
+    
+    // Merge cake images into orders
+    const ordersWithImages = orders.map(order => ({
+        ...order.toObject(),
+        cakeDetails: cakeImageMap.get(order.cakeId.toString()) || null, // Add image if found, otherwise null
+    }));   
 
     return NextResponse.json({
       success: true,
       message: 'Orders retrieved successfully',
-      orders,
+      orders: ordersWithImages,
     });
   } catch (error: any) {
     console.error('Error retrieving orders:', error);

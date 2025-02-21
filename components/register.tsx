@@ -63,7 +63,7 @@ const Register: React.FC = () => {
         setTimeout(() => {
           // Redirect based on the role
           if (role === "Seller") {
-            router.push("/sellerpage"); // Seller goes to seller page
+            router.push("/register/wait"); // Seller goes to seller page
           } else {
             router.push("/product"); // Buyer goes to product page
           }

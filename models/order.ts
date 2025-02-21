@@ -1,28 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IOrder extends Document {
-  cakeId: string;
-  sellerId: string;
-  buyerId: string;
-  status: "pending" | "accepted" | "denied";
-  buyerDetails: {
-    firstName: string;
-    lastName?: string;
-    phoneNumber: string;
-    address: string;
-    email: string;
-  };
-  deliveryDetails: {
-    deliveryCity: string;
-    deliveryArea?: string;
-    deliveryDate: string;
-  };
-}
-
-const OrderSchema = new Schema<IOrder>(
+const OrderSchema = new Schema(
   {
-    cakeId: { type: String, required: true },
-    buyerId: { type: String, required: true },
+    cakeId: { type: mongoose.Schema.Types.ObjectId, ref: 'product', required: true },
+    buyerId: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     status: { type: String, enum: ["pending", "accepted", "denied"], default: "pending" },
     buyerDetails: {
       firstName: { type: String, required: true },
@@ -40,4 +21,4 @@ const OrderSchema = new Schema<IOrder>(
   { timestamps: true }
 );
 
-export default mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);
+export default mongoose.models.Order || mongoose.model("Order", OrderSchema);
