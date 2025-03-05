@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { FaUserPlus, FaBookOpen, FaStar, FaTruck, FaChartLine } from "react-icons/fa";
+import { FaUserPlus, FaBookOpen, FaTruck, FaChartLine } from "react-icons/fa";
 
 const SellerGrow = () => {
   return (

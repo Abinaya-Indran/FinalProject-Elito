@@ -1,44 +1,31 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import {connectToDatabase }from "../../../../lib/db"; 
-import Cart from "../../../../models/addtocart"; 
-import Product from "../../../../models/product"; 
+import { NextResponse } from 'next/server';
+import { connectToDatabase } from '../../../../lib/db'; 
+import Cart from '../../../../models/addtocart';  
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    try {
-      await connectToDatabase();
-      
-      const { userId, productId, quantity } = req.body;
+export async function POST(req: Request) {
+  try {
+    await connectToDatabase();
+    const { userId, productId, quantity } = await req.json();
 
-      if (!userId || !productId || quantity <= 0) {
-        return res.status(400).json({ message: "Invalid input" });
-      }
-
-      // Check if the product exists
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-
-      // Check if the item already exists in the cart
-      let cartItem = await Cart.findOne({ userId, productId });
-
-      if (cartItem) {
-        // If exists, increase the quantity
-        cartItem.quantity += quantity;
-        await cartItem.save();
-      } else {
-        // Add new item to cart
-        cartItem = new Cart({ userId, productId, quantity });
-        await cartItem.save();
-      }
-
-      return res.status(200).json({ message: "Product added to cart", product: cartItem });
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      return res.status(500).json({ message: "Internal server error" });
+    if (!userId || !productId) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
-  } else {
-    return res.status(405).json({ message: "Method not allowed" });
+
+    // Check if the product is already in the cart
+    const existingCartItem = await Cart.findOne({ userId, productId });
+    if (existingCartItem) {
+      existingCartItem.quantity += quantity || 1;
+      await existingCartItem.save();
+      return NextResponse.json({ message: "Updated cart quantity", product: existingCartItem }, { status: 200 });
+    }
+
+    // If not, add a new item
+    const newCartItem = new Cart({ userId, productId, quantity });
+    await newCartItem.save();  
+
+    return NextResponse.json({ message: "Added to cart successfully", product: newCartItem }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

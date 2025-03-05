@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AddProduct from "./AddCake";
 import AdminProductPage from "./adminProduct";
 import AddcakePage from "@/pages/addcake";
 
@@ -17,13 +16,28 @@ interface User {
   cakeShopName?: string;
 }
 
+interface Order {
+  _id: string;
+  cakeId: string;
+  buyerId: string;
+  status: string;
+}
+
+interface Payment {
+  _id: string;
+  orderId: string;
+  amount: number;
+  status: string;
+  date: string;
+}
+
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("Dashboard"); // Track active section
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [paymentDetails, setPaymentDetails] = useState<any[]>([]);
+  const [paymentDetails, setPaymentDetails] = useState<Payment[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -53,8 +67,8 @@ const AdminDashboard = () => {
       if (!response.ok) throw new Error("Failed to fetch users");
       const data = await response.json();
       setUsers(data.data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -67,8 +81,8 @@ const AdminDashboard = () => {
       if (!response.ok) throw new Error("Failed to fetch orders");
       const data = await response.json();
       setOrders(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -81,8 +95,8 @@ const AdminDashboard = () => {
       if (!response.ok) throw new Error("Failed to fetch payment details");
       const data = await response.json();
       setPaymentDetails(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError((err as Error).message);
     } finally {
       setLoading(false);
     }

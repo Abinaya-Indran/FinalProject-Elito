@@ -24,10 +24,10 @@ const Footer = () => {
         {/* Logo and Description */}
         <div style={{ margin: "0 20px" }}>
           <div style={{ marginBottom: "10px" }}>
-            <Image src="/images/Logo.png" alt="Elite Logo" width={80} height={80} />
+            <Image src="/images/White and Dark Brown Bold Food Logo.svg" alt="Elite Logo" width={80} height={80} />
           </div>
           <p>
-            Sri Lanka's largest online cake shop that can customize any type of
+            Sri Lanka&apos;s largest online cake shop that can customize any type of
             cake.
           </p>
           <p>No-80, Viyasar Road, Thonikkal, Vavuniya, Sri Lanka.</p>

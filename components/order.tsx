@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import ProgressBar from "../components/deliverystatus"; // Import progress tracker
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const Order = () => {
   const [cakeId, setCakeId] = useState<string>("");
@@ -97,6 +96,7 @@ const Order = () => {
         }
       }, 2000);
     } catch (error) {
+      console.error("Error placing order:", error);
       alert("An unexpected error occurred");
     } finally {
       setLoading(false);
@@ -262,7 +262,7 @@ const Order = () => {
           text-align: center;
         }
         .button {
-          background-color: #4caf50;
+          background-color: #C14679;
           color: white;
           padding: 12px 20px;
           border: none;

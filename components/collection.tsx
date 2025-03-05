@@ -32,9 +32,10 @@ const WhatWeOffer = () => {
           <div key={index} className="offer-card">
             <div className="image-wrapper">
               <Image
+                width={400}
+                height={400}
                 src={offer.imgSrc}
                 alt={offer.title}
-                fill
                 style={{
                   objectFit: "cover",
                   objectPosition: "center",

@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
     // Connect to MongoDB
     await connectToDatabase();
 
-    // Upload image to Cloudinary
+    //  image to Cloudinary
     const uploadResponse = await cloudinary.uploader.upload(image, {
       folder: 'ecommerce_cakes',
     });

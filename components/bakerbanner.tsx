@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link"; 
 
 export default function Home() {
@@ -15,15 +16,19 @@ export default function Home() {
         </div>
         <div className="image-section">
         
-          <img
+          <Image
             src="/images/woman-putting-walnut-top-classic-cake-decorated-with-figs-syrup.jpg"
             alt="Baker preparing cakes"
             className="hero-image"
+            width={600}
+            height={700} 
           />
-          <img
+          <Image
             src="/images/bakerbanner2.webp"
             alt="Baker preparing cakes"
             className="hero-image"
+            width={600}
+            height={700}
           />
          
 

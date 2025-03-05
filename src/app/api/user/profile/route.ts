@@ -19,52 +19,54 @@ export const POST = async (req: NextRequest) => {
     }
 
     return NextResponse.json(user, { status: 200 });
-  } catch (error: any) {
-    console.error("Error fetching user:", error.message);
+  } catch (error: unknown) {
+    console.error("Error fetching user:", (error as Error).message);
     return NextResponse.json(
-      { message: "Failed to fetch user.", error: error.message },
+      { message: "Failed to fetch user.", error: (error as Error).message },
       { status: 500 }
     );
   }
 };
+
+// ✅ Define a type for user updates
+interface UserUpdate {
+  name?: string;
+  email?: string;
+  password?: string;
+  role?: string;
+  address?: string;
+  phoneNumber?: string;
+  cakeShopName?: string;
+  sellerType?: string;
+}
 
 // ✅ Handle PATCH request - Update user details
 export const PATCH = async (req: NextRequest) => {
   try {
     await connectToDatabase();
     const body = await req.json();
-    const { _id, name, email, password, role, address, phoneNumber, cakeShopName, sellerType } = body;
+    const { _id, ...updates }: { _id: string } & UserUpdate = body;
 
     if (!_id) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
-    const updates: Record<string, any> = {}
-    if (name) updates.name = name
-    if (email) updates.email = email
-    if (password) updates.password = password
-    if (role) updates.role = role
-    if (address) updates.address = address
-    if (phoneNumber) updates.phoneNumber = phoneNumber
-    if (cakeShopName) updates.cakeShopName = cakeShopName
-    if (sellerType) updates.sellerType = sellerType
-
     const updatedUser = await User.findByIdAndUpdate(
       { _id: _id },
       { $set: updates },
       { new: true }
-    )
-    console.log('Abinaya', body, _id)
-    console.log('Updated User Data', updatedUser)
+    );
+
+    console.log('Updated User Data', updatedUser);
     if (!updatedUser) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error: any) {
-    console.error("Error fetching user:", error.message);
+  } catch (error: unknown) {
+    console.error("Error updating user:", (error as Error).message);
     return NextResponse.json(
-      { message: "Failed to fetch user.", error: error.message },
+      { message: "Failed to update user.", error: (error as Error).message },
       { status: 500 }
     );
   }
@@ -74,7 +76,7 @@ export const PATCH = async (req: NextRequest) => {
 export const DELETE = async (req: NextRequest) => {
   try {
     await connectToDatabase();
-    const { id } = await req.json();
+    const { id }: { id: string } = await req.json();
     console.log("ID:", id);
 
     if (!id) {
@@ -90,10 +92,10 @@ export const DELETE = async (req: NextRequest) => {
       { message: "User deleted successfully", deletedUser },
       { status: 200 }
     );
-  } catch (error: any) {
-    console.error("Error deleting user:", error.message);
+  } catch (error: unknown) {
+    console.error("Error deleting user:", (error as Error).message);
     return NextResponse.json(
-      { message: "Failed to delete user.", error: error.message },
+      { message: "Failed to delete user.", error: (error as Error).message },
       { status: 500 }
     );
   }

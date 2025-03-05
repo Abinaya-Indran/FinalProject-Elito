@@ -1,8 +1,4 @@
-// src/app/layout.tsx
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import "../../styles/global.css";
-import Bottom from "../../components/bottomFooter";
 
 export const metadata = {
   title: "Elito",

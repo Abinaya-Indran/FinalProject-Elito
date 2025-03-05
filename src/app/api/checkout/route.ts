@@ -9,9 +9,6 @@ export async function POST(req: Request) {
   try {
     const { productName, productPrice, productImage, deliveryPrice } = await req.json();
 
-    // Calculate total price by adding delivery fee to the product price
-    const totalPrice = productPrice + deliveryPrice;
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [

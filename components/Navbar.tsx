@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import Image from "next/image";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -45,7 +46,7 @@ const Navbar = () => {
     <nav style={styles.navbar}>
       {/* Logo Section */}
       <div onClick={handleHomeClick} style={{ ...styles.logo, cursor: "pointer" }}>
-        <img src="/images/White and Dark Brown Bold Food Logo.svg" alt="logo" style={{ width: "50px", marginRight: "10px" }} />
+        <Image src="/images/White and Dark Brown Bold Food Logo.svg" alt="logo" width={50} height={50} />
       </div>
 
       {/* Navigation Links */}

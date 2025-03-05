@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
 
     await connectToDatabase();
 
-    const cake = await Cake.findById(cakeId);
+    const cake = await Cake.findById({_id: cakeId});
 
     if (!cake) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
@@ -21,7 +21,7 @@ export const POST = async (req: NextRequest) => {
       cake,
     });
   } catch (error) {
-    console.error('Error retrieving cake:', error);
+    console.error('Error retrieving cakes:', error);
     return NextResponse.json({
       success: false,
       error: 'Server error',

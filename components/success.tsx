@@ -51,7 +51,7 @@ const styles = {
     borderRadius: '10px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     padding: '40px',
-    textAlign: 'center' as 'center',
+    textAlign: 'center' as const,
     maxWidth: '400px',
     width: '100%',
   },

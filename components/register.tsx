@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 const Register: React.FC = () => {
   const [role, setRole] = useState("Buyer"); // Default role is Buyer
@@ -71,8 +72,8 @@ const Register: React.FC = () => {
       } else {
         setError("Registration failed. Please try again.");
       }
-    } catch (err: any) {
-      setError(err.response?.data?.error || "An error occurred. Please try again.");
+    } catch (err) {
+      setError("An error occurred. Please try again.");
       console.error("Error during registration:", err);
     } finally {
       setLoading(false);
@@ -290,9 +291,9 @@ const Register: React.FC = () => {
         <button type="submit" style={styles.button} disabled={loading}>
           {loading ? "Registering..." : `Sign Up as ${role}`}
         </button>
-        <a href="/login" style={styles.link}>
+        <Link href="/login" style={styles.link}>
           Already have an account? Log In
-        </a>
+        </Link>
       </form>
     </div>
   );

@@ -15,8 +15,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
           const orders = await Order.find();
           res.status(200).json({ success: true, data: orders });
-        } catch (error: any) {
-          res.status(400).json({ success: false, message: error.message });
+        } catch (error) {
+          res.status(400).json({ success: false, message: (error as Error).message });
         }
         break;
       }
@@ -25,8 +25,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
           const order = await Order.create(req.body);
           res.status(201).json({ success: true, data: order });
-        } catch (error: any) {
-          res.status(400).json({ success: false, message: error.message });
+        } catch (error) {
+          res.status(400).json({ success: false, message: (error as Error).message });
         }
         break;
       }
@@ -37,8 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const order = await Order.findByIdAndUpdate(id, req.body, { new: true });
           if (!order) throw new Error('Order not found');
           res.status(200).json({ success: true, data: order });
-        } catch (error: any) {
-          res.status(404).json({ success: false, message: error.message });
+        } catch (error) {
+          res.status(404).json({ success: false, message: (error as Error).message });
         }
         break;
       }
@@ -49,8 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const order = await Order.findByIdAndDelete(id);
           if (!order) throw new Error('Order not found');
           res.status(200).json({ success: true, data: order });
-        } catch (error: any) {
-          res.status(404).json({ success: false, message: error.message });
+        } catch (error) {
+          res.status(404).json({ success: false, message: (error as Error).message });
         }
         break;
       }
@@ -58,8 +58,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
         res.status(405).end(`Method ${method} Not Allowed`);
     }
-  } catch (connectionError: any) {
+  } catch (connectionError) {
     // Catch database connection errors
-    res.status(500).json({ success: false, message: 'Database connection failed', error: connectionError.message });
+    res.status(500).json({ success: false, message: 'Database connection failed', error: (connectionError as Error).message });
   }
 }

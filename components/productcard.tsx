@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa"; // Import icons
-import product from "../models/product";
+import { FaShoppingCart } from "react-icons/fa";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const ProductPage = () => {
   interface Product {
@@ -49,7 +49,7 @@ const ProductPage = () => {
     if (searchQuery) {
       filtered = filtered.filter((product) =>
         product.category?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.name?.toLowerCase().includes(searchQuery.toLowerCase()) // Added name filter
+        product.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
   
@@ -60,39 +60,27 @@ const ProductPage = () => {
     setFilteredProducts(filtered);
   }, [searchQuery, maxPrice, products]);
 
-  const addToCart = async (id: string) => {
+  const addToCart = async (cake: Product) => {
     try {
-      // Fetch userId from cookies
-      const cookieResponse = await axios.get('/app/cookie');
-      const userId = cookieResponse.data.userId;
+      const updatedCart = [...cart, cake];
+      setCart(updatedCart);
+      localStorage.setItem("cart", JSON.stringify(updatedCart));
   
-      if (!userId) {
-        toast.error('Please log in to add items to your cart.');
-        return;
-      }
-  
-      // Add product to cart in the database
-      const response = await axios.post('/api/cart', {
-        userId: userId,
-        productId: id,
+      const userId = "someUserId";  
+      await axios.post('/api/addtocart', {
+        userId,
+        productId: cake._id,
         quantity: 1,
       });
   
-      if (response.status === 200 && response.data.product) {
-        // Update local state with new cart data
-        setCart((prevCart) => [...prevCart, response.data.product]);
-  
-        // Save cart to localStorage (optional)
-        localStorage.setItem("cart", JSON.stringify([...cart, response.data.product]));
-  
-        toast.success('Product added to your cart.');
-      } else {
-        toast.error('Failed to add product to cart.');
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      toast.error('Something went wrong. Please try again.');
-    }
+      // Update cart count
+    const cartCount = updatedCart.length;
+    localStorage.setItem("cartCount", JSON.stringify(cartCount)); // Store count in localStorage
+
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    toast.error('Something went wrong. Please try again.');
+  }
   };
   
 
@@ -239,7 +227,7 @@ const ProductPage = () => {
         <div className="product-grid">
           {filteredProducts.map((product) => (
             <div key={product._id} className="product-card">
-              <img src={product.image} alt={product.name} className="product-image" />
+              <Image src={product.image} alt={product.name} className="product-image" width={400} height={380}/>
               <div className="card-content">
                 <h2 className="product-name">{product.name}</h2>
                 <p className="product-price">LKR {product.price}</p>
@@ -251,7 +239,7 @@ const ProductPage = () => {
                   </Link>
                   <button
                     className="cart-button"
-                    onClick={() => addToCart(product._id)}
+                    onClick={() => addToCart(product)}
                   >
                     <FaShoppingCart />
                   </button>

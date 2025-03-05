@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '../../../../../lib/db';
 import Cake from '../../../../../models/product';
 import Order from '../../../../../models/order';
-import { Types } from 'mongoose'; // Import Types from mongoose
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -15,11 +14,8 @@ export const POST = async (req: NextRequest) => {
 
     await connectToDatabase();
 
-    // Convert userId to ObjectId
-    const sellerObjectId = new Types.ObjectId(userId);
-
     // Find cakes sold by this seller
-    const cakes = await Cake.find({ sellerId: sellerObjectId })
+    const cakes = await Cake.find({ sellerId: userId })
 
     if (cakes.length === 0) {
       return NextResponse.json({ error: 'No cakes found for this seller' }, { status: 404 });
@@ -48,12 +44,12 @@ export const POST = async (req: NextRequest) => {
       message: 'Orders retrieved successfully',
       orders: ordersWithImages,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error retrieving orders:', error);
     return NextResponse.json({
       success: false,
       error: 'Server error',
-      details: error.message,
+      details: (error as Error).message,
     }, { status: 500 });
   }
 };

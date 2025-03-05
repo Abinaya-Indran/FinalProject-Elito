@@ -29,12 +29,12 @@ export async function GET(req: Request) {
       { data: users, token }, // Include the token if needed
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching users:", error); // Log error for debugging purposes
     return new Response(
       JSON.stringify({
         error: "Failed to fetch users",
-        details: error.message,
+        details: (error as Error).message,
       }),
       { status: 500 }
     );

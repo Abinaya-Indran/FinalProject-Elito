@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '../../../../../lib/db';
 import Cake from '../../../../../models/product';
-import { Types } from 'mongoose';
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -25,12 +24,12 @@ export const POST = async (req: NextRequest) => {
       message: 'Account retrieved successfully',
       cakes,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error retrieving cakes:', error);
     return NextResponse.json({
       success: false,
       error: 'Server error',
-      details: error.message,
+      details: (error as Error).message,
     }, { status: 500 });
   }
 };

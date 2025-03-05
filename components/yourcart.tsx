@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface CartItem {
   id: number;
@@ -60,7 +61,7 @@ const YourCart = () => {
                 <tr key={item.id}>
                   <td style={styles.tableCell}>
                     <div style={styles.productDetails}>
-                      <img src={item.image} alt={item.name} style={styles.productImage} />
+                      <Image src={item.image} alt={item.name} style={styles.productImage} width={80} height={80}/>
                       <div>
                         <p style={styles.productName}>{item.name}</p>
                         {/* {item.size && <p style={styles.productSize}>Size: {item.size}</p>} */}

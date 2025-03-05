@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const AboutUs = () => {
@@ -10,9 +11,10 @@ const AboutUs = () => {
       <h2 className="title">ABOUT US</h2>
       <div className="content">
         <div className="image-container">
-          <img
+          <Image
             src="/images/close-up-woman-with-delicious-cupcakes.jpg"
             alt="Baked goods"
+            width={500} height={700}
           />
         </div>
         <div className="text-container">
@@ -29,15 +31,15 @@ const AboutUs = () => {
           </p>
           <div className="icons">
             <div className="icon">
-              <img src="/images/muffin_17519788.png" alt="Quality" />
+              <Image src="/images/muffin_17519788.png" alt="Quality" width={50 }height= {50} />
               <span>Quality</span>
             </div>
             <div className="icon">
-              <img src="/images/fresh_6718209.png" alt="Freshness" />
+              <Image src="/images/fresh_6718209.png" alt="Freshness"width={50 }height= {50}/>
               <span>Freshness</span>
             </div>
             <div className="icon">
-              <img src="/images/career_9647991.png" alt="Passion" />
+              <Image src="/images/career_9647991.png" alt="Passion" width={50 }height= {50}/>
               <span>Passion</span>
             </div>
           </div>
@@ -90,9 +92,12 @@ const AboutUs = () => {
           flex: 1;
           padding-right: 50px;
         }
-        .image-container img {
+        .image-container Image {
           width: 100%;
           border-radius: 10px;
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
         }
         .text-container {
           flex: 1;
@@ -148,7 +153,7 @@ const AboutUs = () => {
           align-items: center;
           gap: 8px;
         }
-        .icon img {
+        .icon Image {
           width: 50px;
           height: 50px;
         }

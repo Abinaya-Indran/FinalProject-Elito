@@ -1,11 +1,10 @@
 // src/components/SellerDashboard.tsx
 import { useState, useEffect } from "react";
-import Addcake from "./AddCake"; // Assuming you have an AddCake component
-import axios from "axios";
-import { response } from "express";
+import Addcake from "./AddCake";
+import axios from "axios"
 import toast from "react-hot-toast";
-import Profile from "./editprofile"; // Assuming you have a Profile component
-
+import Profile from "./editprofile";
+import Image from "next/image";
 
 interface Order {
   _id: string;
@@ -30,29 +29,6 @@ interface Order {
   };
 }
 
-interface OrderModalProps {
-  order: Order;
-  onClose: () => void;
-}
-
-const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
-  return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <h2>Order Details</h2>
-        <p><strong>Order ID:</strong> {order._id}</p>
-        <p><strong>Buyer Name:</strong> {order.buyerDetails?.firstName} {order.buyerDetails?.lastName}</p>
-        <p><strong>Phone:</strong> {order.buyerDetails?.phoneNumber}</p>
-        <p><strong>City:</strong> {order.buyerDetails?.city}</p>
-        <p><strong>Address:</strong> {order.buyerDetails?.address}</p>
-        <p><strong>Delivery Date:</strong> {order.deliveryDate}</p>
-        <p><strong>Cake Name:</strong> {order.cakeDetails.name}</p>
-        <img src={order.cakeDetails.image} alt={order.cakeDetails.name} className="modal-image" />
-        <button className="close-btn" onClick={onClose}>Close</button>
-      </div>
-    </div>
-  );
-};
 
 const SellerDashboard = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -70,7 +46,7 @@ const SellerDashboard = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [id, setId] = useState<string>('')
+ 
 
 
   useEffect(() => {
@@ -78,7 +54,7 @@ const SellerDashboard = () => {
       try {
         const { data } = await axios.get('/api/cookie');
         const userId = data?.user?.userId;
-        setId(userId);
+        // setId(userId);
   
         if (userId) {
           const [productRes, orderRes] = await Promise.all([
@@ -90,6 +66,7 @@ const SellerDashboard = () => {
           setOrders(orderRes.data.orders);
         }
       } catch (error) {
+        console.error('Failed to fetch user data:', error);
         toast.error('Error fetching user data');
       }
     };
@@ -127,6 +104,7 @@ const SellerDashboard = () => {
           setEditModalOpen(false);
         }
       } catch (error) {
+        console.error("Failed to update product:", error);
         toast.error("Failed to update product");
       }
     };
@@ -153,24 +131,22 @@ const SellerDashboard = () => {
   };
   
 
-  const handleEdit = (productId: string) => {
-    alert(`Edit product: ${productId}`);
-    // Navigate to edit page or open modal
-  };
+  // const handleEdit = (productId: string) => {
+  //   alert(`Edit product: ${productId}`);
+  //   // Navigate to edit page or open modal
+  // };
 
-  const handleDelete = async (productId: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmDelete) return;
+  // const handleDelete = async (productId: string) => {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+  //   if (!confirmDelete) return;
 
-    try {
-      await axios.delete(`/api/Product/${productId}`);
-      setProducts(products.filter((product) => product._id !== productId));
-    } catch (error) {
-      alert("Failed to delete product");
-    }
-  };
-
-  console.log(orders);
+  //   try {
+  //     await axios.delete(`/api/Product/${productId}`);
+  //     setProducts(products.filter((product) => product._id !== productId));
+  //   } catch (error) {
+  //     alert("Failed to delete product");
+  //   }
+  // };
   
   // const handleLogout = async () => {
   //   try {
@@ -255,10 +231,12 @@ const SellerDashboard = () => {
                     <p><strong>Phone Number: </strong>{order.buyerDetails?.phoneNumber}</p>
                   </td>
                   <td className="cake-info">
-                  <img
+                  <Image
                     src={order.cakeDetails?.image || ""}
                     alt={order.cakeDetails?.name || "Cake"}
                     className="cake-image"
+                    width={50}
+                    height={50}
                   />
                   {order.cakeDetails?.name || ""}
                   </td>
@@ -305,7 +283,7 @@ const SellerDashboard = () => {
                 {products.map((product) => (
                   <tr key={product._id}>
                     <td>
-                      <img src={product.image} alt={product.name} className="product-image" />
+                      <Image src={product.image} alt={product.name} className="product-image" width={80} height={80}/>
                     </td>
                     <td>{product.name}</td>
                     <td>LKR {Number(product.price).toFixed(2)}</td>

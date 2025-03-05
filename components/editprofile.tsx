@@ -72,8 +72,9 @@ const EditProfile = () => {
       } else {
         toast.error("Failed to update profile.");
       }
-    } catch (error: any) {
-      toast.error(`Error updating profile: ${error.response?.data?.message || error.message}`);
+    } catch (error) {
+      console.error("Error updating profile:", (error as Error).message);
+      toast.error(`Error updating profile`);
     }
 
     setIsEditing({
@@ -89,15 +90,6 @@ const EditProfile = () => {
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Edit Profile</h2>
-
-      {/* <div style={styles.imageContainer}>
-        <img
-          src={userData.profilePicture || "/default-profile.png"}
-          alt="Profile"
-          style={styles.profileImage}
-        />
-        <input type="file" accept="image/*" style={styles.fileInput} />
-      </div> */}
 
       <div style={styles.form}>
         {["name", "email", "phoneNumber", "address"].map((field) => (
@@ -155,13 +147,7 @@ const styles = {
     position: "relative" as const,
     marginBottom: "20px",
   },
-  // profileImage: {
-  //   width: "120px",
-  //   height: "120px",
-  //   borderRadius: "50%",
-  //   objectFit: "cover" as const,
-  //   border: "3px solid #C14679",
-  // },
+ 
   fileInput: {
     marginTop: "10px",
   },

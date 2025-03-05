@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
+import Image from "next/image";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
@@ -17,14 +18,13 @@ interface Product {
 const Payment = () => {
   const searchParams = useSearchParams();
   const productId = searchParams?.get("productId") || "";
-  const orderId = searchParams?.get("orderId") || "";
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [productDetails, setProductDetails] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [deliveryPrice, setDeliveryPrice] = useState(450); // Default delivery price
+  const deliveryPrice = 450;
 
   useEffect(() => {
     if (productId) {
@@ -98,7 +98,7 @@ const Payment = () => {
           <p className="error">{error}</p>
         ) : productDetails ? (
           <div className="orderItem">
-            <img src={productDetails.image} alt={productDetails.name} className="orderImage" />
+            <Image src={productDetails.image} alt={productDetails.name} className="orderImage" width={100} height={100}/>
             <div>
               <p>{productDetails.name}</p>
               <p>Rs {productDetails.price}</p>

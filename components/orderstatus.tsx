@@ -58,7 +58,7 @@ const OrderStatus = () => {
       {status === "declined" && (
         <div className="status-card declined">
           <h2>❌ Order Declined</h2>
-          <p>We're sorry! The seller is unable to fulfill your order for <strong>{cakeName}</strong> at this time. </p>
+          <p>We&apos;re sorry! The seller is unable to fulfill your order for <strong>{cakeName}</strong> at this time. </p>
          
         </div>
       )}

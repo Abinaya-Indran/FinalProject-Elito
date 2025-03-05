@@ -1,5 +1,4 @@
 "use client";
-import "../../../styles/global.css";
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import axios from "axios";
@@ -29,12 +28,10 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       if (!id) return;
       try {
-        const response = await axios.post('/api/Product/getByProductId' , {
-          cakeId: id
-        });
-        setProduct(response.data.cake);
+        const response = await axios.get(`/api/Product/${id}`);
+        setProduct(response.data);
       } catch (error) {
-        console.error("Failed to load product details:", error);
+        console.error("Failed to load product details:" , error);
         setError("Failed to load product details.");
       } finally {
         setLoading(false);
@@ -75,9 +72,8 @@ const ProductDetails = () => {
 
   return (
     <section className="king" style={styles.container}>
-     
       <div style={styles.productImage}>
-        <Image src={product.image} alt={product.name} style={styles.image} width={600} height={600}/>
+        <Image src={product.image} alt={product.name} style={styles.image} width={600}/>
       </div>
 
       <div style={styles.details}>
@@ -106,9 +102,7 @@ const ProductDetails = () => {
           </Link>
         </div>
       </div>
-     
     </section>
-    
   );
 };
 
@@ -125,11 +119,9 @@ const styles = {
     padding: "50px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     borderRadius: "10px",
-    
   },
   productImage: {
     width: "600px",
-    height: "600px",
   },
 
   span : {

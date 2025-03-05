@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -24,6 +25,7 @@ const AdminProductPage = () => {
         const response = await axios.get("/api/Product");
         setProducts(response.data);
       } catch (error) {
+        console.log("Error fetching products:", (error as Error).message);
         setError("Failed to load products");
       } finally {
         setLoading(false);
@@ -33,10 +35,10 @@ const AdminProductPage = () => {
     fetchProducts();
   }, []);
 
-  const handleEdit = (productId: string) => {
-    alert(`Edit product: ${productId}`);
-    // Navigate to edit page or open modal
-  };
+  // const handleEdit = (productId: string) => {
+  //   alert(`Edit product: ${productId}`);
+  //   // Navigate to edit page or open modal
+  // };
 
   const handleDelete = async (productId: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this product?");
@@ -46,6 +48,7 @@ const AdminProductPage = () => {
       await axios.delete(`/api/Product/${productId}`);
       setProducts(products.filter((product) => product._id !== productId));
     } catch (error) {
+      console.log("Error deleting product:", (error as Error).message);
       alert("Failed to delete product");
     }
   };
@@ -71,7 +74,7 @@ const AdminProductPage = () => {
           {products.map((product) => (
             <tr key={product._id}>
               <td>
-                <img src={product.image} alt={product.name} className="product-image" />
+                <Image src={product.image} alt={product.name} className="product-image"  width= {60 } height= {60} />
               </td>
               <td>{product.name}</td>
               <td>{product.price}</td>

@@ -1,12 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { FaHeart, FaShoppingCart, FaStar, FaRegStar } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import Image from "next/image";
+
+
+interface cake {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  category: string;
+  quantity: string;
+}
 
 const TopCake = () => {
-  const [cakes, setCakes] = useState<any[]>([]);
+  const [cakes, setCakes] = useState<cake[]>([]);
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<cake[]>([]);
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
@@ -29,7 +41,7 @@ const TopCake = () => {
     }
   }, []);
 
-  const addToCart = (cake: any) => {
+  const addToCart = (cake: cake) => {
     const updatedCart = [...cart, cake];
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -53,14 +65,16 @@ const TopCake = () => {
 
       {loading ? (
         <p style={styles.loadingMessage}>Loading cakes...</p>
-      ) : cakes.length > 0 ? (
+      ) : cakes && cakes.length > 0 ? (
         <div style={styles.productGrid}>
-          {cakes.map((cake) => (
+          {cakes.map((cake: cake) => (
             <div key={cake._id} style={styles.productCard} className="product-card">
-              <img
-                src={cake.image || "/default-image.jpg"}
+              <Image
+                src={cake.image}
                 alt={cake.name || "Unnamed Cake"}
                 style={styles.productImage}
+                width={900}
+                height={380}
               />
               <div style={styles.cardContent}>
                 <h3 style={styles.productName}>{cake.name || "Unnamed Cake"}</h3>

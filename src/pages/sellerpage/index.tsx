@@ -1,7 +1,5 @@
-
 import Footer from '../../../components/Footer'
 import Navbar from '../../../components/Navbar'
-import Bakerbanner from '../../../components/bakerbanner'
 import Bottom from '../../../components/bottomFooter'
 import SellerGrow from '../../../components/sellergrow';
 import Sellerhero from '../../../components/sellerhero1';

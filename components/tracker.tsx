@@ -1,8 +1,7 @@
 import { useState } from "react";
-import CakeDetails from "../components/Cakedetails";
+import CakeDetails from "./productid";
 import OrderPage from "./order";
 import PaymentPage from "./payment";
-import DeliveryStatus from "../components/deliverystatus";
 
 const steps = ["Cake Selection", "Order Details", "Payment", "Delivery"];
 

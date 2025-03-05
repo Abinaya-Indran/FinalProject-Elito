@@ -8,6 +8,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import TypedText from "./typedtext"; // Ensure this component exists
+import Image from "next/image";
 
 const Hero = () => {
   return (
@@ -73,7 +74,7 @@ const HeroSlide = ({ title, subtitle, imgSrc }: { title: string; subtitle: strin
 
       {/* Right Image */}
       <div style={styles.imageContainer}>
-        <img src={imgSrc} alt="Cake" style={styles.image} />
+        <Image src={imgSrc} alt="Cake" style={styles.image} width={500} height={700}/>
       </div>
     </section>
   );

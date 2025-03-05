@@ -17,7 +17,7 @@ const SellerHero = () => {
       </HeroContent>
       <HeroImageContainer>
         {/* <HeroImage src="/images/pexels-gustavo-fring-3983712.jpg" alt="Cake seller showcasing cakes" /> */}
-        <HeroImage src="/images/pexels-gustavo-fring-3983712.jpg" alt="Cake seller showcasing cakes" />
+        <HeroImage src="/images/pexels-gustavo-fring-3983712.jpg" alt="Cake seller showcasing cakes" width={800}/>
       </HeroImageContainer>
     </HeroContainer>
   );
